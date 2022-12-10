@@ -19,7 +19,7 @@ export class SnackbarComponent {
       duration: this.timeOut,
       verticalPosition: 'bottom',
       horizontalPosition: 'center',
-      panelClass: [className],
+      panelClass: className,
     });
   }
 }
