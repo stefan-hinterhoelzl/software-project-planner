@@ -5,8 +5,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 .red-snackbar {
-    --mdc-snackbar-container-color: rgb(153, 50, 50);
-    --mdc-snackbar-label-ink-color: lightgoldenrodyellow;
+    --mdc-snackbar-container-color: #993232 !important;
+    --mdc-snackbar-label-ink-color: lightgoldenrodyellow !important;
 }
 
 .green-snackbar {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -8,11 +8,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class SnackbarComponent {
 
+  snackBar = inject(MatSnackBar);
+
   timeOut = 5000;
 
-  constructor(
-    public snackBar: MatSnackBar
-  ) { }
+  constructor() { }
 
   openSnackBar(message: string, className: string = " ", action: string = " ") {
     return this.snackBar.open(message, action, {
