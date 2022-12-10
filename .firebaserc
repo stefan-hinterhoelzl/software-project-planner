@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "software-project-planner"
+  },
+  "targets": {
+    "software-project-planner": {
+      "hosting": {
+        "software-project-planner": [
+          "software-project-planner"
+        ]
+      }
+    }
   }
 }
