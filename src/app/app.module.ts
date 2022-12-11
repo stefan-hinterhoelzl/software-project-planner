@@ -8,8 +8,17 @@ import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ProjectsModule } from './projects/projects.module';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 
 //initialize Firebase
 
@@ -28,6 +37,13 @@ const app = initializeApp(environment.firebase)
     AuthenticationModule,
     DashboardModule,
     MatSnackBarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatMenuModule,
+    MatTooltipModule,
+    ProjectsModule,
 
   ],
   providers: [SnackbarComponent],

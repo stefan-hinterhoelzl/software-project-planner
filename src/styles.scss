@@ -6,10 +6,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .red-snackbar {
     --mdc-snackbar-container-color: #993232 !important;
-    --mdc-snackbar-label-ink-color: lightgoldenrodyellow !important;
+    --mdc-snackbar-supporting-text-color: lightgoldenrodyellow !important;
 }
 
 .green-snackbar {
-    --mdc-snackbar-container-color: rgb(29, 102, 29);
-    color: lightgreen;
+    --mdc-snackbar-container-color: rgb(29, 102, 29) !important;
+    --mdc-snackbar-supporting-text-color: lightgreen !important;
 }

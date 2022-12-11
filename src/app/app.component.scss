@@ -1,0 +1,25 @@
+.router {
+    height: 100%;
+}
+
+mat-drawer {
+    padding: 2%;
+    width: 600px;
+}
+
+
+.main-content {
+    padding-top: 60px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.toolbar {
+    position: fixed;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
