@@ -3,32 +3,24 @@
         <app-project-search></app-project-search>
     </mat-drawer>
     <mat-drawer-content>
-        <mat-toolbar  *ngIf = "isLoggedIn" color="primary" class = "toolbar">
-            <button mat-icon-button (click) = drawer.toggle()>
+        <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
+            <button mat-icon-button (click)=drawer.toggle()>
                 <mat-icon>menu</mat-icon>
             </button>
-            <span>Software Project Planner</span>
-            <span class = "spacer"></span>
-            <button mat-icon-button [matMenuTriggerFor]="menu" >
+            <span>Mitteltext</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
-
             </button>
-            <mat-menu #menu = "matMenu">
-                <button mat-menu-item (click) = "logout()">
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="logout()">
                     <mat-icon>logout</mat-icon>
                     <span>Abmelden</span>
                 </button>
             </mat-menu>
         </mat-toolbar>
-        <div class = "main-content">
+        <div class="main-content">
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>
 
 </mat-drawer-container>
-
-
-
-
-
-
