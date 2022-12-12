@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DataService } from './services/data.service';
 
 
 
@@ -46,7 +47,7 @@ const app = initializeApp(environment.firebase)
     ProjectsModule,
 
   ],
-  providers: [SnackbarComponent],
+  providers: [SnackbarComponent, DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

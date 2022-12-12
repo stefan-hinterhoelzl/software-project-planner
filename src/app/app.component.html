@@ -1,13 +1,13 @@
 <mat-drawer-container [hasBackdrop]="true" fullscreen>
     <mat-drawer #drawer [mode]="'over'">
-        <app-project-search></app-project-search>
+        <app-project-search (navigationEvent)="navigate($event)"></app-project-search>
     </mat-drawer>
     <mat-drawer-content>
         <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
             <button mat-icon-button (click)=drawer.toggle()>
                 <mat-icon>menu</mat-icon>
             </button>
-            <span>Mitteltext</span>
+            <span>{{data.header | async}}</span>
             <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
             </button>

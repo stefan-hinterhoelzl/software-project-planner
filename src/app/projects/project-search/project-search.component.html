@@ -1,15 +1,15 @@
 <div class="project-header">
   <h2>Meine Projekte</h2>
   <span class="spacer"></span>
-  <button mat-fab color="primary" matTooltip="Neues Projekt erstellen">
+  <button mat-fab color="primary" matTooltip="Neues Projekt erstellen" (click)="navigate('')">
     <mat-icon>add</mat-icon>
   </button>
 </div>
 
 <mat-list>
-    <mat-list-item *ngFor="let project of projects" matTooltip="{{project}}">
+    <mat-list-item *ngFor="let project of projects">
         <mat-icon class = "listicon" matListItemIcon>edit</mat-icon>
-        <div class = "listitem" matListItemTitle>{{project}}</div>
+        <div [matTooltipPositionAtOrigin]="true" matTooltip="{{project}}" class = "listitem" matListItemTitle>{{project}}</div>
         <mat-divider></mat-divider>
     </mat-list-item>
 </mat-list>

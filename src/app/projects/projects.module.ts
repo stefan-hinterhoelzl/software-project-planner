@@ -5,13 +5,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectSearchComponent } from './project-search/project-search.component';
-import { MatListModule } from '@angular/material/list'
+import { MatListModule } from '@angular/material/list';
+import { CreateProjectComponent } from './create-project/create-project.component'
 
 
 
 @NgModule({
   declarations: [
-    ProjectSearchComponent
+    ProjectSearchComponent,
+    CreateProjectComponent
   ],
   imports: [
     CommonModule,
