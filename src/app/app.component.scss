@@ -9,11 +9,12 @@ mat-drawer {
 
 
 .main-content {
-    display: flex;
     padding-top: 60px;
     padding-left: 10px;
     padding-right: 10px;
     width: 100%;
+    flex: 1 1 auto;
+    
     
 }
 
