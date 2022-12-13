@@ -1,19 +1,18 @@
 .main-wrapper {
     display: flex;
     width: 100%;
-    
-
-
+    height: 100%;
 }
 
 mat-stepper {
-    height: 40%;
+    height: 50%;
 }
 
 .stepper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    
-
+    justify-content: flex-start;
+    margin: 0 auto;
+    width: 60%;
+    min-width: 1000px;
 }
