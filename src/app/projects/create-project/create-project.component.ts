@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { take } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -10,7 +12,16 @@ import { DataService } from 'src/app/services/data.service';
 export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder)
   data = inject(DataService);
+  _ngZone = inject(NgZone)
+  @ViewChild('autosize', {static: false}) autosize!: CdkTextareaAutosize;
 
+  firstFormGroup = this.fb.group({
+    nameCtrl: ['', Validators.required],
+  });
+
+  secondFormGroup = this.fb.group({
+    descrCtrl: ['', Validators.required]
+  });
 
   constructor() {
 
@@ -18,7 +29,12 @@ export class CreateProjectComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
+
+  }
+
+  triggerResize() {
+    this._ngZone.onStable.pipe(take(1))
+        .subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
 }

@@ -1,22 +1,73 @@
 <div class="main-wrapper">
+  <h2>Neues Projekt anlegen</h2>
+  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
+    <mat-step [stepControl]="firstFormGroup" label="Projekttitel">
+      <div class="mat-step-div">
+        <form [formGroup]="firstFormGroup">
+          <div>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Titel</mat-label>
+              <input
+                matInput
+                placeholder="Name des Projekts"
+                formControlName="nameCtrl"
+                required
+              />
+              <mat-error
+                *ngIf="firstFormGroup.controls['nameCtrl'].hasError('required')"
+              >
+                Titel ist ein Pflichtfeld
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <br />
+          <button mat-button matStepperNext>Weiter</button>
+        </form>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup" label="Projektbeschreibung">
+      <div class="mat-step-div">
+        <form [formGroup]="secondFormGroup">
+          <div>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Beschreibung</mat-label>
+              <textarea
+                placeholder="Beschreiben Sie das Projekt"
+                matInput
+                cdkTextareaAutosize
+                formControlName="descrCtrl"
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="3"
+                cdkAutosizeMaxRows="7"
+                required
+              ></textarea>
+              <mat-error
+                *ngIf="
+                  secondFormGroup.controls['descrCtrl'].hasError('required')
+                "
+              >
+                Beschreibung ist ein Pflichtfeld
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <br />
+          <button mat-button matStepperNext>Weiter</button>
+          <button mat-button matStepperPrevious>Zurück</button>
+        </form>
+      </div>
+    </mat-step>
 
-    <div class = "stepper">
-        <h2>Neues Projekt anlegen</h2>
-        <mat-stepper #stepper>
-            <mat-step label="Name und Beschreibung">
-
-
-            </mat-step>
-            <mat-step label="GitLab Instanzen">
-
-
-            </mat-step>
-            <mat-step label="Abschließen">
-
-            </mat-step>
-
-
-        </mat-stepper>
-    </div>
-
+    <mat-step label="Gitlab Instanzen">
+      <div class="stepper-action">
+        <button mat-button matStepperPrevious>Zurück</button>
+        <button mat-button matStepperNext>Weiter</button>
+      </div>
+    </mat-step>
+    <mat-step label="Abschließen">
+      <div class="stepper-action">
+        <button mat-button matStepperPrevious>Zurück</button>
+        <button mat-button (click)="stepper.reset()">Speichern</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
 </div>

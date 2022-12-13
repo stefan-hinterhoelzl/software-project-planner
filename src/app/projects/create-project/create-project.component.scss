@@ -1,18 +1,23 @@
 .main-wrapper {
-    display: flex;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  width: 60%;
+  height: 100%;
+  flex-direction: column;
+  margin: 0 auto
 }
 
-mat-stepper {
-    height: 50%;
+.mat-step-div {
+    padding-top: 3%;
 }
 
-.stepper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    margin: 0 auto;
-    width: 60%;
-    min-width: 1000px;
+.form {
+  min-width: 600px;
+  max-width: 1000px;
+  width: 100%;
 }
+
+.form-field {
+    width: 70%;
+}
+
+
