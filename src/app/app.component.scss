@@ -9,11 +9,19 @@ mat-drawer {
 
 
 .main-content {
+    display: flex;
     padding-top: 60px;
     padding-left: 10px;
     padding-right: 10px;
+    width: 100%;
+    
 }
 
+.main-wrapper {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
 
 .toolbar {
     position: fixed;
@@ -22,5 +30,9 @@ mat-drawer {
 
 .spacer {
     flex: 1 1 auto;
+}
+
+.title-span {
+    cursor: pointer;
 }
 

@@ -6,7 +6,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectSearchComponent } from './project-search/project-search.component';
 import { MatListModule } from '@angular/material/list';
-import { CreateProjectComponent } from './create-project/create-project.component'
+import { CreateProjectComponent } from './create-project/create-project.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 
@@ -22,6 +24,10 @@ import { CreateProjectComponent } from './create-project/create-project.componen
     MatButtonToggleModule,
     MatTooltipModule,
     MatListModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatButtonToggleModule
   ],
   exports: [
     ProjectSearchComponent

@@ -45,7 +45,9 @@ export class AppComponent {
 
   navigate(value: string) {
     if (this.drawer != undefined) this.drawer.close();
-    if (value === "") this.router.navigate(['/create-project']);
+    if (value === "") {
+      this.router.navigate(['/create-project']);
+    } 
   }
 
 

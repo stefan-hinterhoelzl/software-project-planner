@@ -9,7 +9,6 @@
 <mat-list>
     <mat-list-item *ngFor="let project of projects">
         <mat-icon class = "listicon" matListItemIcon>edit</mat-icon>
-        <div [matTooltipPositionAtOrigin]="true" matTooltip="{{project}}" class = "listitem" matListItemTitle>{{project}}</div>
-        <mat-divider></mat-divider>
+        <div matListItemTitle><span  class = "listitem" [matTooltipPosition]="'below'" matTooltip="{{project}}">{{project}}</span></div>
     </mat-list-item>
 </mat-list>

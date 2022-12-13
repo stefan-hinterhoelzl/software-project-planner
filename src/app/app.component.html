@@ -3,24 +3,37 @@
         <app-project-search (navigationEvent)="navigate($event)"></app-project-search>
     </mat-drawer>
     <mat-drawer-content>
-        <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
-            <button mat-icon-button (click)=drawer.toggle()>
-                <mat-icon>menu</mat-icon>
-            </button>
-            <span>{{data.header | async}}</span>
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="logout()">
-                    <mat-icon>logout</mat-icon>
-                    <span>Abmelden</span>
-                </button>
-            </mat-menu>
-        </mat-toolbar>
-        <div class="main-content">
-            <router-outlet></router-outlet>
+        <div class="main-wrapper">
+            <div>
+                <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
+
+                    <button mat-icon-button (click)=drawer.toggle()>
+                        <mat-icon>menu</mat-icon>
+                    </button>
+
+                    <span [matTooltipPosition]="'below'" matTooltip="Zurück zur Startseite" class="title-span"
+                        [routerLink]="['/dashboard']">{{data.header | async}}</span>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item [routerLink]="['/dashboard']">
+                            <mat-icon>dashboard</mat-icon>
+                            <span>Startseite</span>
+                        </button>
+                        <button mat-menu-item (click)="logout()">
+                            <mat-icon>logout</mat-icon>
+                            <span>Abmelden</span>
+                        </button>
+                    </mat-menu>
+                </mat-toolbar>
+            </div>
+            <div class="main-content">
+                <router-outlet></router-outlet>
+            </div>
+
         </div>
     </mat-drawer-content>
+
 
 </mat-drawer-container>

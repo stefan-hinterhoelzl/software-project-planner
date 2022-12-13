@@ -18,7 +18,7 @@ export class CreateProjectComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.data.setHeader("Neues Projekt");
+    
   }
 
 }
