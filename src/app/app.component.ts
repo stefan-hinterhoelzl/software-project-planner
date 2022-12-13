@@ -31,6 +31,7 @@ export class AppComponent {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
+        this.data.setUser(user)
       } else {
         this.isLoggedIn = false;
       }
@@ -47,7 +48,7 @@ export class AppComponent {
     if (this.drawer != undefined) this.drawer.close();
     if (value === "") {
       this.router.navigate(['/create-project']);
-    } 
+    }
   }
 
 
