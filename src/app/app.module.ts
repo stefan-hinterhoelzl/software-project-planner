@@ -18,6 +18,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DataService } from './services/data.service';
+import { DialogsModule } from './dialogs/dialogs.module';
 
 
 
@@ -37,6 +38,7 @@ const app = initializeApp(environment.firebase)
     MatToolbarModule,
     AuthenticationModule,
     DashboardModule,
+    DialogsModule,
     MatSnackBarModule,
     MatSidenavModule,
     MatIconModule,
@@ -45,6 +47,7 @@ const app = initializeApp(environment.firebase)
     MatMenuModule,
     MatTooltipModule,
     ProjectsModule,
+
 
   ],
   providers: [SnackbarComponent, DataService],

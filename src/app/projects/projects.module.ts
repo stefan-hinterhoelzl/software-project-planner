@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input'
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { AppRoutingModule } from '../app-routing.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -37,7 +38,8 @@ import { AppRoutingModule } from '../app-routing.module';
     FormsModule,
     ReactiveFormsModule,
     MatMenuModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatDialogModule,
   ],
   exports: [
     ProjectSearchComponent

@@ -8,4 +8,5 @@ export interface Project {
     lastModified: Timestamp,
     gitLabInstances: string[],
     favourite: boolean,
+    uid: string,
 }

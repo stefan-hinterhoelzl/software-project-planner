@@ -11,7 +11,7 @@ export class DataService {
 
   private _header = new BehaviorSubject<string>("Software Project Planner")
   private _loggedInUser = new ReplaySubject<User>(1)
-  private _projects = new ReplaySubject<Project[]>()
+  private _projects = new ReplaySubject<Project[]>(1)
 
   constructor() { }
 

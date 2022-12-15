@@ -1,6 +1,18 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+  NgZone,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Subscription, take } from 'rxjs';
 import { Project } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
@@ -12,7 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-create-project',
   templateUrl: './create-project.component.html',
-  styleUrls: ['./create-project.component.scss']
+  styleUrls: ['./create-project.component.scss'],
 })
 export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
@@ -24,68 +36,83 @@ export class CreateProjectComponent implements OnInit {
   route = inject(ActivatedRoute);
   projectid?: string;
   editMode: boolean = false;
-  @ViewChild('autosize', {static: false}) autosize!: CdkTextareaAutosize;
+  project: Project | undefined;
+  @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
   routeSubscription?: Subscription;
-
-
 
   firstFormGroup = this.fb.group({
     nameCtrl: ['', Validators.required],
   });
 
   secondFormGroup = this.fb.group({
-    descrCtrl: ['', Validators.required]
+    descrCtrl: ['', Validators.required],
   });
 
-  constructor() {
-
-  }
-
+  constructor() {}
 
   ngOnInit(): void {
-    this.data.user.pipe(take(1)).subscribe(value => {
+    this.data.user.pipe(take(1)).subscribe((value) => {
       this.loggedUser = value;
-    })
+    });
 
-    this.routeSubscription = this.route.params.subscribe(params => {
-      let id: string = params["id"]
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      let id: string = params['id'];
       this.projectid = id;
       if (this.projectid != undefined) {
-        this.initialize(id)
-      } 
-    })
-
-
-
-
+        this.initialize(id);
+      }
+    });
   }
 
   initialize(id: string) {
-    //load_project_here
-    this.editMode = true
-    this.firstFormGroup.get('nameCtrl')?.setValue("project_name")
-    this.secondFormGroup.get('descrCtrl')?.setValue("project_descr")
+    this.data.projects.pipe(take(1)).subscribe((value) => {
+      console.log(value)
+      this.project = value.find((project) => {
+        return project.uid === id;
+      });
+
+      this.editMode = true;
+
+      if (this.project != undefined) {
+        this.firstFormGroup.get('nameCtrl')?.setValue(this.project.name);
+        this.secondFormGroup
+          .get('descrCtrl')
+          ?.setValue(this.project.description);
+      }
+    });
   }
 
   triggerResize() {
-    this._ngZone.onStable.pipe(take(1))
-        .subscribe(() => this.autosize.resizeToFitContent(true));
+    this._ngZone.onStable
+      .pipe(take(1))
+      .subscribe(() => this.autosize.resizeToFitContent(true));
   }
-
 
   saveProject() {
-    const newProject = {} as Project;
-    newProject.name = this.firstFormGroup.get('nameCtrl')?.value!;
-    newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
-    newProject.owner = this.loggedUser?.uid!;
-    newProject.gitLabInstances = [];
+    if (!this.editMode) {
+      const newProject = {} as Project;
+      newProject.name = this.firstFormGroup.get('nameCtrl')?.value!;
+      newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
+      newProject.owner = this.loggedUser?.uid!;
+      newProject.gitLabInstances = [];
+      newProject.favourite = false;
 
-    this.firestore.addProject(newProject).then(()=> {
-      this.snackbar.openSnackBar('Projekt angelegt!', 'green-snackbar')
-      this.router.navigate(['/dashboard'])
-    });
+      this.firestore.addProject(newProject).then(() => {
+        this.snackbar.openSnackBar('Projekt angelegt!', 'green-snackbar');
+        this.router.navigate(['/dashboard']);
+      });
+    } else {
+      if (this.project != undefined) {
+        this.project.name = this.firstFormGroup.get('nameCtrl')?.value!;
+        this.project.description =
+          this.secondFormGroup.get('descrCtrl')?.value!;
 
+        this.firestore.updateProject(this.project).then(() => {
+          this.snackbar.openSnackBar('Projekt gespeichert', 'green-snackbar');
+          this.router.navigate(['/dashboard']);
+        });
+      }
+    }
   }
-
 }

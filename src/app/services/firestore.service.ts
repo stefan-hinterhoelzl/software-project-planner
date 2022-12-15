@@ -1,6 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import {
   doc,
+  setDoc,
+  deleteDoc,
+  updateDoc,
   collection,
   addDoc,
   serverTimestamp,
@@ -14,11 +17,17 @@ import { DataService } from './data.service';
 @Injectable({
   providedIn: 'root',
 })
-export class FirestoreService {
+export class FirestoreService implements OnDestroy {
 
   data = inject(DataService)
+  projectsubscription: any;
 
-  constructor() { 
+  constructor() {
+  }
+
+
+  ngOnDestroy(): void {
+    this.projectsubscription();
   }
 
   async addProject(project: Project) {
@@ -34,18 +43,49 @@ export class FirestoreService {
     });
   }
 
+  async updateProject(project: Project) {
+    const db = getFirestore();
+
+    return updateDoc(doc(db, "projects", project.uid), {
+      name: project.name,
+      description: project.description,
+      gitLabInstances: project.gitLabInstances,
+      lastModified: serverTimestamp(),
+    });
+
+  }
+
+  async deleteProject(projectId: string) {
+    const db = getFirestore();
+    const docRef = doc(db, "projects/"+projectId);
+
+    return deleteDoc(docRef);
+  }
+
+  async toggleProjectFavourite(boolean: boolean, projectid: string) {
+    const db = getFirestore();
+     return updateDoc(doc(db, "projects", projectid), {
+      favourite: boolean,
+     });
+  }
+
   async projectCollector(id: string) {
     const db = getFirestore();
 
     const q = query(collection(db, "projects"), where("owner", "==", id));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    this.projectsubscription = onSnapshot(q, (querySnapshot) => {
       const projects: Project[] = [];
       querySnapshot.forEach((doc) => {
-          projects.push(doc.data() as Project);
+          let temp: Project = doc.data() as Project
+          temp.uid = doc.id
+          projects.push(temp);
       });
+      console.log(projects)
       this.data.setProjects(projects);
     });
   }
+
+
 
 
 }
