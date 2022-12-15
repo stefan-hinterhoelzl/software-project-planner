@@ -1,13 +1,13 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ChangeDetectorRef, Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { Project } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { User } from '@firebase/auth';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-project',
@@ -21,8 +21,11 @@ export class CreateProjectComponent implements OnInit {
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
+  route = inject(ActivatedRoute);
+  projectid?: string;
   @ViewChild('autosize', {static: false}) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
+  routeSubscription?: Subscription;
 
 
 
@@ -43,6 +46,23 @@ export class CreateProjectComponent implements OnInit {
     this.data.user.pipe(take(1)).subscribe(value => {
       this.loggedUser = value;
     })
+
+    this.routeSubscription = this.route.params.subscribe(params => {
+      let id: string = params["id"]
+      this.projectid = id;
+      if (this.projectid != undefined) this.initialize(id)
+    })
+
+
+
+
+  }
+
+  initialize(id: string) {
+    //load_project_here
+
+    this.firstFormGroup.get('nameCtrl')?.setValue("project_name")
+    this.secondFormGroup.get('descrCtrl')?.setValue("project_descr")
   }
 
   triggerResize() {

@@ -1,14 +1,45 @@
 <div class="project-header">
   <h2>Meine Projekte</h2>
   <span class="spacer"></span>
-  <button mat-fab color="primary" matTooltip="Neues Projekt erstellen" (click)="navigate('')">
+  <button
+    mat-fab
+    color="primary"
+    matTooltip="Neues Projekt erstellen"
+    (click)="navigate('')"
+  >
     <mat-icon>add</mat-icon>
   </button>
 </div>
 
 <mat-list>
-    <mat-list-item *ngFor="let project of projects">
-        <mat-icon class = "listicon" matListItemIcon>edit</mat-icon>
-        <div matListItemTitle><span  class = "listitem" [matTooltipPosition]="'below'" matTooltip="{{project}}">{{project}}</span></div>
-    </mat-list-item>
+  <mat-list-item *ngFor="let project of projects">
+    <mat-icon
+      [matMenuTriggerFor]="menu"
+      class="listicon"
+      matListItemIcon
+      >folder</mat-icon>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>edit</mat-icon>
+        <span>Bearbeiten</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>favorite</mat-icon>
+        <span>Zu Favoriten hinzufügen</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>Löschen</span>
+      </button>
+    </mat-menu>
+    <div matListItemTitle (click) = "navigate('id')">
+      <span
+        class="listitem"
+        [matTooltipPosition]="'below'"
+        matTooltip="{{ project }}"
+        >{{ project }}</span
+      >
+    </div>
+  </mat-list-item>
 </mat-list>

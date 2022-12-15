@@ -7,5 +7,5 @@ export interface Project {
     createdAt: Timestamp,
     lastModified: Timestamp,
     gitLabInstances: string[],
-
+    favourite: boolean,
 }

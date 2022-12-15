@@ -8,7 +8,7 @@ import { DataService } from './services/data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'software-project-planner';
@@ -16,11 +16,9 @@ export class AppComponent {
 
   @ViewChild('drawer') drawer: MatSidenav | undefined;
 
-  auth = inject(AuthService)
-  data = inject(DataService)
-  router = inject(Router)
-
-
+  auth = inject(AuthService);
+  data = inject(DataService);
+  router = inject(Router);
 
   constructor() {
     this.authStatusListener();
@@ -31,29 +29,20 @@ export class AppComponent {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
-        this.data.setUser(user)
+        this.data.setUser(user);
       } else {
         this.isLoggedIn = false;
       }
     });
   }
 
-
   logout() {
     this.auth.logout();
   }
 
-
   navigate(value: string) {
     if (this.drawer != undefined) this.drawer.close();
-    if (value === "") {
-      this.router.navigate(['/create-project']);
-    }
+
+    this.router.navigate(['/create-project/' + value]);
   }
-
-
-
-
-
-
 }

@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthguardService] },
+  { path: 'create-project/:id', component: CreateProjectComponent, canActivate: [AuthguardService] },
   { path: 'create-project', component: CreateProjectComponent, canActivate: [AuthguardService] },
 ];
 
