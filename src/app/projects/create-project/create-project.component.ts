@@ -23,6 +23,7 @@ export class CreateProjectComponent implements OnInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
   projectid?: string;
+  editMode: boolean = false;
   @ViewChild('autosize', {static: false}) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
   routeSubscription?: Subscription;
@@ -50,7 +51,9 @@ export class CreateProjectComponent implements OnInit {
     this.routeSubscription = this.route.params.subscribe(params => {
       let id: string = params["id"]
       this.projectid = id;
-      if (this.projectid != undefined) this.initialize(id)
+      if (this.projectid != undefined) {
+        this.initialize(id)
+      } 
     })
 
 
@@ -60,7 +63,7 @@ export class CreateProjectComponent implements OnInit {
 
   initialize(id: string) {
     //load_project_here
-
+    this.editMode = true
     this.firstFormGroup.get('nameCtrl')?.setValue("project_name")
     this.secondFormGroup.get('descrCtrl')?.setValue("project_descr")
   }

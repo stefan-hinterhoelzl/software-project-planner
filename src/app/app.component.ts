@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { getAuth, User, onAuthStateChanged } from '@firebase/auth';
 import { AuthService } from './services/auth.service';
 import { DataService } from './services/data.service';
+import { FirestoreService } from './services/firestore.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ export class AppComponent {
   auth = inject(AuthService);
   data = inject(DataService);
   router = inject(Router);
+  firestore = inject(FirestoreService);
 
   constructor() {
     this.authStatusListener();
@@ -30,6 +32,7 @@ export class AppComponent {
       if (user) {
         this.isLoggedIn = true;
         this.data.setUser(user);
+        this.firestore.projectCollector(user.uid);
       } else {
         this.isLoggedIn = false;
       }

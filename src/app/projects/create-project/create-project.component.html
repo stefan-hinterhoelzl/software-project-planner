@@ -1,5 +1,6 @@
 <div class="main-wrapper">
-  <h2>Neues Projekt anlegen</h2>
+  <h2 *ngIf="!editMode">Neues Projekt anlegen</h2>
+  <h2 *ngIf="editMode">Projekt bearbeiten</h2>
   <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
     <mat-step [stepControl]="firstFormGroup" label="Projekttitel">
       <div class="mat-step-div">

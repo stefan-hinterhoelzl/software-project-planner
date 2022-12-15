@@ -20,7 +20,7 @@
       >folder</mat-icon>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item (click) = "navigate('id')">
         <mat-icon>edit</mat-icon>
         <span>Bearbeiten</span>
       </button>
@@ -33,12 +33,12 @@
         <span>Löschen</span>
       </button>
     </mat-menu>
-    <div matListItemTitle (click) = "navigate('id')">
+    <div matListItemTitle>
       <span
         class="listitem"
         [matTooltipPosition]="'below'"
-        matTooltip="{{ project }}"
-        >{{ project }}</span
+        matTooltip="{{ project.name }}"
+        >{{ project.name }}</span
       >
     </div>
   </mat-list-item>
