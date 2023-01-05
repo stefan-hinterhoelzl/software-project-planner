@@ -15,13 +15,15 @@ import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ProjectViewComponent } from './project-view/project-view/project-view.component';
 
 
 
 @NgModule({
   declarations: [
     ProjectSearchComponent,
-    CreateProjectComponent
+    CreateProjectComponent,
+    ProjectViewComponent
   ],
   imports: [
     CommonModule,

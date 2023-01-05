@@ -46,6 +46,6 @@ export class AppComponent {
   navigate(value: string) {
     if (this.drawer != undefined) this.drawer.close();
 
-    this.router.navigate(['/create-project/' + value]);
+    this.router.navigate([value]);
   }
 }
