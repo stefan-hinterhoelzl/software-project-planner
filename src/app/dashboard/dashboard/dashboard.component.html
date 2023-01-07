@@ -1,9 +1,39 @@
 <div class="main-wrapper">
   <div class="row">
-    <mat-card style="margin-top: 20px">
-      <mat-card-header> Favoriten </mat-card-header>
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Favoriten</mat-card-title>
+      </mat-card-header>
       <mat-card-content>
-        <p>Test</p>
+        <p style = "cursor: pointer;" [routerLink]="['/project-view/'+favourite.uid]" *ngFor="let favourite of favourites">
+          {{favourite.name}}
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Placeholder</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Placeholder</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="row">
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Placeholder</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Placeholder</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Placeholder</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Placeholder</p>
       </mat-card-content>
     </mat-card>
   </div>

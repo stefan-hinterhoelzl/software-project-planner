@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MatCardModule } from '@angular/material/card';
+import { AppRoutingModule } from '../app-routing.module';
 
 
 
@@ -12,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
   imports: [
     CommonModule,
     MatCardModule,
+    AppRoutingModule,
   ]
 })
 export class DashboardModule { }

@@ -5,3 +5,20 @@
   flex-direction: column;
   margin: 0 auto
 }
+
+
+.row {
+ display: flex;
+ flex-direction: row;
+ justify-content: center;
+ width: 100%;
+ margin-top: 20px;
+}
+
+
+.card {
+  width: 35%;
+  min-height: 300px;
+  min-width: 400px;
+  margin: 5px;
+}
