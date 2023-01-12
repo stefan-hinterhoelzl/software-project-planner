@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -21,6 +23,8 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatCardModule,
     MatButtonToggleModule,
+    MatIconModule,
+    HttpClientModule,
 
   ]
 })

@@ -19,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DataService } from './services/data.service';
 import { DialogsModule } from './dialogs/dialogs.module';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 
@@ -47,6 +48,7 @@ const app = initializeApp(environment.firebase)
     MatMenuModule,
     MatTooltipModule,
     ProjectsModule,
+    MatDividerModule,
 
 
   ],

@@ -1,5 +1,7 @@
 import { Component, inject, ViewChild } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { getAuth, User, onAuthStateChanged } from '@firebase/auth';
 import { AuthService } from './services/auth.service';
@@ -21,6 +23,7 @@ export class AppComponent {
   data = inject(DataService);
   router = inject(Router);
   firestore = inject(FirestoreService);
+  user?: User;
 
   constructor() {
     this.authStatusListener();
@@ -31,6 +34,7 @@ export class AppComponent {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
+        this.user = user;
         this.data.setUser(user);
         this.firestore.projectCollector(user.uid);
       } else {

@@ -20,17 +20,26 @@
             [routerLink]="['/dashboard']"
             >{{ data.header | async }}</span
           >
-          <button mat-icon-button [matMenuTriggerFor]="menu">
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="menu"
+            class="avatar-button"
+          >
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
+            <div class = "menu-header">
+              <img src="{{ user?.photoURL }}" class="avatar" />
+              <span class="email">{{ user?.email }}</span>
+            </div>
+            <mat-divider></mat-divider>
             <button mat-menu-item [routerLink]="['/dashboard']">
               <mat-icon>dashboard</mat-icon>
-              <span>Startseite</span>
+              <span>Dashboard</span>
             </button>
             <button mat-menu-item (click)="logout()">
               <mat-icon>logout</mat-icon>
-              <span>Abmelden</span>
+              <span>Logout</span>
             </button>
           </mat-menu>
         </mat-toolbar>
