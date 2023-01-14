@@ -10,12 +10,8 @@ mat-drawer {
 
 .main-content {
     padding-top: 60px;
-    padding-left: 10px;
-    padding-right: 10px;
     width: 100%;
     flex: 1 1 auto;
-
-
 }
 
 .main-wrapper {
@@ -24,9 +20,16 @@ mat-drawer {
     width: 100%;
 }
 
+.project-title {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+
+
 .toolbar {
     position: fixed;
-    justify-content: space-between;
 }
 
 .spacer {

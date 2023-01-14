@@ -16,6 +16,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectViewComponent } from './project-view/project-view/project-view.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { ProjectListViewComponent } from './project-view/project-list-view/project-list-view.component';
+import { ProjectTreeViewComponent } from './project-view/project-tree-view/project-tree-view.component';
+import { ProjectConfigViewComponent } from './project-view/project-config-view/project-config-view.component';
 
 
 
@@ -23,7 +28,10 @@ import { ProjectViewComponent } from './project-view/project-view/project-view.c
   declarations: [
     ProjectSearchComponent,
     CreateProjectComponent,
-    ProjectViewComponent
+    ProjectViewComponent,
+    ProjectListViewComponent,
+    ProjectTreeViewComponent,
+    ProjectConfigViewComponent
   ],
   imports: [
     CommonModule,
@@ -42,6 +50,10 @@ import { ProjectViewComponent } from './project-view/project-view/project-view.c
     MatMenuModule,
     AppRoutingModule,
     MatDialogModule,
+    MatToolbarModule,
+    MatCardModule,
+
+
   ],
   exports: [
     ProjectSearchComponent

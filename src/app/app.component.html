@@ -8,40 +8,41 @@
     <div class="main-wrapper">
       <div>
         <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
-          <button mat-icon-button (click)="drawer.toggle()">
-            <mat-icon>menu</mat-icon>
-          </button>
-
-          <span
-            [matTooltipPosition]="'below'"
-            matTooltip="Zurück zur Startseite"
-            [matTooltipShowDelay]="2000"
-            class="title-span"
-            [routerLink]="['/dashboard']"
-            >{{ data.header | async }}</span
-          >
-          <button
-            mat-icon-button
-            [matMenuTriggerFor]="menu"
-            class="avatar-button"
-          >
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <div class = "menu-header">
-              <img src="{{ user?.photoURL }}" class="avatar" />
-              <span class="email">{{ user?.email }}</span>
+          <mat-toolbar-row>
+            <div class="project-title">
+              <button mat-raised-button (click)="drawer.toggle()">
+                <span>My Projects</span>
+              </button>
+              <button mat-raised-button [routerLink]="['/dashboard']" style = "margin-left: 10px">
+                <span>Dashboard</span>
+              </button>
             </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/dashboard']">
-              <mat-icon>dashboard</mat-icon>
-              <span>Dashboard</span>
+
+            <span class = "spacer"></span>
+
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              class="avatar-button"
+            >
+              <mat-icon>menu</mat-icon>
             </button>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Logout</span>
-            </button>
-          </mat-menu>
+            <mat-menu #menu="matMenu">
+              <div class="menu-header">
+                <img src="{{ user?.photoURL }}" class="avatar" />
+                <span class="email">{{ user?.email }}</span>
+              </div>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [routerLink]="['/dashboard']">
+                <mat-icon>dashboard</mat-icon>
+                <span>Dashboard</span>
+              </button>
+              <button mat-menu-item (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </mat-toolbar-row>
         </mat-toolbar>
       </div>
       <div class="main-content">
