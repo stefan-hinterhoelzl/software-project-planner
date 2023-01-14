@@ -1,10 +1,10 @@
 <div class="project-header">
-  <h2>Meine Projekte</h2>
+  <h2>My Projects</h2>
   <span class="spacer"></span>
   <button
     mat-fab
     color="primary"
-    matTooltip="Neues Projekt erstellen"
+    matTooltip="Create a new project"
     [matTooltipShowDelay]="2000"
     (click)="navigate('create-project')"
   >
@@ -19,7 +19,7 @@
       class="listicon"
       matListItemIcon
       [matTooltipPosition]="'below'"
-      matTooltip="Projektmenü"
+      matTooltip="Project menu"
       [matTooltipShowDelay]="2000"
       >folder</mat-icon
     >
@@ -27,7 +27,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="navigate('create-project/' + project.uid)">
         <mat-icon>edit</mat-icon>
-        <span>Bearbeiten</span>
+        <span>Edit</span>
       </button>
       <button
         *ngIf="!project.favourite"
@@ -35,7 +35,7 @@
         (click)="toggleFavourite(project.uid, true)"
       >
         <mat-icon>favorite</mat-icon>
-        <span>Zu Favoriten hinzufügen</span>
+        <span>Add to favourites</span>
       </button>
       <button
         *ngIf="project.favourite"
@@ -43,11 +43,11 @@
         (click)="toggleFavourite(project.uid, false)"
       >
         <mat-icon>favorite</mat-icon>
-        <span>Von Favoriten entfernen</span>
+        <span>Remove from favourites</span>
       </button>
       <button mat-menu-item (click)="deleteProject(project)">
         <mat-icon>delete</mat-icon>
-        <span>Löschen</span>
+        <span>Delete</span>
       </button>
     </mat-menu>
     <div matListItemTitle>

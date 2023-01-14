@@ -36,12 +36,12 @@ export class ProjectSearchComponent implements OnInit {
     this.firestore
       .toggleProjectFavourite(boolean, projectid)
       .then(() => {
-        if (boolean) this.snackbar.openSnackBar('Projekt zu den Favoriten hinzugefügt.', 'green-snackbar');
-        else this.snackbar.openSnackBar('Projekt von den Favoriten entfernt.', 'green-snackbar');
+        if (boolean) this.snackbar.openSnackBar('Project added to favourites!.', 'green-snackbar');
+        else this.snackbar.openSnackBar('Project removed from favourites', 'green-snackbar');
       })
       .catch((error) => {
         this.snackbar.openSnackBar(
-          'Ein Fehler ist aufgetreten',
+          'An error occured',
           'red-snackbar'
         );
       });
@@ -56,10 +56,10 @@ export class ProjectSearchComponent implements OnInit {
     dialogConfig.minWidth = '30%';
 
     dialogConfig.data = {
-      title: 'Projekt löschen?',
-      content: `Sind Sie sicher, dass Sie das Projekt \"${project.name}\" löschen wollen? Es kann nicht wiederhergestellt werden!`,
-      button1: 'Löschen',
-      button2: 'Abbrechen',
+      title: 'Delete Project?',
+      content: `Are you sure you want to delete the project \"${project.name}\"? It can not be restored.`,
+      button1: 'Delete',
+      button2: 'Cancel',
     };
 
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfig);
@@ -72,11 +72,11 @@ export class ProjectSearchComponent implements OnInit {
           this.firestore
             .deleteProject(project.uid)
             .then(() => {
-              this.snackbar.openSnackBar('Projekt gelöscht.', 'green-snackbar');
+              this.snackbar.openSnackBar('Project deleted.', 'green-snackbar');
             })
             .catch((error) => {
               this.snackbar.openSnackBar(
-                'Löschen des Projekts fehlgeschlagen.',
+                'Project deletion failed.',
                 'red-snackbar'
               );
             });

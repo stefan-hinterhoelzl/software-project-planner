@@ -21,7 +21,7 @@ export class AuthguardService implements CanActivate {
           resolve(true);
         } else {
           this.router.navigate(["/login"]);
-          this.snackbar.openSnackBar("Sie sind nicht eingeloggt!", "red-snackbar")
+          this.snackbar.openSnackBar("You are not logged in!", "red-snackbar")
           resolve(false);
         }
       });

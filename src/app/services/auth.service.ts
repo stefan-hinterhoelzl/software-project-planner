@@ -20,13 +20,13 @@ export class AuthService {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        this.snackBar.openSnackBar('Eingeloggt!', 'green-snackbar');
+        this.snackBar.openSnackBar('Logged in!', 'green-snackbar');
         this.router.navigate(["/dashboard"])
       })
       .catch((error) => {
         const errorCode = error.code;
         this.snackBar.openSnackBar(
-          'Login fehlgeschlagen, versuchen Sie es später erneut!',
+          'Login failed, try again later!',
           'red-snackbar'
         );
       });
@@ -36,13 +36,13 @@ export class AuthService {
   logout() {
     const auth = getAuth();
     signOut(auth).then(() => {
-        this.snackBar.openSnackBar('Ausgeloggt!', 'green-snackbar');
+        this.snackBar.openSnackBar('Logged out!', 'green-snackbar');
         this.router.navigate(["/login"])
     })
     .catch((error) => {
       const errorCode = error.code;
       this.snackBar.openSnackBar(
-        'Logout fehlgeschlagen, versuchen Sie es später erneut!',
+        'Logout failed, try again later!',
         'red-snackbar'
       );
     });

@@ -1,39 +1,39 @@
 <div class="main-wrapper">
-  <h2 *ngIf="!editMode">Neues Projekt anlegen</h2>
-  <h2 *ngIf="editMode">Projekt bearbeiten</h2>
+  <h2 *ngIf="!editMode">Create new project</h2>
+  <h2 *ngIf="editMode">Edit project</h2>
   <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
-    <mat-step [stepControl]="firstFormGroup" label="Projekttitel">
+    <mat-step [stepControl]="firstFormGroup" label="Project title">
       <div class="mat-step-div">
         <form [formGroup]="firstFormGroup">
           <div>
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Titel</mat-label>
+              <mat-label>Title</mat-label>
               <input
                 matInput
-                placeholder="Name des Projekts"
+                placeholder="Name of the project"
                 formControlName="nameCtrl"
                 required
               />
               <mat-error
                 *ngIf="firstFormGroup.controls['nameCtrl'].hasError('required')"
               >
-                Titel ist ein Pflichtfeld
+                Title is mandatory
               </mat-error>
             </mat-form-field>
           </div>
           <br />
-          <button mat-button matStepperNext>Weiter</button>
+          <button mat-button matStepperNext>Next</button>
         </form>
       </div>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup" label="Projektbeschreibung">
+    <mat-step [stepControl]="secondFormGroup" label="Project description">
       <div class="mat-step-div">
         <form [formGroup]="secondFormGroup">
           <div>
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Beschreibung</mat-label>
+              <mat-label>Description</mat-label>
               <textarea
-                placeholder="Beschreiben Sie das Projekt"
+                placeholder="Describe the project"
                 matInput
                 cdkTextareaAutosize
                 formControlName="descrCtrl"
@@ -47,27 +47,27 @@
                   secondFormGroup.controls['descrCtrl'].hasError('required')
                 "
               >
-                Beschreibung ist ein Pflichtfeld
+                Description is mandatory
               </mat-error>
             </mat-form-field>
           </div>
           <br />
-          <button mat-button matStepperNext>Weiter</button>
-          <button mat-button matStepperPrevious>Zurück</button>
+          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperPrevious>Back</button>
         </form>
       </div>
     </mat-step>
 
-    <mat-step label="Gitlab Instanzen">
+    <mat-step label="Gitlab instances">
       <div class="stepper-action">
-        <button mat-button matStepperPrevious>Zurück</button>
-        <button mat-button matStepperNext>Weiter</button>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
       </div>
     </mat-step>
-    <mat-step label="Abschließen">
+    <mat-step label="Complete">
       <div class="stepper-action">
-        <button mat-button matStepperPrevious>Zurück</button>
-        <button mat-button (click)="saveProject()">Speichern</button>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="saveProject()">Save</button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>
