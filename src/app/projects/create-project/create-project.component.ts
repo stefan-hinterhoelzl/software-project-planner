@@ -99,7 +99,7 @@ export class CreateProjectComponent implements OnInit {
       newProject.favourite = false;
 
       this.firestore.addProject(newProject).then(() => {
-        this.snackbar.openSnackBar('Projekt added!', 'green-snackbar');
+        this.snackbar.openSnackBar('Project added!', 'green-snackbar');
         this.router.navigate(['/dashboard']);
       });
     } else {
@@ -109,7 +109,7 @@ export class CreateProjectComponent implements OnInit {
           this.secondFormGroup.get('descrCtrl')?.value!;
 
         this.firestore.updateProject(this.project).then(() => {
-          this.snackbar.openSnackBar('Projekt saved!', 'green-snackbar');
+          this.snackbar.openSnackBar('Project saved!', 'green-snackbar');
           this.router.navigate(['/dashboard']);
         });
       }
