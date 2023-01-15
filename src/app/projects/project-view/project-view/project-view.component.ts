@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, map, Subscription } from 'rxjs';
 import { Project } from 'src/app/models/project';
@@ -13,6 +13,7 @@ export class ProjectViewComponent implements OnInit {
 
   route = inject(ActivatedRoute)
   data = inject(DataService)
+  cd = inject(ChangeDetectorRef)
   routeSubscription?: Subscription
   projectID?: string;
   project?: Project;
@@ -25,7 +26,6 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
-
   initialize() {
     this.data.projects.pipe(map(val => {
       return val.find(val => { return val.uid === this.projectID; });
@@ -36,7 +36,9 @@ export class ProjectViewComponent implements OnInit {
 
     this.data.activeprojectview.subscribe(value => {
       this.activeView = value;
+      this.cd.detectChanges();
     });
+
   }
 
 }

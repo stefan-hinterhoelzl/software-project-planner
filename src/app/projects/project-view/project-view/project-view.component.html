@@ -3,13 +3,13 @@
     <mat-card>
       <span class="project-title-span">{{ project?.name }}</span>
     </mat-card>
-    <button  mat-button class="second-line-button" [routerLink]="['list']">
+    <button [ngClass]="{'active-view': activeView === 'list'}"  mat-button class="second-line-button" [routerLink]="['list']">
       <span>List View</span>
     </button>
     <button [ngClass]="{'active-view': activeView === 'tree'}" mat-button class="second-line-button" [routerLink]="['tree']">
       <span>Tree View</span>
     </button>
-    <button mat-button class="second-line-button" [routerLink]="['config']">
+    <button [ngClass]="{'active-view': activeView === 'config'}" mat-button class="second-line-button" [routerLink]="['config']">
       <span>Configuration</span>
     </button>
   </mat-toolbar-row>
