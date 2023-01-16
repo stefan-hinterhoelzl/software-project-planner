@@ -8,7 +8,6 @@ import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { ProjectsModule } from './projects/projects.module';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -21,6 +20,8 @@ import { DataService } from './services/data.service';
 import { DialogsModule } from './dialogs/dialogs.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
+import { ProjectSearchComponent } from './projects/project-search/project-search.component';
+import { MatListModule } from '@angular/material/list';
 
 
 
@@ -31,7 +32,8 @@ const app = initializeApp(environment.firebase)
 @NgModule({
   declarations: [
     AppComponent,
-    SnackbarComponent
+    SnackbarComponent,
+    ProjectSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,9 +50,9 @@ const app = initializeApp(environment.firebase)
     MatButtonToggleModule,
     MatMenuModule,
     MatTooltipModule,
-    ProjectsModule,
     MatDividerModule,
     MatCardModule,
+    MatListModule,
 
 
   ],

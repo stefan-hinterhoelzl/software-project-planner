@@ -1,7 +1,6 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
 import {
   doc,
-  setDoc,
   deleteDoc,
   updateDoc,
   collection,
