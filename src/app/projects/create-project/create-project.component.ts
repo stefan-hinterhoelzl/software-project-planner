@@ -1,6 +1,5 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
-  ChangeDetectorRef,
   Component,
   inject,
   OnInit,
@@ -9,8 +8,6 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
-  FormGroup,
   Validators,
 } from '@angular/forms';
 import { Subscription, take } from 'rxjs';

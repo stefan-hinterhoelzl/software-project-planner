@@ -9,7 +9,6 @@ import {
   getFirestore,
   query, where, onSnapshot
 } from 'firebase/firestore';
-import { take } from 'rxjs';
 import { Project } from '../models/project';
 import { DataService } from './data.service';
 
