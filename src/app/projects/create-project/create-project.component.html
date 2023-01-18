@@ -1,17 +1,23 @@
 <div class="main-wrapper">
   <h2 *ngIf="!editMode">Create new project</h2>
   <h2 *ngIf="editMode">Edit project</h2>
-  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom">
+  <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom" class = "stepper">
     <mat-step [stepControl]="firstFormGroup" label="Project title">
       <div class="mat-step-div">
         <form [formGroup]="firstFormGroup">
           <div>
-            <mat-form-field appearance="outline" class="form-field">
+            <mat-form-field
+              hintLabel="Max 100 Characters "
+              appearance="outline"
+              class="form-field"
+            >
               <mat-label>Title</mat-label>
               <input
+                #title
                 matInput
                 placeholder="Name of the project"
                 formControlName="nameCtrl"
+                maxlength="100"
                 required
               />
               <mat-error
@@ -19,10 +25,11 @@
               >
                 Title is mandatory
               </mat-error>
+              <mat-hint align="end">{{ title.value.length }}/100</mat-hint>
             </mat-form-field>
           </div>
           <br />
-          <button mat-button matStepperNext>Next</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
         </form>
       </div>
     </mat-step>
@@ -52,22 +59,113 @@
             </mat-form-field>
           </div>
           <br />
-          <button mat-button matStepperNext>Next</button>
-          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperPrevious>
+            Back
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            class="right-button"
+          >
+            Next
+          </button>
         </form>
       </div>
     </mat-step>
 
-    <mat-step label="Gitlab instances">
+    <mat-step label="ALM instances">
       <div class="stepper-action">
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <div class="mat-step-div">
+          <form [formGroup]="thirdFormGroup">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>ALM Remote Project ID</mat-label>
+              <input
+                #remoteID
+                matInput
+                placeholder="ALM Project Remote ID"
+                formControlName="remoteID"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Access Token</mat-label>
+              <input
+                #accessToken
+                matInput
+                [type]="hide ? 'password' : 'text'"
+                placeholder="Access Token"
+                formControlName="accessToken"
+              />
+            </mat-form-field>
+          </form>
+          <button mat-stroked-button (click)="addToALMMap()">
+            Add Remote Project
+          </button>
+          <mat-slide-toggle
+            class="slide-toggle"
+            color="primary"
+            [(ngModel)]="hide"
+            >Hide Access Tokens</mat-slide-toggle
+          >
+        </div>
+
+        <div
+          class="disabled-list"
+          *ngFor="let entry of ALMInstances"
+        >
+          <mat-form-field appearance="outline" class="form-field-disabled">
+            <mat-label>Remote Project ID</mat-label>
+            <input
+              matInput
+              disabled="true"
+              value="{{ entry.remoteID}}"
+            />
+            <mat-icon
+              matSuffix
+              style="cursor: pointer"
+              color="warn"
+              (click)="removeFromALMMap(entry.remoteID)"
+              >delete</mat-icon
+            >
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field-disabled">
+            <mat-label>Access Token</mat-label>
+            <input
+              #accessToken
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              disabled="true"
+              value="{{ entry.accessToken }}"
+            />
+          </mat-form-field>
+        </div>
+        <br />
+        <button mat-raised-button color="primary" matStepperPrevious>
+          Back
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          matStepperNext
+          class="right-button"
+        >
+          Next
+        </button>
       </div>
     </mat-step>
     <mat-step label="Complete">
       <div class="stepper-action">
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button (click)="saveProject()">Save</button>
+        <button mat-raised-button color="primary" matStepperPrevious>
+          Back
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="saveProject()"
+          class="right-button"
+        >
+          Save
+        </button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>

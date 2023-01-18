@@ -6,7 +6,13 @@ export interface Project {
     owner: string,
     createdAt: Timestamp,
     lastModified: Timestamp,
-    gitLabInstances: string[],
+    ALMInstances: RemoteProject[],
     favourite: boolean,
     uid: string,
+}
+
+
+export interface RemoteProject {
+    remoteID: string,
+    accessToken: string,
 }

@@ -37,17 +37,19 @@ export class FirestoreService implements OnDestroy {
       owner: project.owner,
       createdAt: serverTimestamp(),
       lastModified: serverTimestamp(),
-      gitLabInstances: project.gitLabInstances,
+      ALMInstances: project.ALMInstances,
     });
   }
 
   async updateProject(project: Project) {
     const db = getFirestore();
 
+    console.log(project)
+
     return updateDoc(doc(db, "projects", project.uid), {
       name: project.name,
       description: project.description,
-      gitLabInstances: project.gitLabInstances,
+      ALMInstances: project.ALMInstances,
       lastModified: serverTimestamp(),
     });
 

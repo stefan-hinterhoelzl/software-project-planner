@@ -10,10 +10,11 @@
         <mat-toolbar *ngIf="isLoggedIn" color="primary" class="toolbar">
           <mat-toolbar-row>
             <div class="project-title">
-              <button mat-raised-button (click)="drawer.toggle()">
+              <img src="../assets/images/JKU_Logo.png" class = "jku-image" [routerLink]="['/dashboard']">
+              <button mat-stroked-button (click)="drawer.toggle()">
                 <span>My Projects</span>
               </button>
-              <button mat-raised-button [routerLink]="['/dashboard']" style = "margin-left: 10px">
+              <button mat-stroked-button [routerLink]="['/dashboard']" style = "margin-left: 10px">
                 <span>Dashboard</span>
               </button>
             </div>

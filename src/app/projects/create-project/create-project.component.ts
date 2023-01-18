@@ -11,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Subscription, take } from 'rxjs';
-import { Project } from 'src/app/models/project';
+import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { User } from '@firebase/auth';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -46,6 +46,18 @@ export class CreateProjectComponent implements OnInit {
     descrCtrl: ['', Validators.required],
   });
 
+  thirdFormGroup = this.fb.group({
+    remoteID: [''],
+    accessToken: [''],
+  });
+  hide = true;
+
+
+
+
+  ALMInstances: RemoteProject[] = [];
+
+
   constructor() {}
 
   ngOnInit(): void {
@@ -76,6 +88,7 @@ export class CreateProjectComponent implements OnInit {
         this.secondFormGroup
           .get('descrCtrl')
           ?.setValue(this.project.description);
+        this.ALMInstances = this.project.ALMInstances;
       }
     });
   }
@@ -92,7 +105,7 @@ export class CreateProjectComponent implements OnInit {
       newProject.name = this.firstFormGroup.get('nameCtrl')?.value!;
       newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
       newProject.owner = this.loggedUser?.uid!;
-      newProject.gitLabInstances = [];
+      newProject.ALMInstances = this.ALMInstances;
       newProject.favourite = false;
 
       this.firestore.addProject(newProject).then(() => {
@@ -104,6 +117,7 @@ export class CreateProjectComponent implements OnInit {
         this.project.name = this.firstFormGroup.get('nameCtrl')?.value!;
         this.project.description =
           this.secondFormGroup.get('descrCtrl')?.value!;
+        this.project.ALMInstances = this.ALMInstances;
 
         this.firestore.updateProject(this.project).then(() => {
           this.snackbar.openSnackBar('Project saved!', 'green-snackbar');
@@ -111,5 +125,22 @@ export class CreateProjectComponent implements OnInit {
         });
       }
     }
+  }
+
+  addToALMMap() {
+
+    //TODO Checking here if already added
+
+    this.ALMInstances.push({
+      remoteID: this.thirdFormGroup.get('remoteID')?.value!,
+      accessToken: this.thirdFormGroup.get('accessToken')?.value!
+    });
+
+    this.thirdFormGroup.get('remoteID')?.setValue('')
+    this.thirdFormGroup.get('accessToken')?.setValue('')
+  }
+
+  removeFromALMMap(ID: string) {
+    this.ALMInstances = this.ALMInstances.filter(val => { return val.remoteID !== ID})
   }
 }

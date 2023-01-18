@@ -21,6 +21,7 @@ import { ProjectTreeViewComponent } from './project-view/project-tree-view/proje
 import { ProjectConfigViewComponent } from './project-view/project-config-view/project-config-view.component';
 import { ProjectRoutingModule } from './project-routing.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 
@@ -51,7 +52,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatDialogModule,
     MatToolbarModule,
     MatCardModule,
-    MatSidenavModule,
+    MatSlideToggleModule
 
   ],
   exports: [
