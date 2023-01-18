@@ -9,9 +9,15 @@
 }
 
 .main-content {
-  padding-top: 60px;
+  padding-top: 64px;
   width: 100%;
   flex: 1 1 auto;
+}
+
+.main-wrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .toolbar {
@@ -22,4 +28,9 @@
   font-weight: bolder;
   font-size: 0.9rem;
   border: 1px solid;
+}
+
+mat-drawer {
+  padding: 25px;
+  width: 600px;
 }

@@ -20,6 +20,7 @@ import { ProjectListViewComponent } from './project-view/project-list-view/proje
 import { ProjectTreeViewComponent } from './project-view/project-tree-view/project-tree-view.component';
 import { ProjectConfigViewComponent } from './project-view/project-config-view/project-config-view.component';
 import { ProjectRoutingModule } from './project-routing.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 
@@ -50,7 +51,7 @@ import { ProjectRoutingModule } from './project-routing.module';
     MatDialogModule,
     MatToolbarModule,
     MatCardModule,
-
+    MatSidenavModule,
 
   ],
   exports: [
