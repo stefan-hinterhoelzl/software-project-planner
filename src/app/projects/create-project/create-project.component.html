@@ -1,6 +1,5 @@
 <div class="main-wrapper">
-  <h2 *ngIf="!editMode">Create new project</h2>
-  <h2 *ngIf="editMode">Edit project</h2>
+  <h2>Create new project</h2>
   <mat-horizontal-stepper [linear]="true" #stepper labelPosition="bottom" class = "stepper">
     <mat-step [stepControl]="firstFormGroup" label="Project title">
       <div class="mat-step-div">
@@ -140,21 +139,6 @@
           </mat-form-field>
         </div>
         <br />
-        <button mat-raised-button color="primary" matStepperPrevious>
-          Back
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          matStepperNext
-          class="right-button"
-        >
-          Next
-        </button>
-      </div>
-    </mat-step>
-    <mat-step label="Complete">
-      <div class="stepper-action">
         <button mat-raised-button color="primary" matStepperPrevious>
           Back
         </button>

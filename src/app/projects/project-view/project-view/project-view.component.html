@@ -3,6 +3,10 @@
     <mat-card>
       <span class="project-title-span">{{ project?.name }}</span>
     </mat-card>
+    <button [ngClass]="{'active-view': activeView === 'dashboard'}" mat-button class="second-line-button"
+      [routerLink]="['dashboard']">
+      <span>Project Dashboard</span>
+    </button>
     <button [ngClass]="{'active-view': activeView === 'list'}" mat-button class="second-line-button"
       [routerLink]="['list']">
       <span>List View</span>

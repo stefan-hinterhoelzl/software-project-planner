@@ -20,8 +20,9 @@ import { ProjectListViewComponent } from './project-view/project-list-view/proje
 import { ProjectTreeViewComponent } from './project-view/project-tree-view/project-tree-view.component';
 import { ProjectConfigViewComponent } from './project-view/project-config-view/project-config-view.component';
 import { ProjectRoutingModule } from './project-routing.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ProjectDashboardComponent } from './project-view/project-dashboard/project-dashboard.component';
+
 
 
 
@@ -31,7 +32,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     ProjectViewComponent,
     ProjectListViewComponent,
     ProjectTreeViewComponent,
-    ProjectConfigViewComponent
+    ProjectConfigViewComponent,
+    ProjectDashboardComponent,
   ],
   imports: [
     CommonModule,

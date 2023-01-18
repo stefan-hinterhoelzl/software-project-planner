@@ -31,7 +31,7 @@ export class FirestoreService implements OnDestroy {
   async addProject(project: Project) {
     const db = getFirestore();
 
-    const docRef = await addDoc(collection(db, 'projects'), {
+    return await addDoc(collection(db, 'projects'), {
       name: project.name,
       description: project.description,
       owner: project.owner,

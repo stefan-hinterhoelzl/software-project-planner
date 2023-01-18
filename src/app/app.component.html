@@ -34,9 +34,13 @@
                 <span class="email">{{ user?.email }}</span>
               </div>
               <mat-divider></mat-divider>
-              <button mat-menu-item [routerLink]="['/dashboard']">
-                <mat-icon>dashboard</mat-icon>
-                <span>Dashboard</span>
+              <button mat-menu-item>
+                <mat-icon>settings</mat-icon>
+                <span>User Settings</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>book</mat-icon>
+                <span>Docs</span>
               </button>
               <button mat-menu-item (click)="logout()">
                 <mat-icon>logout</mat-icon>
