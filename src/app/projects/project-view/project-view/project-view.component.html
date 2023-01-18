@@ -1,36 +1,24 @@
-<mat-drawer-container>
-  <mat-drawer #drawer [mode]="'over'">
+<mat-toolbar color="primary" class="toolbar">
+  <mat-toolbar-row>
+    <mat-card>
+      <span class="project-title-span">{{ project?.name }}</span>
+    </mat-card>
+    <button [ngClass]="{'active-view': activeView === 'list'}" mat-button class="second-line-button"
+      [routerLink]="['list']">
+      <span>List View</span>
+    </button>
+    <button [ngClass]="{'active-view': activeView === 'tree'}" mat-button class="second-line-button"
+      [routerLink]="['tree']">
+      <span>Tree View</span>
+    </button>
+    <button [ngClass]="{'active-view': activeView === 'config'}" mat-button class="second-line-button"
+      [routerLink]="['config']">
+      <span>Configuration</span>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
 
-  </mat-drawer>
-  <mat-drawer-content>
-    <div class="main-wrapper">
-      <div>
-        <mat-toolbar color="primary" class="toolbar">
-          <mat-toolbar-row>
-            <mat-card>
-              <span class="project-title-span">{{ project?.name }}</span>
-            </mat-card>
-            <button [ngClass]="{'active-view': activeView === 'list'}" mat-button class="second-line-button"
-              [routerLink]="['list']">
-              <span>List View</span>
-            </button>
-            <button [ngClass]="{'active-view': activeView === 'tree'}" mat-button class="second-line-button"
-              [routerLink]="['tree']">
-              <span>Tree View</span>
-            </button>
-            <button [ngClass]="{'active-view': activeView === 'config'}" mat-button class="second-line-button"
-              [routerLink]="['config']">
-              <span>Configuration</span>
-            </button>
-          </mat-toolbar-row>
-        </mat-toolbar>
-      </div>
 
-      <div class="main-content">
-        <button mat-button (click)="drawer.toggle()">toggle</button>
-        <router-outlet> </router-outlet>
-      </div>
-    </div>
-
-  </mat-drawer-content>
-</mat-drawer-container>
+<div class="main-content">
+  <router-outlet> </router-outlet>
+</div>
