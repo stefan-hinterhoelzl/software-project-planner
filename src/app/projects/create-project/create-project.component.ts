@@ -103,7 +103,7 @@ export class CreateProjectComponent implements OnInit {
               });
 
               this.snackbar.openSnackBar(
-                'Remote Project Valid!',
+                'Remote project added!',
                 'green-snackbar'
               );
 
@@ -116,12 +116,12 @@ export class CreateProjectComponent implements OnInit {
 
             if (error.status === 401) {
               this.snackbar.openSnackBar(
-                'Unauthorized to access Project!',
+                'Access token is invalid!',
                 'red-snackbar'
               );
             } else if (error.status === 404) {
               this.snackbar.openSnackBar(
-                'Remote Project ID does not exist!',
+                'Remote project ID does not exist!',
                 'red-snackbar'
               );
             } else {
