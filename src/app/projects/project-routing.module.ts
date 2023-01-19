@@ -21,8 +21,8 @@ const routes: Routes = [
         component: ProjectViewComponent,
         canActivate: [AuthguardService],
         children: [
-            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-            { path: 'dashboard', component: ProjectDashboardComponent },
+            { path: '', redirectTo: 'overview', pathMatch: 'full' },
+            { path: 'overview', component: ProjectDashboardComponent },
             { path: 'tree', component: ProjectTreeViewComponent },
             { path: 'list', component: ProjectListViewComponent },
             { path: 'config', component: ProjectConfigViewComponent },

@@ -22,6 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { ProjectSearchComponent } from './projects/project-search/project-search.component';
 import { MatListModule } from '@angular/material/list';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -39,6 +40,7 @@ const app = initializeApp(environment.firebase)
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatToolbarModule,
     AuthenticationModule,
     DashboardModule,

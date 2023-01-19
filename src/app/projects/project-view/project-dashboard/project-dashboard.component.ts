@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
+import { ALMService } from 'src/app/services/alm.service';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -13,4 +14,8 @@ export class ProjectDashboardComponent {
   }
 
   data = inject(DataService)
+  gitlab = inject(ALMService)
+
+
+
 }

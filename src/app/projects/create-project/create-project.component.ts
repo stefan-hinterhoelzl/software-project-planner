@@ -8,6 +8,7 @@ import { User } from '@firebase/auth';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ALMService } from 'src/app/services/alm.service';
 
 @Component({
   selector: 'app-create-project',
@@ -17,12 +18,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
   data = inject(DataService);
+  alm = inject(ALMService);
   firestore = inject(FirestoreService);
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   route = inject(ActivatedRoute);
-
 
   @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
@@ -42,6 +43,8 @@ export class CreateProjectComponent implements OnInit {
   hide = true;
 
   ALMInstances: RemoteProject[] = [];
+  remoteID?: string;
+  accessToken?: string;
 
   constructor() {}
 
@@ -49,6 +52,15 @@ export class CreateProjectComponent implements OnInit {
     this.data.user.pipe(take(1)).subscribe((value) => {
       this.loggedUser = value;
     });
+
+    this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe(value => {
+      this.remoteID = value!;
+    });
+
+    this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(value => {
+      this.accessToken= value!;
+    });
+
   }
 
   triggerResize() {
@@ -65,25 +77,62 @@ export class CreateProjectComponent implements OnInit {
     newProject.ALMInstances = this.ALMInstances;
     newProject.favourite = false;
 
-    this.firestore.addProject(newProject).then((docRef) => {
-      this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-      this.router.navigate(['/project/view/'+docRef.id]);
-    }).catch( (err)=> {
-      this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
-    });
+    this.firestore
+      .addProject(newProject)
+      .then((docRef) => {
+        this.snackbar.openSnackBar('Project added!', 'green-snackbar');
+        this.router.navigate(['/project/view/' + docRef.id]);
+      })
+      .catch((err) => {
+        this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
+      });
   }
 
   addToALMMap() {
-    //TODO Checking here if already added
+      this.alm
+        .checkForAccessToProject(this.remoteID!, this.accessToken!)
+        .pipe(take(1))
+        .subscribe({
 
-    this.ALMInstances.push({
-      remoteID: this.thirdFormGroup.get('remoteID')?.value!,
-      accessToken: this.thirdFormGroup.get('accessToken')?.value!,
-    });
+          next: (response) => {
 
-    this.thirdFormGroup.get('remoteID')?.setValue('');
-    this.thirdFormGroup.get('accessToken')?.setValue('');
+            if (this.ALMInstances.findIndex(value => {return value.remoteID === this.remoteID}) === -1) {
+              this.ALMInstances.push({
+                accessToken: this.accessToken!,
+                remoteID: this.remoteID!,
+              });
+
+              this.snackbar.openSnackBar(
+                'Remote Project Valid!',
+                'green-snackbar'
+              );
+
+            } else {
+              this.snackbar.openSnackBar('Project already added!', 'red-snackbar');
+            }
+            this.thirdFormGroup.get('remoteID')?.setValue('');
+            this.thirdFormGroup.get('accessToken')?.setValue('');
+          }, error: (error) => {
+
+            if (error.status === 401) {
+              this.snackbar.openSnackBar(
+                'Unauthorized to access Project!',
+                'red-snackbar'
+              );
+            } else if (error.status === 404) {
+              this.snackbar.openSnackBar(
+                'Remote Project ID does not exist!',
+                'red-snackbar'
+              );
+            } else {
+              this.snackbar.openSnackBar('Error!');
+            }
+            this.thirdFormGroup.get('remoteID')?.setValue('');
+            this.thirdFormGroup.get('accessToken')?.setValue('');
+          }});
+
   }
+
 
   removeFromALMMap(ID: string) {
     this.ALMInstances = this.ALMInstances.filter((val) => {
