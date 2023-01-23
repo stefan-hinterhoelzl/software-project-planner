@@ -1,27 +1,42 @@
-<mat-toolbar color="primary" class="toolbar">
+<mat-toolbar color="accent" class="toolbar">
   <mat-toolbar-row>
-    <mat-card>
-      <span class="project-title-span">{{ project?.name }}</span>
-    </mat-card>
-    <button [ngClass]="{'active-view': activeView === 'dashboard'}" mat-button class="second-line-button"
-      [routerLink]="['overview']">
+
+        <h2 class="project-title-span">{{ project?.name }}</h2>
+
+    <button
+      [ngClass]="{ 'active-view': activeView === 'dashboard' }"
+      mat-button
+      class="second-line-button"
+      [routerLink]="['overview']"
+    >
       <span>Overview</span>
     </button>
-    <button [ngClass]="{'active-view': activeView === 'list'}" mat-button class="second-line-button"
-      [routerLink]="['list']">
+    <button
+      [ngClass]="{ 'active-view': activeView === 'list' }"
+      mat-button
+      class="second-line-button"
+      [routerLink]="['list']"
+    >
       <span>List View</span>
     </button>
-    <button [ngClass]="{'active-view': activeView === 'tree'}" mat-button class="second-line-button"
-      [routerLink]="['tree']">
+    <button
+      [ngClass]="{ 'active-view': activeView === 'tree' }"
+      mat-button
+      class="second-line-button"
+      [routerLink]="['tree']"
+    >
       <span>Tree View</span>
     </button>
-    <button [ngClass]="{'active-view': activeView === 'config'}" mat-button class="second-line-button"
-      [routerLink]="['config']">
+    <button
+      [ngClass]="{ 'active-view': activeView === 'config' }"
+      mat-button
+      class="second-line-button"
+      [routerLink]="['config']"
+    >
       <span>Configuration</span>
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
-
 
 <div class="main-content">
   <router-outlet> </router-outlet>

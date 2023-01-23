@@ -1,11 +1,15 @@
 .project-title-span {
   padding: 5px 20px 5px 20px;
-  font-size: 0.9rem;
-
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 1px solid;
+  border-radius: 5px;
 }
 
 .second-line-button {
   margin-left: 20px;
+
 }
 
 .main-content {
@@ -22,6 +26,7 @@
 
 .toolbar {
   position: fixed;
+  border-top: solid 2px;
 }
 
 .active-view {
