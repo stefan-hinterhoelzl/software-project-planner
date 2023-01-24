@@ -13,6 +13,7 @@ export class DataService {
   private _loggedInUser = new ReplaySubject<User>(1)
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeprojectview = new ReplaySubject<string>(1)
+  private _activeViewProject = new ReplaySubject<Project>(1)
 
   constructor() { }
 
@@ -32,6 +33,10 @@ export class DataService {
     this._activeprojectview.next(value);
   }
 
+  setActiveViewProject(value: Project) {
+    this._activeViewProject.next(value);
+  }
+
   get header() {
     return this._header.asObservable();
   }
@@ -46,6 +51,10 @@ export class DataService {
 
   get activeprojectview() {
     return this._activeprojectview.asObservable();
+  }
+
+  get activeviewproject() {
+    return this._activeViewProject.asObservable();
   }
 
 }

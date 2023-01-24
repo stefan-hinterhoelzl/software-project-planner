@@ -18,4 +18,7 @@ export class ALMService {
     return this.http.get(this.BASE_URL+'projects/'+projectID, {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
+  getAllIssuesOfProject(projectID: string, accesstoken: string) {
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues', {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+  }
 }

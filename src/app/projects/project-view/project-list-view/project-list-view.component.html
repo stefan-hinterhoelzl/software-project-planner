@@ -1,5 +1,7 @@
-<p>works</p>
+<button (click)="loadIssues()">Click Me</button>
 
-
+<div *ngFor="let issue of issues">
+  <p>{{issue.id}}</p>
+</div>
 
 

@@ -32,6 +32,7 @@ export class ProjectViewComponent implements OnInit {
     })
     ).subscribe((project) => {
       this.project = project;
+      this.data.setActiveViewProject(project!);
     });
 
     this.data.activeprojectview.subscribe(value => {
