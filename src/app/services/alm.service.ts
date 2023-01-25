@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpParamsOptions } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 @Injectable({
@@ -15,10 +15,17 @@ export class ALMService {
 
 
   checkForAccessToProject(projectID: string, accesstoken: string) {
-    return this.http.get(this.BASE_URL+'projects/'+projectID, {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    return this.http.get(this.BASE_URL+'projects/'+projectID,
+    {headers: accesstoken === undefined ? new HttpHeaders() : new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
   getAllIssuesOfProject(projectID: string, accesstoken: string) {
-    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues', {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues',
+    {headers: accesstoken === undefined ? new HttpHeaders() : new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
+
+
+
+
+
 }

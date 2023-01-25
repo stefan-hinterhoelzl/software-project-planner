@@ -1,7 +1,10 @@
-<button (click)="loadIssues()">Click Me</button>
 
-<div *ngFor="let issue of issues">
-  <p>{{issue.id}}</p>
+<div class = "main-wrapper-two-toolbar">
+
+<button matButton>Update</button>
+<div >
+  <mat-list style = "overflow: auto" *ngFor="let issue of issues">
+    <p>{{ issue.title }} {{ issue.id }}</p>
+  </mat-list>
 </div>
-
-
+</div>

@@ -25,6 +25,7 @@ export class CreateProjectComponent implements OnInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
 
+
   @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
 
@@ -45,6 +46,7 @@ export class CreateProjectComponent implements OnInit {
   ALMInstances: RemoteProject[] = [];
   remoteID?: string;
   accessToken?: string;
+  remoteIDHasError: boolean = false;
 
   constructor() {}
 
@@ -53,14 +55,15 @@ export class CreateProjectComponent implements OnInit {
       this.loggedUser = value;
     });
 
-    this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe(value => {
+    this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe((value) => {
       this.remoteID = value!;
     });
 
-    this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(value => {
-      this.accessToken= value!;
-    });
-
+    this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(
+      (value) => {
+        this.accessToken = value!;
+      }
+    );
   }
 
   triggerResize() {
@@ -76,6 +79,7 @@ export class CreateProjectComponent implements OnInit {
     newProject.owner = this.loggedUser?.uid!;
     newProject.ALMInstances = this.ALMInstances;
     newProject.favourite = false;
+    newProject.selectedIssues = [];
 
     this.firestore
       .addProject(newProject)
@@ -89,16 +93,24 @@ export class CreateProjectComponent implements OnInit {
   }
 
   addToALMMap() {
+    if (this.remoteID === undefined) {
+      console.log("I am here")
+      this.remoteIDHasError = true;
+    } else {
+      this.remoteIDHasError = false;
       this.alm
         .checkForAccessToProject(this.remoteID!, this.accessToken!)
         .pipe(take(1))
         .subscribe({
-
           next: (response) => {
-
-            if (this.ALMInstances.findIndex(value => {return value.remoteID === this.remoteID}) === -1) {
+            if (
+              this.ALMInstances.findIndex((value) => {
+                return value.remoteID === this.remoteID;
+              }) === -1
+            ) {
               this.ALMInstances.push({
-                accessToken: this.accessToken!,
+                accessToken:
+                  this.accessToken === undefined ? '' : this.accessToken,
                 remoteID: this.remoteID!,
               });
 
@@ -106,14 +118,16 @@ export class CreateProjectComponent implements OnInit {
                 'Remote project added!',
                 'green-snackbar'
               );
-
             } else {
-              this.snackbar.openSnackBar('Project already added!', 'red-snackbar');
+              this.snackbar.openSnackBar(
+                'Project already added!',
+                'red-snackbar'
+              );
             }
             this.thirdFormGroup.get('remoteID')?.setValue('');
             this.thirdFormGroup.get('accessToken')?.setValue('');
-          }, error: (error) => {
-
+          },
+          error: (error) => {
             if (error.status === 401) {
               this.snackbar.openSnackBar(
                 'Access token is invalid!',
@@ -129,10 +143,10 @@ export class CreateProjectComponent implements OnInit {
             }
             this.thirdFormGroup.get('remoteID')?.setValue('');
             this.thirdFormGroup.get('accessToken')?.setValue('');
-          }});
-
+          },
+        });
+    }
   }
-
 
   removeFromALMMap(ID: string) {
     this.ALMInstances = this.ALMInstances.filter((val) => {

@@ -54,7 +54,8 @@ import { ProjectDashboardComponent } from './project-view/project-dashboard/proj
     MatDialogModule,
     MatToolbarModule,
     MatCardModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatListModule,
 
   ],
   exports: [
