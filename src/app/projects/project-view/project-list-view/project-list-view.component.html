@@ -1,10 +1,13 @@
+<div class="main-wrapper">
+  <div>
+    <button matButton>Update</button>
+  </div>
 
-<div class = "main-wrapper-two-toolbar">
-
-<button matButton>Update</button>
-<div >
-  <mat-list style = "overflow: auto" *ngFor="let issue of issues">
-    <p>{{ issue.title }} {{ issue.id }}</p>
-  </mat-list>
-</div>
+  <div class = "list-wrapper">
+    <mat-list dense class = "list">
+        <mat-list-item *ngFor="let issue of issues">
+          <p>{{ issue.title }} {{ issue.id }}</p>
+        </mat-list-item>
+    </mat-list>
+  </div>
 </div>

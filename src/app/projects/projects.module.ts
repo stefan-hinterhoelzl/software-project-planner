@@ -22,6 +22,7 @@ import { ProjectConfigViewComponent } from './project-view/project-config-view/p
 import { ProjectRoutingModule } from './project-routing.module';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ProjectDashboardComponent } from './project-view/project-dashboard/project-dashboard.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 
@@ -56,6 +57,7 @@ import { ProjectDashboardComponent } from './project-view/project-dashboard/proj
     MatCardModule,
     MatSlideToggleModule,
     MatListModule,
+    ScrollingModule,
 
   ],
   exports: [

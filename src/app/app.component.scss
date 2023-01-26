@@ -11,6 +11,7 @@ mat-drawer {
 .main-content {
     padding-top: 64px;
     width: 100%;
+    overflow: hidden;
     flex: 1 1 auto;
 }
 
@@ -30,6 +31,7 @@ mat-drawer {
 
 .toolbar {
     position: fixed;
+    z-index: 9999;
 }
 
 .spacer {
