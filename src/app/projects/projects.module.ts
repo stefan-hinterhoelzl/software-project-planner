@@ -23,6 +23,8 @@ import { ProjectRoutingModule } from './project-routing.module';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ProjectDashboardComponent } from './project-view/project-dashboard/project-dashboard.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatSelectModule} from '@angular/material/select';
 
 
 
@@ -47,6 +49,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatStepperModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatButtonToggleModule,
     FormsModule,
@@ -58,6 +61,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatSlideToggleModule,
     MatListModule,
     ScrollingModule,
+    MatProgressSpinnerModule,
+
 
   ],
   exports: [

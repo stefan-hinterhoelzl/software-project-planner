@@ -23,6 +23,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ProjectSearchComponent } from './projects/project-search/project-search.component';
 import { MatListModule } from '@angular/material/list';
 import { HttpClientModule } from '@angular/common/http';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 
@@ -55,6 +56,7 @@ const app = initializeApp(environment.firebase)
     MatDividerModule,
     MatCardModule,
     MatListModule,
+    MatProgressSpinnerModule,
 
 
   ],

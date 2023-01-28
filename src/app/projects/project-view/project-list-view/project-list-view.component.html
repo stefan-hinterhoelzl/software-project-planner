@@ -1,13 +1,40 @@
 <div class="main-wrapper">
-  <div>
-    <button matButton>Update</button>
-  </div>
+  <div class="card-wrapper">
 
-  <div class = "list-wrapper">
-    <mat-list dense class = "list">
-        <mat-list-item *ngFor="let issue of issues">
-          <p>{{ issue.title }} {{ issue.id }}</p>
-        </mat-list-item>
-    </mat-list>
+    <mat-card class="card">
+
+      <div style="padding: 20px">
+        <mat-form-field color="accent">
+          <mat-label>Projects</mat-label>
+          <mat-select [formControl]="projectsControl" multiple>
+            <mat-option *ngFor="let project of projects" [value]="project">{{project}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field color="accent" style="margin-left: 5px;">
+          <mat-label>Labels</mat-label>
+          <mat-select [formControl]="labelsControl" multiple>
+            <mat-option *ngFor="let label of labels" [value]="label">{{label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field color="accent" style="margin-left: 5px;">
+          <mat-label>Title, Description</mat-label>
+          <input #search matInput placeholder="Title, Description includes..." formControlName="search" />
+        </mat-form-field>
+        <div class="button">
+          <button mat-raised-button color="primary">Update Items</button>
+          <button mat-raised-button color="primary">Run Filter</button>
+        </div>
+        <div class="list-wrapper">
+          <mat-spinner *ngIf="this.loading" class="progress-spinner">
+
+          </mat-spinner>
+          <mat-list *ngIf="!this.loading" dense class="list">
+            <mat-list-item *ngFor="let issue of issues">
+              <p>{{ issue.title }} {{ issue.id }}</p>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+    </mat-card>
   </div>
 </div>
