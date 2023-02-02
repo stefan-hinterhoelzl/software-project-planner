@@ -16,16 +16,28 @@ export class ALMService {
 
   checkForAccessToProject(projectID: string, accesstoken: string) {
     return this.http.get(this.BASE_URL+'projects/'+projectID,
-    {headers: accesstoken === undefined ? new HttpHeaders() : new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getAllIssuesOfProject(projectID: string, accesstoken: string) {
-    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues',
-    {headers: accesstoken === undefined ? new HttpHeaders() : new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+  getIssuesPerProject(projectID: string, accesstoken: string, filterstring: string) {
+    console.log(filterstring)
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues'+filterstring,
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+  }
+
+  getProjectPerID(projectID: string, accesstoken: string) {
+    return this.http.get<any>(this.BASE_URL+'projects/'+projectID,
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+  }
+
+  getLabelsPerProject(projectID: string, accesstoken: string) {
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels',
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
 
-
-
+  private createAuthHeader(accesstoken: string) {
+    return new HttpHeaders({'PRIVATE-TOKEN': accesstoken})
+  }
 
 }

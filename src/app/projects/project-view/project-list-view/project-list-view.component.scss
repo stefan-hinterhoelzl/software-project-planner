@@ -12,9 +12,14 @@ mat-form-field {
   width: 300px;
 }
 
+mat-option {
+  font-size: small;
+}
+
 mat-select {
   font-size: small;
 }
+
 
 .card-wrapper {
   display: flex;
@@ -54,6 +59,5 @@ mat-select {
 }
 
 .btn {
-  margin-bottom: 30px;
   float: right;
 }

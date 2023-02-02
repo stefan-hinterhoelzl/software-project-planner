@@ -1,32 +1,43 @@
 <div class="main-wrapper">
   <div class="card-wrapper">
-
     <mat-card class="card">
-
       <div style="padding: 20px">
+        <div [formGroup] = "filterGroup">
         <mat-form-field color="accent">
-          <mat-label>Projects</mat-label>
-          <mat-select [formControl]="projectsControl" multiple>
-            <mat-option *ngFor="let project of projects" [value]="project">{{project}}</mat-option>
+          <mat-label>Remote Projects</mat-label>
+          <mat-select formControlName="projectsControl" [(ngModel)]="selectedProjects" multiple>
+            <mat-option *ngFor="let project of remoteProjects" [value]="project">{{
+              project.name
+            }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field color="accent" style="margin-left: 5px;">
+        <mat-form-field color="accent" style="margin-left: 5px">
           <mat-label>Labels</mat-label>
-          <mat-select [formControl]="labelsControl" multiple>
-            <mat-option *ngFor="let label of labels" [value]="label">{{label}}</mat-option>
+          <mat-select formControlName="labelsControl" [(ngModel)]="selectedLabels" multiple>
+            <mat-option *ngFor="let label of labels" [value]="label">
+              {{ label }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field color="accent" style="margin-left: 5px;">
+        <mat-form-field color="accent" style="margin-left: 5px">
           <mat-label>Title, Description</mat-label>
-          <input #search matInput placeholder="Title, Description includes..." formControlName="search" />
+          <input
+            #search
+            matInput
+            placeholder="Title, Description includes..."
+            formControlName="searchControl"
+          />
         </mat-form-field>
-        <div class="button">
-          <button mat-raised-button color="primary">Update Items</button>
-          <button mat-raised-button color="primary">Run Filter</button>
+        <button class = "btn" mat-raised-button color="accent" (click)="initializeData()">Get Items</button>
+      </div>
+
+        <div>
+          <button mat-raised-button color="accent">Mark All Items</button>
+          <button style = "margin-left: 10px;" mat-raised-button color="accent">Mark Current Filter</button>
+          <button class = "btn" mat-raised-button color="primary">Save Selection</button>
         </div>
+
         <div class="list-wrapper">
           <mat-spinner *ngIf="this.loading" class="progress-spinner">
-
           </mat-spinner>
           <mat-list *ngIf="!this.loading" dense class="list">
             <mat-list-item *ngFor="let issue of issues">
