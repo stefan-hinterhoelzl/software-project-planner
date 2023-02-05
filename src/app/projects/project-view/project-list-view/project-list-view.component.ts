@@ -5,6 +5,8 @@ import { catchError, forkJoin, map, Observable, of, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { ALMService } from 'src/app/services/alm.service';
 import { DataService } from 'src/app/services/data.service';
+import { FirestoreService } from 'src/app/services/firestore.service';
+import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-project-list-view',
@@ -14,11 +16,13 @@ import { DataService } from 'src/app/services/data.service';
 export class ProjectListViewComponent implements OnInit {
   data = inject(DataService);
   alm = inject(ALMService);
+  firestore = inject(FirestoreService);
+  snackbar = inject(SnackbarComponent)
   project?: Project;
   issues?: any[] = [];
   remoteProjects?: any[] = [];
-  selectedIssues?: number[] = [];
-  selectedProjects?: any[] = [];
+  selectedIssues?: string[] = [];
+  selectedProjects?: number[] = [];
   selectedLabels?: string[] = [];
   loading: boolean;
   filterGroup = new FormGroup({
@@ -56,22 +60,31 @@ export class ProjectListViewComponent implements OnInit {
   initializeData() {
     this.loading = true;
     this.issues = [];
+    this.selectedIssues = this.project?.selectedIssues;
 
     let filterstring: string = this.createIssueFilterString();
-    console.log(filterstring)
 
+    
     let projects: RemoteProject[] = [...this.project?.ALMInstances!]
 
-    if (this.selectedProjects?.length != 0) {
-      projects = projects.filter((value, index, array) => {
-        return this.selectedProjects?.indexOf(value.remoteID) !== -1;
+    if (this.selectedProjects?.length !== 0) {
+      projects = projects.filter((project, index, array) => {
+        return (this.selectedProjects?.includes(project.remoteID))
       })
     }
 
-
-
     this.getIssuesForProjects(projects, filterstring).pipe(take(1)).subscribe(issues => {
       this.issues?.push(...issues);
+      
+      this.issues?.forEach((value, index, array) => {
+        let id: string = this.getIssueUniqueId(value)
+        value.uniqueID = id;
+        value.selected = false;
+        if (this.selectedIssues?.includes(id)) {
+          value.selected = true;
+        }
+      })
+      console.log(this.issues)
       this.loading = false;
     });
 
@@ -99,10 +112,35 @@ export class ProjectListViewComponent implements OnInit {
       return forkJoin(labels).pipe(map(labels => labels.flat().map(label => label.body).flat()))
   }
 
+
+  saveSelection() {
+    //How to Handle hierarchy? Probably with flat map
+    this.issues?.forEach((value, index, array) => {
+      let id: string = this.getIssueUniqueId(value)
+      if (!this.selectedIssues?.includes(id)) {
+        this.selectedIssues?.push(id)
+      }
+    });
+
+    this.project!.selectedIssues = this.selectedIssues!
+
+    this.firestore.updateProject(this.project!).then(() => {
+      this.snackbar.openSnackBar("Item selection saved!", "green-snackbar")
+    }).catch(() => {
+      this.snackbar.openSnackBar("Error saving selection, pleaser try again!", "red-snackbar")
+    })
+  }
+
+  markAllItems(bool: boolean) {
+    this.issues?.forEach((value, index, array) => {
+      value.selected = bool;
+    })
+  }
+
   private createIssueFilterString() {
     let filterstring: string = ""
     let searchterm = this.filterGroup.get("searchControl")?.value!
-    if (searchterm !== "") filterstring = filterstring.concat("&search=", searchterm)
+    if (searchterm !== "") filterstring = filterstring.concat("?search=", searchterm)
     if (this.selectedLabels?.length !== 0) {
       if (filterstring.indexOf("?") === -1) filterstring = filterstring.concat("?labels=")
       else filterstring = filterstring.concat("&labels=")
@@ -115,5 +153,11 @@ export class ProjectListViewComponent implements OnInit {
     return filterstring;
 
   }
+
+  private getIssueUniqueId(issue: any) {
+    let s: string = issue.project_id.toString()  +  issue.id.toString()
+    return s
+  }
+
 
 }

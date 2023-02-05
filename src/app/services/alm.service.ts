@@ -14,23 +14,22 @@ export class ALMService {
 
 
 
-  checkForAccessToProject(projectID: string, accesstoken: string) {
+  checkForAccessToProject(projectID: number, accesstoken: string) {
     return this.http.get(this.BASE_URL+'projects/'+projectID,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getIssuesPerProject(projectID: string, accesstoken: string, filterstring: string) {
-    console.log(filterstring)
+  getIssuesPerProject(projectID: number, accesstoken: string, filterstring: string) {
     return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues'+filterstring,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getProjectPerID(projectID: string, accesstoken: string) {
+  getProjectPerID(projectID: number, accesstoken: string) {
     return this.http.get<any>(this.BASE_URL+'projects/'+projectID,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getLabelsPerProject(projectID: string, accesstoken: string) {
+  getLabelsPerProject(projectID: number, accesstoken: string) {
     return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels',
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }

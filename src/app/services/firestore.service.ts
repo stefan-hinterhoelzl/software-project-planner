@@ -50,6 +50,7 @@ export class FirestoreService implements OnDestroy {
       name: project.name,
       description: project.description,
       ALMInstances: project.ALMInstances,
+      selectedIssues: project.selectedIssues,
       lastModified: serverTimestamp(),
     });
 

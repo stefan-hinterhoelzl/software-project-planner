@@ -44,7 +44,7 @@ export class CreateProjectComponent implements OnInit {
   hide = true;
 
   ALMInstances: RemoteProject[] = [];
-  remoteID?: string;
+  remoteID?: number;
   accessToken?: string;
   remoteIDHasError: boolean = false;
 
@@ -56,7 +56,7 @@ export class CreateProjectComponent implements OnInit {
     });
 
     this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe((value) => {
-      this.remoteID = value!;
+      this.remoteID = +value!;
     });
 
     this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(
@@ -148,7 +148,7 @@ export class CreateProjectComponent implements OnInit {
     }
   }
 
-  removeFromALMMap(ID: string) {
+  removeFromALMMap(ID: number) {
     this.ALMInstances = this.ALMInstances.filter((val) => {
       return val.remoteID !== ID;
     });

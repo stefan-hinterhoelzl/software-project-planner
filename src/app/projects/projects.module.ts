@@ -25,6 +25,7 @@ import { ProjectDashboardComponent } from './project-view/project-dashboard/proj
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
@@ -62,7 +63,7 @@ import {MatSelectModule} from '@angular/material/select';
     MatListModule,
     ScrollingModule,
     MatProgressSpinnerModule,
-
+    MatCheckboxModule,
 
   ],
   exports: [

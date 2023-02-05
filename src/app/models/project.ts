@@ -7,13 +7,13 @@ export interface Project {
     createdAt: Timestamp,
     lastModified: Timestamp,
     ALMInstances: RemoteProject[],
-    selectedIssues: number[]
+    selectedIssues: string[]
     favourite: boolean,
     uid: string,
 }
 
 
 export interface RemoteProject {
-    remoteID: string,
+    remoteID: number,
     accessToken: string,
 }

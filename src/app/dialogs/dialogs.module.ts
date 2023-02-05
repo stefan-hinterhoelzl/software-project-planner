@@ -4,11 +4,13 @@ import { AreYouSureDialogComponent } from './are-you-sure-dialog/are-you-sure-di
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { IssueDetailDialogComponent } from './issue-detail-dialog/issue-detail-dialog.component';
 
 
 @NgModule({
   declarations: [
-    AreYouSureDialogComponent
+    AreYouSureDialogComponent,
+    IssueDetailDialogComponent
   ],
   imports: [
     CommonModule,
