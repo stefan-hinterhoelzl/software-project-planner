@@ -29,15 +29,24 @@ mat-select {
   height: 100%;
 }
 
+.title-span {
+  max-width: 90%;
+  overflow: hidden;
+}
+
+mat-list-item {
+  cursor: pointer;
+}
+
 mat-list-item:hover {
-  background: lightgrey;
+  background: grey;
   cursor: pointer;
 }
 
 .card-wrapper {
   display: flex;
   margin: auto auto;
-  width: 60%;
+  width: 90%;
   min-width: 800px;
 }
 
@@ -45,20 +54,26 @@ mat-list-item:hover {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 600px;
+  height: 500px;
   margin-top: 30px;
 }
 
 .progress-spinner {
   width: 100%;
-  height: 600px;
+  height: 500px;
   margin: auto auto;
+}
+
+.info-title {
+  text-align: center;
+  width: 100%;
 }
 
 .list {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  flex: 1;
 }
 
 .item {

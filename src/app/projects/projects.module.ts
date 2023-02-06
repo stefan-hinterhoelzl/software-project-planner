@@ -26,6 +26,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 
@@ -64,6 +65,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     ScrollingModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
+    MatPaginatorModule,
 
   ],
   exports: [

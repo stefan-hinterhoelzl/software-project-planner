@@ -22,22 +22,25 @@ export class ProjectListViewComponent implements OnInit {
   issues?: any[] = [];
   remoteProjects?: any[] = [];
   selectedIssues?: string[] = [];
-  selectedProjects?: number[] = [];
+  selectedProject?: number;
   selectedLabels?: string[] = [];
   loading: boolean;
+  init: boolean;
   filterGroup = new FormGroup({
-    labelsControl: new FormControl(''),
+    labelsControl: new FormControl({value: '', disabled: true}),
     projectsControl: new FormControl(''),
-    searchControl: new FormControl('')
+    searchControl: new FormControl({value: '', disabled: true})
   })
   labels: string[] = []
 
   constructor() {
     this.loading = true;
+    this.init = true;
   }
 
   ngOnInit(): void {
     this.data.setActiveProjectView('list');
+
 
     this.data.activeviewproject.pipe(take(1)).subscribe((project) => {
       this.project = project;
@@ -46,35 +49,35 @@ export class ProjectListViewComponent implements OnInit {
         this.remoteProjects?.push(...projects);
       });
 
-      this.getLabelsForProjects(project.ALMInstances).pipe(take(1)).subscribe(labels => {
-        labels.forEach(label => {
-          if (this.labels.indexOf(label.name) === -1) this.labels.push(label.name)
-        })
-      })
+      this.filterGroup.get("projectsControl")?.valueChanges.subscribe((project_id) => {
+        let p: RemoteProject = this.project?.ALMInstances.find((value, index, array) => value.remoteID.toString() === project_id?.toString())!
 
-      this.initializeData()
+        this.initializeData(p)
+      })
 
      });
   }
 
-  initializeData() {
+  initializeData(project: RemoteProject) {
+    this.init = false;
+    this.labels = [];
+    this.selectedLabels = [];
+    this.getLabelsForProject(project).pipe(take(1)).subscribe(labels => {
+        this.labels.push(...labels!.map(label => label.name))
+        this.filterGroup.get("labelsControl")?.enable();
+        this.filterGroup.get("searchControl")?.enable();
+    })
+
+
     this.loading = true;
     this.issues = [];
     this.selectedIssues = this.project?.selectedIssues;
 
     let filterstring: string = this.createIssueFilterString();
 
-    
-    let projects: RemoteProject[] = [...this.project?.ALMInstances!]
 
-    if (this.selectedProjects?.length !== 0) {
-      projects = projects.filter((project, index, array) => {
-        return (this.selectedProjects?.includes(project.remoteID))
-      })
-    }
-
-    this.getIssuesForProjects(projects, filterstring).pipe(take(1)).subscribe(issues => {
-      this.issues?.push(...issues);
+    this.getIssuesForProject(project, filterstring).pipe(take(1)).subscribe(issues => {
+      this.issues?.push(...issues!);
       
       this.issues?.forEach((value, index, array) => {
         let id: string = this.getIssueUniqueId(value)
@@ -90,11 +93,10 @@ export class ProjectListViewComponent implements OnInit {
 
   }
 
-  getIssuesForProjects(projects: RemoteProject[], filterstring: string) {
-    const issues: Observable<HttpResponse<any[]>>[] = projects.map(project =>
-      this.alm.getIssuesPerProject(project.remoteID, project.accessToken, filterstring));
+  getIssuesForProject(project: RemoteProject, filterstring: string) {
+    const issues: Observable<HttpResponse<any[]>> = this.alm.getIssuesPerProject(project.remoteID, project.accessToken, filterstring);
 
-      return forkJoin(issues).pipe(map(issues => issues.flat().map(issue => issue.body).flat()))
+      return issues.pipe(map(issues => issues.body))
 
   }
 
@@ -105,11 +107,10 @@ export class ProjectListViewComponent implements OnInit {
       return forkJoin(o_projects).pipe(map(project => project.map(project => project.body)))
   }
 
-  getLabelsForProjects(projects: RemoteProject[]) {
-    const labels: Observable<HttpResponse<any[]>>[] = projects.map(project =>
-      this.alm.getLabelsPerProject(project.remoteID, project.accessToken));
+  getLabelsForProject(project: RemoteProject) {
+    const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteID, project.accessToken);
 
-      return forkJoin(labels).pipe(map(labels => labels.flat().map(label => label.body).flat()))
+      return labels.pipe(map(labels => labels.body))
   }
 
 
