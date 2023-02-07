@@ -1,7 +1,7 @@
 <div class="main-wrapper">
   <div class="card-wrapper">
     <mat-card class="card">
-      <div style="padding: 20px">
+      <div class="card-internal-wrapper">
         <div [formGroup]="filterGroup">
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
@@ -11,7 +11,7 @@
                 }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field  color="accent" style="margin-left: 5px">
+          <mat-form-field color="accent" style="margin-left: 5px">
             <mat-label>Labels</mat-label>
             <mat-select formControlName="labelsControl" [(ngModel)]="selectedLabels" multiple>
               <mat-option *ngFor="let label of labels" [value]="label">
@@ -22,59 +22,39 @@
             <mat-label>Title, Description</mat-label>
             <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
-          <button
-          [disabled] = "this.init"
-          [matTooltipPosition]="'below'"
-          matTooltip="Get Items matching current filter"
-          [matTooltipShowDelay]="2000"  class="btn" mat-raised-button color="accent"
-            ><mat-icon>get_app</mat-icon>Get Items</button>
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Get Items matching current filter"
+            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="accent"><mat-icon>get_app</mat-icon>Get
+            Items</button>
         </div>
 
         <div>
-          <button
-          [disabled] = "this.init"  
-          [matTooltipPosition]="'below'"
-          matTooltip="Select all items"
-          [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)"> <mat-icon>select_all</mat-icon> Select
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items"
+            [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
+            <mat-icon>select_all</mat-icon> Select
             All Items</button>
-          <button
-          [disabled] = "this.init"  
-          [matTooltipPosition]="'below'"
-          matTooltip="Unselect all items"
-          [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items"
+            [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
             (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All Items</button>
-          <button
-          [disabled] = "this.init"
-          [matTooltipPosition]="'below'"
-          matTooltip="Save current selection of items"
-          [matTooltipShowDelay]="2000" 
-          class="btn" mat-raised-button color="primary"
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Save current selection of items"
+            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>done_outline</mat-icon> Save Selection</button>
         </div>
 
         <div class="list-wrapper">
-
-          
-            <h2 class = "info-title" *ngIf = "this.init">Select a Remote Project</h2>
-          
+          <h2 class="info-title" *ngIf="this.init">Select a Remote Project</h2>
           <mat-spinner *ngIf="this.loading && !this.init" class="progress-spinner">
           </mat-spinner>
           <mat-list *ngIf="!this.loading && !this.init" dense class="list">
             <mat-list-item *ngFor="let issue of issues">
-              <div class = "list-item">
-                <div class = "title-span"> <span>{{ issue.title }}</span></div>
+              <div class="list-item">
+                <div class="title-span"> <span>{{ issue.title }}</span></div>
                 <div> <mat-checkbox [(ngModel)]="issue.selected"></mat-checkbox></div>
               </div>
             </mat-list-item>
           </mat-list>
-          <mat-paginator  *ngIf="!this.loading"  #paginator
-               aria-label="Select page">
-        </mat-paginator>
+          <mat-paginator *ngIf="!this.loading" #paginator aria-label="Select page">
+          </mat-paginator>
         </div>
-
-        
-
-
       </div>
     </mat-card>
   </div>
