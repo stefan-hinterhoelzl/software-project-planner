@@ -32,6 +32,10 @@ export class ProjectListViewComponent implements OnInit {
   pageSize: number = 20;
   pageSizeOptions = [20, 50, 100];
   length: number = 0;
+  nextPage: string = "";
+  prevPage: string = "";
+  firstPage: string = "";
+  lastPage: string = "";
   showFirstLastButtons: boolean = true;
   filterGroup = new FormGroup({
     labelsControl: new FormControl({value: '', disabled: true}),
@@ -98,6 +102,7 @@ export class ProjectListViewComponent implements OnInit {
 
 
     this.getIssuesForProject(project, optionstring).pipe(take(1)).subscribe(issues => {
+      console.log(issues.headers.get("link"))
 
       let totalItems: string = issues.headers.get("x-total")!;
       if (totalItems === null) {
@@ -182,6 +187,9 @@ export class ProjectListViewComponent implements OnInit {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     console.log(e);
+
+    this.getIssues();
+
   }
 
   setLength(items: number) {
@@ -210,7 +218,7 @@ export class ProjectListViewComponent implements OnInit {
     let paginationString: string = ""
     if (filterstring.indexOf("?") === -1) paginationString = paginationString.concat("?")
     else paginationString = paginationString.concat("&")
-    paginationString = paginationString.concat("page=", this.pageIndex.toString())
+    paginationString = paginationString.concat("page=", (this.pageIndex + 1).toString()) //Angular starts at 0, Gitlab at one
 
     paginationString = paginationString.concat("&per_page=", this.pageSize.toString())
 
