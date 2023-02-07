@@ -23,7 +23,7 @@
             <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Get Items matching current filter"
-            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="accent"><mat-icon>get_app</mat-icon>Get
+            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="accent" (click) = "getIssues()"><mat-icon>get_app</mat-icon>Get
             Items</button>
         </div>
 
@@ -35,9 +35,17 @@
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
             (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All Items</button>
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Save current selection of items"
-            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="primary"
-            (click)="saveSelection()"><mat-icon>done_outline</mat-icon> Save Selection</button>
+          <div class="btn">
+            <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save selection on current page"
+            [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
+            (click)="saveSelection()"><mat-icon>done</mat-icon> Save Page Selection</button>
+            <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save page selections"
+            [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
+            (click)="saveSelection()"><mat-icon>save</mat-icon> Save </button>
+            <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all issues of the project and save"
+            [matTooltipShowDelay]="2000"   mat-raised-button color="primary"
+            (click)="saveSelection()"><mat-icon>done_outline</mat-icon> Select All & Save</button>
+          </div>
         </div>
 
         <div class="list-wrapper">
@@ -49,11 +57,22 @@
               <mat-list-item *ngFor="let issue of issues">
                 <div class="list-item">
                   <div class="title-span"> <span>{{ issue.title }}</span></div>
-                  <div> <mat-checkbox [(ngModel)]="issue.selected"></mat-checkbox></div>
+                  <div> <mat-checkbox (change)="setSelected($event.checked, issue)" [(ngModel)]="issue.selected"></mat-checkbox></div>
                 </div>
               </mat-list-item>
             </mat-list>
-            <mat-paginator *ngIf="!this.loading" #paginator aria-label="Select page">
+            <mat-paginator
+             *ngIf="!this.loading" #paginator
+              color = "accent"
+              aria-label="Select page"
+              (page)="handlePageEvent($event)"
+              [pageSizeOptions]="pageSizeOptions"
+              [showFirstLastButtons] = true
+              [pageIndex]="pageIndex"
+              [pageSize]="pageSize"
+              [showFirstLastButtons]="showFirstLastButtons"
+              [length]="length"
+              >
             </mat-paginator>
           </div>
         </div>

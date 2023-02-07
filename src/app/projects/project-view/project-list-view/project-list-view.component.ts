@@ -1,7 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { catchError, forkJoin, map, Observable, of, take } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
+import { catchError, filter, forkJoin, map, Observable, of, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { ALMService } from 'src/app/services/alm.service';
 import { DataService } from 'src/app/services/data.service';
@@ -19,6 +20,7 @@ export class ProjectListViewComponent implements OnInit {
   firestore = inject(FirestoreService);
   snackbar = inject(SnackbarComponent)
   project?: Project;
+  remoteProject?: RemoteProject;
   issues?: any[] = [];
   remoteProjects?: any[] = [];
   selectedIssues?: string[] = [];
@@ -26,6 +28,11 @@ export class ProjectListViewComponent implements OnInit {
   selectedLabels?: string[] = [];
   loading: boolean;
   init: boolean;
+  pageIndex: number = 0;
+  pageSize: number = 20;
+  pageSizeOptions = [20, 50, 100];
+  length: number = 0;
+  showFirstLastButtons: boolean = true;
   filterGroup = new FormGroup({
     labelsControl: new FormControl({value: '', disabled: true}),
     projectsControl: new FormControl(''),
@@ -51,34 +58,56 @@ export class ProjectListViewComponent implements OnInit {
 
       this.filterGroup.get("projectsControl")?.valueChanges.subscribe((project_id) => {
         let p: RemoteProject = this.project?.ALMInstances.find((value, index, array) => value.remoteID.toString() === project_id?.toString())!
+        this.remoteProject = p
 
-        this.initializeData(p)
+        this.initializeData()
       })
 
      });
   }
 
-  initializeData(project: RemoteProject) {
+  initializeData() {
     this.init = false;
     this.labels = [];
     this.selectedLabels = [];
+    let project: RemoteProject = this.remoteProject!;
     this.getLabelsForProject(project).pipe(take(1)).subscribe(labels => {
         this.labels.push(...labels!.map(label => label.name))
         this.filterGroup.get("labelsControl")?.enable();
         this.filterGroup.get("searchControl")?.enable();
     })
 
+    this.getIssues();
 
+  }
+
+  getIssues() {
     this.loading = true;
     this.issues = [];
-    this.selectedIssues = this.project?.selectedIssues;
+    let project: RemoteProject = this.remoteProject!;
+    console.log(this.project)
+    this.selectedIssues?.push(...this.project?.selectedIssues!);
 
     let filterstring: string = this.createIssueFilterString();
 
+    let paginationString: string = this.createIssuePaginationString(filterstring)
 
-    this.getIssuesForProject(project, filterstring).pipe(take(1)).subscribe(issues => {
-      this.issues?.push(...issues!);
-      
+    let optionstring = filterstring.concat(paginationString)
+
+    console.log(optionstring)
+
+
+    this.getIssuesForProject(project, optionstring).pipe(take(1)).subscribe(issues => {
+
+      let totalItems: string = issues.headers.get("x-total")!;
+      if (totalItems === null) {
+        this.showFirstLastButtons = false
+        this.length = 10000
+      }
+      else this.length = Number(totalItems);
+
+      this.issues?.push(...issues.body!);
+
       this.issues?.forEach((value, index, array) => {
         let id: string = this.getIssueUniqueId(value)
         value.uniqueID = id;
@@ -96,7 +125,7 @@ export class ProjectListViewComponent implements OnInit {
   getIssuesForProject(project: RemoteProject, filterstring: string) {
     const issues: Observable<HttpResponse<any[]>> = this.alm.getIssuesPerProject(project.remoteID, project.accessToken, filterstring);
 
-      return issues.pipe(map(issues => issues.body))
+      return issues
 
   }
 
@@ -138,6 +167,27 @@ export class ProjectListViewComponent implements OnInit {
     })
   }
 
+  setSelected(bool: boolean, issue: any) {
+    let id: string = this.getIssueUniqueId(issue)
+
+    if (bool) {
+      this.selectedIssues?.push(id)
+    } else {
+      let index: number = this.selectedIssues?.indexOf(id)!;
+      if (index != -1) this.selectedIssues?.splice(index, 1)
+    }
+  }
+
+  handlePageEvent(e: PageEvent) {
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    console.log(e);
+  }
+
+  setLength(items: number) {
+    this.length = items;
+  }
+
   private createIssueFilterString() {
     let filterstring: string = ""
     let searchterm = this.filterGroup.get("searchControl")?.value!
@@ -153,6 +203,18 @@ export class ProjectListViewComponent implements OnInit {
 
     return filterstring;
 
+  }
+
+
+  private createIssuePaginationString(filterstring: string) {
+    let paginationString: string = ""
+    if (filterstring.indexOf("?") === -1) paginationString = paginationString.concat("?")
+    else paginationString = paginationString.concat("&")
+    paginationString = paginationString.concat("page=", this.pageIndex.toString())
+
+    paginationString = paginationString.concat("&per_page=", this.pageSize.toString())
+
+    return paginationString
   }
 
   private getIssueUniqueId(issue: any) {
