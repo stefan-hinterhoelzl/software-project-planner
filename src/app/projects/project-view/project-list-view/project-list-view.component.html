@@ -44,16 +44,18 @@
           <h2 class="info-title" *ngIf="this.init">Select a Remote Project</h2>
           <mat-spinner *ngIf="this.loading && !this.init" class="progress-spinner">
           </mat-spinner>
-          <mat-list *ngIf="!this.loading && !this.init" dense class="list">
-            <mat-list-item *ngFor="let issue of issues">
-              <div class="list-item">
-                <div class="title-span"> <span>{{ issue.title }}</span></div>
-                <div> <mat-checkbox [(ngModel)]="issue.selected"></mat-checkbox></div>
-              </div>
-            </mat-list-item>
-          </mat-list>
-          <mat-paginator *ngIf="!this.loading" #paginator aria-label="Select page">
-          </mat-paginator>
+          <div class = "inner-list-wrapper">
+            <mat-list *ngIf="!this.loading && !this.init" dense class="list">
+              <mat-list-item *ngFor="let issue of issues">
+                <div class="list-item">
+                  <div class="title-span"> <span>{{ issue.title }}</span></div>
+                  <div> <mat-checkbox [(ngModel)]="issue.selected"></mat-checkbox></div>
+                </div>
+              </mat-list-item>
+            </mat-list>
+            <mat-paginator *ngIf="!this.loading" #paginator aria-label="Select page">
+            </mat-paginator>
+          </div>
         </div>
       </div>
     </mat-card>
