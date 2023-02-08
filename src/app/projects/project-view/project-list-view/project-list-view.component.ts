@@ -90,6 +90,7 @@ export class ProjectListViewComponent implements OnInit {
     this.issues = [];
     let project: RemoteProject = this.remoteProject!;
     console.log(this.project)
+    console.log(this.selectedIssues)
     this.selectedIssues?.push(...this.project?.selectedIssues!);
 
     let filterstring: string = this.createIssueFilterString();
