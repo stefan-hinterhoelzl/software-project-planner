@@ -22,24 +22,21 @@
             <mat-label>Title, Description</mat-label>
             <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Get Items matching current filter"
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Reload Items"
             [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="accent" (click) = "getIssues()"><mat-icon>get_app</mat-icon>Get
             Items</button>
         </div>
 
         <div>
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items"
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
             <mat-icon>select_all</mat-icon> Select
             All Items</button>
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items"
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
             (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All Items</button>
           <div class="btn">
-            <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save selection on current page"
-            [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
-            (click)="saveSelection()"><mat-icon>done</mat-icon> Save Page Selection</button>
-            <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save page selections"
+            <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save issue selection"
             [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>save</mat-icon> Save </button>
             <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all issues of the project and save"
@@ -49,11 +46,13 @@
         </div>
 
         <div class="list-wrapper">
-          <h2 class="info-title" *ngIf="this.init">Select a Remote Project</h2>
+          <div *ngIf="this.init" class="info-title">
+            <h2>Select a Remote Project</h2>
+          </div>
           <mat-spinner *ngIf="this.loading && !this.init" class="progress-spinner">
           </mat-spinner>
-          <div class = "inner-list-wrapper">
-            <mat-list *ngIf="!this.loading && !this.init" dense class="list">
+          <div *ngIf="!this.loading && !this.init" class = "inner-list-wrapper">
+            <mat-list dense class="list">
               <mat-list-item *ngFor="let issue of issues">
                 <div class="list-item">
                   <div class="title-span"> <span>{{ issue.title }}</span></div>
@@ -62,7 +61,6 @@
               </mat-list-item>
             </mat-list>
             <mat-paginator
-             *ngIf="!this.loading" #paginator
               color = "accent"
               aria-label="Select page"
               (page)="handlePageEvent($event)"

@@ -74,7 +74,15 @@ export class ProjectListViewComponent implements OnInit {
     this.init = false;
     this.labels = [];
     this.selectedLabels = [];
+    this.nextPage = "";
+    this.prevPage = "";
+    this.firstPage = "";
+    this.lastPage = "";
+    this.pageIndex = 0;
+    this.pageSize = 20;
     let project: RemoteProject = this.remoteProject!;
+
+
     this.getLabelsForProject(project).pipe(take(1)).subscribe(labels => {
         this.labels.push(...labels!.map(label => label.name))
         this.filterGroup.get("labelsControl")?.enable();
@@ -178,9 +186,13 @@ export class ProjectListViewComponent implements OnInit {
 
     if (bool) {
       this.selectedIssues?.push(id)
+      issue.selected = bool;
     } else {
       let index: number = this.selectedIssues?.indexOf(id)!;
-      if (index != -1) this.selectedIssues?.splice(index, 1)
+      if (index != -1) {
+        this.selectedIssues?.splice(index, 1)
+        issue.selected = bool;
+      }
     }
   }
 
