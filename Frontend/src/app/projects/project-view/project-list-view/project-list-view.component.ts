@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { catchError, filter, forkJoin, map, Observable, of, take } from 'rxjs';
+import { forkJoin, map, Observable, of, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { ALMService } from 'src/app/services/alm.service';
 import { DataService } from 'src/app/services/data.service';
