@@ -1,8 +1,11 @@
+import { DialogRef } from '@angular/cdk/dialog';
 import { HttpResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { forkJoin, map, Observable, of, take } from 'rxjs';
+import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { ALMService } from 'src/app/services/alm.service';
 import { DataService } from 'src/app/services/data.service';
@@ -19,6 +22,7 @@ export class ProjectListViewComponent implements OnInit {
   alm = inject(ALMService);
   firestore = inject(FirestoreService);
   snackbar = inject(SnackbarComponent)
+  dialog = inject(MatDialog);
   project?: Project;
   remoteProject?: RemoteProject;
   issues?: any[] = [];
@@ -111,8 +115,6 @@ export class ProjectListViewComponent implements OnInit {
 
 
     this.getIssuesForProject(project, optionstring).pipe(take(1)).subscribe(issues => {
-      console.log(issues.headers.get("link"))
-
       let totalItems: string = issues.headers.get("x-total")!;
       if (totalItems === null) {
         this.showFirstLastButtons = false
@@ -121,6 +123,7 @@ export class ProjectListViewComponent implements OnInit {
       else this.length = Number(totalItems);
 
       this.issues?.push(...issues.body!);
+      console.log(this.issues)
 
       this.issues?.forEach((value, index, array) => {
         let id: string = this.getIssueUniqueId(value)
@@ -207,6 +210,16 @@ export class ProjectListViewComponent implements OnInit {
 
   setLength(items: number) {
     this.length = items;
+  }
+
+  openIssueDetailDialog(issue: any) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+      issue: issue,
+    };
+
+    const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);
   }
 
   private createIssueFilterString() {

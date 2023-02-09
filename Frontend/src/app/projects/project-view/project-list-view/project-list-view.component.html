@@ -55,7 +55,7 @@
             <mat-list dense class="list">
               <mat-list-item *ngFor="let issue of issues">
                 <div class="list-item">
-                  <div class="title-span"> <span>{{ issue.title }}</span></div>
+                  <div (click)="openIssueDetailDialog(issue)" class="title-span"> <span>{{ issue.title }}</span></div>
                   <div> <mat-checkbox (change)="setSelected($event.checked, issue)" [(ngModel)]="issue.selected"></mat-checkbox></div>
                 </div>
               </mat-list-item>
