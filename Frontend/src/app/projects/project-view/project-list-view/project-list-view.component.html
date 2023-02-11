@@ -52,14 +52,14 @@
           <mat-spinner *ngIf="this.loading && !this.init" class="progress-spinner">
           </mat-spinner>
           <div *ngIf="!this.loading && !this.init" class = "inner-list-wrapper">
-            <mat-list dense class="list">
-              <mat-list-item *ngFor="let issue of issues">
+            <div dense class="list">
+              <div *ngFor="let issue of issues">
                 <div class="list-item">
                   <div (click)="openIssueDetailDialog(issue)" class="title-span"> <span>{{ issue.title }}</span></div>
-                  <div> <mat-checkbox (change)="setSelected($event.checked, issue)" [(ngModel)]="issue.selected"></mat-checkbox></div>
+                  <div style = "padding-right: 15px"> <mat-checkbox (change)="setSelected($event.checked, issue)" [(ngModel)]="issue.selected"></mat-checkbox></div>
                 </div>
-              </mat-list-item>
-            </mat-list>
+              </div>
+            </div>
             <mat-paginator
               color = "accent"
               aria-label="Select page"
