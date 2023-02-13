@@ -5,18 +5,22 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { IssueDetailDialogComponent } from './issue-detail-dialog/issue-detail-dialog.component';
+import { MarkdownPipe } from '../pipes/markdown.pipe';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @NgModule({
   declarations: [
     AreYouSureDialogComponent,
-    IssueDetailDialogComponent
+    IssueDetailDialogComponent,
+    MarkdownPipe
   ],
   imports: [
     CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatChipsModule,
   ]
 })
 export class DialogsModule { }

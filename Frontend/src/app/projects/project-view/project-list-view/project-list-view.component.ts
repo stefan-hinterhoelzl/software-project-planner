@@ -217,6 +217,8 @@ export class ProjectListViewComponent implements OnInit {
 
     dialogConfig.data = {
       issue: issue,
+      minHeight: '700px',
+      minWidth: '1000px',
     };
 
     const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);

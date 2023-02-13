@@ -38,7 +38,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     ProjectListViewComponent,
     ProjectTreeViewComponent,
     ProjectConfigViewComponent,
-    ProjectDashboardComponent,
+    ProjectDashboardComponent
   ],
   imports: [
     CommonModule,

@@ -8,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class IssueDetailDialogComponent {
 
-  issue: any
+  public issue: any
 
   dialogRef = inject(MatDialogRef<IssueDetailDialogComponent>)
 

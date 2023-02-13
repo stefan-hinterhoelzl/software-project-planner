@@ -27,6 +27,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 
+
 //initialize Firebase
 
 const app = initializeApp(environment.firebase)
@@ -36,6 +37,7 @@ const app = initializeApp(environment.firebase)
     AppComponent,
     SnackbarComponent,
     ProjectSearchComponent,
+
   ],
   imports: [
     BrowserModule,

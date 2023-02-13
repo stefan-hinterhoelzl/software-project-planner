@@ -1,6 +1,16 @@
-<h2 mat-dialog-title style = "width: 1000px;"> {{issue.title}} </h2>
+<h1 mat-dialog-title> {{issue.title}} </h1>
 
 <mat-dialog-content class="mat-typography">
+  <mat-chip-set>
+    <mat-chip selected color="primary"> {{issue.issue_type}} </mat-chip>
+    <mat-chip selected color="primary"> {{issue.state}} </mat-chip>
+  </mat-chip-set>
+
+  <p> {{issue.created_at | date:'short'}} </p>
+
+
+  <p [innerHTML]="issue.description | markdown"></p>
+
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
