@@ -1,18 +1,15 @@
-<h1 mat-dialog-title> {{issue.title}} </h1>
+<h1 cdkFocusRegionStart mat-dialog-title>{{ issue.title }}</h1>
 
 <mat-dialog-content class="mat-typography">
-  <mat-chip-set>
-    <mat-chip selected color="primary"> {{issue.issue_type}} </mat-chip>
-    <mat-chip selected color="primary"> {{issue.state}} </mat-chip>
-  </mat-chip-set>
 
-  <p> {{issue.created_at | date:'short'}} </p>
+  <button mat-flat-button color="primary" [autofocus]="false"> {{ issue.issue_type }} </button>
+  <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ issue.state }} </button>
 
+
+  <p>{{ issue.created_at | date : "short" }}</p>
 
   <p [innerHTML]="issue.description | markdown"></p>
-
-
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Close</button>
+  <button color="primary" mat-raised-button mat-dialog-close>Close</button>
 </mat-dialog-actions>
