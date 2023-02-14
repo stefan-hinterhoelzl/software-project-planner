@@ -255,7 +255,6 @@ export class ProjectListViewComponent implements OnInit {
   openIssueDetailDialog(issue: any) {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.minHeight = '700px';
     dialogConfig.minWidth = '1000px';
 
 

@@ -8,7 +8,8 @@ export class ALMService {
 
   private http = inject(HttpClient)
 
-  BASE_URL = 'https://gitlab.com/api/v4/'
+  //BASE_URL = 'https://gitlab.com/api/v4/'
+  BASE_URL = 'https://sourcery.im.jku.at/api/v4/'
 
   constructor() { }
 
