@@ -30,6 +30,7 @@ export class ProjectListViewComponent implements OnInit {
   selectedIssues?: string[] = [];
   selectedProject?: number;
   selectedLabels?: string[] = [];
+  selectedState: string = "";
   loading: boolean;
   init: boolean;
   pageIndex: number = 0;
@@ -40,9 +41,11 @@ export class ProjectListViewComponent implements OnInit {
   prevPage: string = "";
   firstPage: string = "";
   lastPage: string = "";
+  totalPagesGitlab: number = 0;
   showFirstLastButtons: boolean = true;
   filterGroup = new FormGroup({
     labelsControl: new FormControl({value: '', disabled: true}),
+    stateControl: new FormControl({value: '', disabled: true}),
     projectsControl: new FormControl(''),
     searchControl: new FormControl({value: '', disabled: true})
   })
@@ -78,6 +81,8 @@ export class ProjectListViewComponent implements OnInit {
     this.init = false;
     this.labels = [];
     this.selectedLabels = [];
+    this.selectedState = ""
+    this.filterGroup.get("searchControl")?.setValue("");
     this.nextPage = "";
     this.prevPage = "";
     this.firstPage = "";
@@ -87,11 +92,7 @@ export class ProjectListViewComponent implements OnInit {
     let project: RemoteProject = this.remoteProject!;
 
 
-    this.getLabelsForProject(project).pipe(take(1)).subscribe(labels => {
-        this.labels.push(...labels!.map(label => label.name))
-        this.filterGroup.get("labelsControl")?.enable();
-        this.filterGroup.get("searchControl")?.enable();
-    })
+    this.aggregateLabelsForProject(project)
 
     this.getIssues();
 
@@ -153,10 +154,49 @@ export class ProjectListViewComponent implements OnInit {
       return forkJoin(o_projects).pipe(map(project => project.map(project => project.body)))
   }
 
-  getLabelsForProject(project: RemoteProject) {
-    const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteID, project.accessToken);
 
-      return labels.pipe(map(labels => labels.body))
+  aggregateLabelsForProject(project: RemoteProject) {
+    let requests: string[] = []
+    let totalPages: number = 0;
+    let currentPage: number = 2;
+
+    this.getLabelsForProject(project, "?per_page=100").pipe(take(1)).subscribe(res => {
+      totalPages = Number(res.headers.get('x-total-pages'))
+      this.labels.push(...res.body!.map(label => label.name));
+      console.log(totalPages)
+
+      while (currentPage<=totalPages) {
+        requests.push("?per_page=100&page="+currentPage)
+        currentPage++
+        console.log(requests)
+      }
+
+      if (requests.length !== 0) {
+        const o_labels = requests.map((value, index, array) => {
+          return this.getLabelsForProject(project, value)
+        })
+
+       forkJoin(o_labels).pipe(map(labels => labels.flat().map(label => label.body).flat())).subscribe(labels => {
+        console.log(labels.map(label=> label.name))
+        this.labels.push(...labels!.map(label => label.name))
+        this.filterGroup.get("labelsControl")?.enable();
+        this.filterGroup.get("searchControl")?.enable();
+        this.filterGroup.get("stateControl")?.enable();
+        })
+      } else {
+        this.filterGroup.get("labelsControl")?.enable();
+        this.filterGroup.get("searchControl")?.enable();
+        this.filterGroup.get("stateControl")?.enable();
+      }
+    })
+
+  }
+
+  getLabelsForProject(project: RemoteProject, paginationString: string) {
+    const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteID, project.accessToken, paginationString);
+
+      return labels
+      //return labels.pipe(map(labels => labels.body))
   }
 
 
@@ -180,7 +220,7 @@ export class ProjectListViewComponent implements OnInit {
 
   markAllItems(bool: boolean) {
     this.issues?.forEach((value, index, array) => {
-      value.selected = bool;
+      this.setSelected(bool, value)
     })
   }
 
@@ -215,13 +255,19 @@ export class ProjectListViewComponent implements OnInit {
   openIssueDetailDialog(issue: any) {
     const dialogConfig = new MatDialogConfig();
 
+    dialogConfig.minHeight = '700px';
+    dialogConfig.minWidth = '1000px';
+
+
     dialogConfig.data = {
       issue: issue,
-      minHeight: '700px',
-      minWidth: '1000px',
     };
 
     const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);
+  }
+
+  selectAllAndSave() {
+    //TODO
   }
 
   private createIssueFilterString() {
@@ -235,6 +281,12 @@ export class ProjectListViewComponent implements OnInit {
         filterstring = filterstring.concat(value,",")
       });
       filterstring = filterstring.substring(0, filterstring.length - 1);
+    }
+    if (this.selectedState !== "") {
+      if (filterstring.indexOf("?") === -1) filterstring = filterstring.concat("?state=")
+      else filterstring = filterstring.concat("&state=")
+
+      filterstring = filterstring.concat(this.selectedState);
     }
 
     return filterstring;

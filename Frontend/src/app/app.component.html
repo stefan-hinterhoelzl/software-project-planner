@@ -1,4 +1,4 @@
-<mat-drawer-container [hasBackdrop]="true" fullscreen>
+<mat-drawer-container cdkFocusRegionStart [hasBackdrop]="true" fullscreen>
   <mat-drawer #drawer [mode]="'over'">
     <app-project-search
       (navigationEvent)="navigate($event)"

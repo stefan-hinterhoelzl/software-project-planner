@@ -19,6 +19,13 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field color="accent" style="margin-left: 5px">
+            <mat-label>State</mat-label>
+            <mat-select formControlName="stateControl" [(ngModel)]="selectedState">
+              <mat-option value = "opened">Opened</mat-option>
+              <mat-option value = "closed">Closed</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field color="accent" style="margin-left: 5px">
             <mat-label>Title, Description</mat-label>
             <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
@@ -39,7 +46,7 @@
             <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save issue selection"
             [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>save</mat-icon> Save </button>
-            <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all issues of the project and save"
+            <button [disabled]="this.init || !this.showFirstLastButtons" [matTooltipPosition]="'below'" matTooltip="Select all issues of the project and save"
             [matTooltipShowDelay]="2000"   mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>done_outline</mat-icon> Select All & Save</button>
           </div>

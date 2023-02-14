@@ -29,8 +29,8 @@ export class ALMService {
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getLabelsPerProject(projectID: number, accesstoken: string) {
-    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels',
+  getLabelsPerProject(projectID: number, accesstoken: string, paginationstring: string) {
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels'+paginationstring,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 

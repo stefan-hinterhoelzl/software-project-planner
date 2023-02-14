@@ -3,7 +3,7 @@
     <mat-toolbar-row>
       <h2 class="project-title-span">{{ project?.name }}</h2>
 
-      <button
+      <button cdkFocusRegionStart
         [ngClass]="{ 'active-view': activeView === 'dashboard' }"
         mat-button
         class="second-line-button"
