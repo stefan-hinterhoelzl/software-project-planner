@@ -43,12 +43,22 @@ mat-select {
 
 }
 
+.filter-group {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+
+
+
 .card-wrapper {
   display: flex;
   margin: auto auto;
   width: 90%;
   max-width: 1900px;
-  min-width: 800px;
+  min-width: 1500px;
   height: 90%;
 }
 

@@ -6,10 +6,11 @@
   <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ issue.state }} </button>
 
 
-  <p>{{ issue.created_at | date : "short" }}</p>
+  <p>Issue last modified at: {{ issue.updated_at | date : "short" }}</p>
 
   <p [innerHTML]="issue.description | markdown"></p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
+  <button color="primary" mat-raised-button (click) = "close(true)">Select & Close</button>
   <button color="primary" mat-raised-button mat-dialog-close>Close</button>
 </mat-dialog-actions>

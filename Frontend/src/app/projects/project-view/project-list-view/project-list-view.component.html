@@ -2,46 +2,56 @@
   <div class="card-wrapper">
     <mat-card class="card">
       <div class="card-internal-wrapper">
-        <div [formGroup]="filterGroup">
+        <div [formGroup]="filterGroup" class = "filter-group">
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
-            <mat-select formControlName="projectsControl" [(ngModel)]="selectedProject">
+            <mat-select formControlName="projectsControl">
               <mat-option *ngFor="let project of remoteProjects" [value]="project.id">{{
                 project.name
                 }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field color="accent" style="margin-left: 5px">
+          <mat-form-field color="accent">
             <mat-label>Labels</mat-label>
-            <mat-select formControlName="labelsControl" [(ngModel)]="selectedLabels" multiple>
+            <mat-select formControlName="labelsControl" multiple>
               <mat-option *ngFor="let label of labels" [value]="label">
                 {{ label }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field color="accent" style="margin-left: 5px">
+          <mat-form-field color="accent">
             <mat-label>State</mat-label>
-            <mat-select formControlName="stateControl" [(ngModel)]="selectedState">
+            <mat-select formControlName="stateControl">
               <mat-option value = "opened">Opened</mat-option>
               <mat-option value = "closed">Closed</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field color="accent" style="margin-left: 5px">
+          <mat-form-field color="accent">
+            <mat-label>Created or Updated within</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input formControlName="startDateControl" matStartDate placeholder="Start date">
+              <input formControlName="endDateControl" matEndDate placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+          <mat-form-field color="accent">
             <mat-label>Title, Description</mat-label>
             <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
+          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Clear Filters"
+            [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) = "clearFilters()"><mat-icon>highlight_off</mat-icon></button>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Reload Items"
-            [matTooltipShowDelay]="2000" class="btn" mat-raised-button color="accent" (click) = "getIssues()"><mat-icon>get_app</mat-icon>Get
-            Items</button>
+            [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) = "getIssues()"><mat-icon>get_app</mat-icon></button>
         </div>
 
         <div>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
             <mat-icon>select_all</mat-icon> Select
-            All Items</button>
+            All on Page</button>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
-            (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All Items</button>
+            (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All on Page</button>
           <div class="btn">
             <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save issue selection"
             [matTooltipShowDelay]="2000"  mat-raised-button color="primary"

@@ -16,8 +16,8 @@ export class IssueDetailDialogComponent {
     this.issue = data.issue;
   }
 
-  close() {
-    this.dialogRef.close();
+  close(bool: boolean) {
+    this.dialogRef.close(bool);
   }
 
 }

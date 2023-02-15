@@ -28,9 +28,6 @@ export class ProjectListViewComponent implements OnInit {
   issues?: any[] = [];
   remoteProjects?: any[] = [];
   selectedIssues?: string[] = [];
-  selectedProject?: number;
-  selectedLabels?: string[] = [];
-  selectedState: string = "";
   loading: boolean;
   init: boolean;
   pageIndex: number = 0;
@@ -44,10 +41,12 @@ export class ProjectListViewComponent implements OnInit {
   totalPagesGitlab: number = 0;
   showFirstLastButtons: boolean = true;
   filterGroup = new FormGroup({
-    labelsControl: new FormControl({value: '', disabled: true}),
+    labelsControl: new FormControl({value: [], disabled: true}),
     stateControl: new FormControl({value: '', disabled: true}),
     projectsControl: new FormControl(''),
-    searchControl: new FormControl({value: '', disabled: true})
+    searchControl: new FormControl({value: '', disabled: true}),
+    startDateControl: new FormControl({value: '', disabled: true}),
+    endDateControl: new FormControl({value: '', disabled: true})
   })
   labels: string[] = []
 
@@ -80,8 +79,8 @@ export class ProjectListViewComponent implements OnInit {
   initializeData() {
     this.init = false;
     this.labels = [];
-    this.selectedLabels = [];
-    this.selectedState = ""
+    this.filterGroup.get("labelsControl")?.setValue([]);
+    this.filterGroup.get("stateControl")?.setValue("");
     this.filterGroup.get("searchControl")?.setValue("");
     this.nextPage = "";
     this.prevPage = "";
@@ -117,6 +116,7 @@ export class ProjectListViewComponent implements OnInit {
 
     this.getIssuesForProject(project, optionstring).pipe(take(1)).subscribe(issues => {
       let totalItems: string = issues.headers.get("x-total")!;
+      this.totalPagesGitlab  = Number(issues.headers.get("x-total-pages"))
       if (totalItems === null) {
         this.showFirstLastButtons = false
         this.length = 10000
@@ -182,11 +182,15 @@ export class ProjectListViewComponent implements OnInit {
         this.filterGroup.get("labelsControl")?.enable();
         this.filterGroup.get("searchControl")?.enable();
         this.filterGroup.get("stateControl")?.enable();
+        this.filterGroup.get("startDateControl")?.enable();
+        this.filterGroup.get("endDateControl")?.enable();
         })
       } else {
         this.filterGroup.get("labelsControl")?.enable();
         this.filterGroup.get("searchControl")?.enable();
         this.filterGroup.get("stateControl")?.enable();
+        this.filterGroup.get("startDateControl")?.enable();
+        this.filterGroup.get("endDateControl")?.enable();
       }
     })
 
@@ -263,29 +267,76 @@ export class ProjectListViewComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.setSelected(true, issue)
+      }
+    })
   }
 
   selectAllAndSave() {
-    //TODO
+    let filterstring: string = this.createIssueFilterString();
+    let currentPage: number = 2;
+    let requests: string[] = [];
+
+    while (currentPage<this.totalPagesGitlab) {
+
+
+
+
+
+      currentPage++
+    }
+
+
+
+
+
+  }
+
+  clearFilters() {
+    this.filterGroup.get("labelsControl")?.setValue([]);
+    this.filterGroup.get("stateControl")?.setValue("");
+    this.filterGroup.get("searchControl")?.setValue("");
+    this.filterGroup.get("startDateControl")?.setValue("");
+    this.filterGroup.get("endDateControl")?.setValue("");
   }
 
   private createIssueFilterString() {
     let filterstring: string = ""
     let searchterm = this.filterGroup.get("searchControl")?.value!
+    let selectedLabels = this.filterGroup.get("labelsControl")?.value!
+    let selectedState = this.filterGroup.get("stateControl")?.value!
+    let selectedStartDate: string = this.filterGroup.get("startDateControl")?.value!
+    let selectedEndDate: string = this.filterGroup.get("startDateControl")?.value!
+
     if (searchterm !== "") filterstring = filterstring.concat("?search=", searchterm)
-    if (this.selectedLabels?.length !== 0) {
+    if (selectedLabels?.length !== 0) {
       if (filterstring.indexOf("?") === -1) filterstring = filterstring.concat("?labels=")
       else filterstring = filterstring.concat("&labels=")
-      this.selectedLabels?.forEach(value => {
+      selectedLabels?.forEach(value => {
         filterstring = filterstring.concat(value,",")
       });
       filterstring = filterstring.substring(0, filterstring.length - 1);
     }
-    if (this.selectedState !== "") {
+    if (selectedState !== "") {
       if (filterstring.indexOf("?") === -1) filterstring = filterstring.concat("?state=")
       else filterstring = filterstring.concat("&state=")
 
-      filterstring = filterstring.concat(this.selectedState);
+      filterstring = filterstring.concat(selectedState);
+    }
+
+    if (selectedEndDate !== "" && selectedStartDate !== "") {
+      let startDate: string = new Date(selectedStartDate).toISOString()
+      let endDate: string = new Date(selectedEndDate).toISOString()
+
+      if (filterstring.indexOf("?") === -1) filterstring = filterstring.concat("?updated_after=")
+      else filterstring = filterstring.concat("&updated_after=")
+
+      filterstring = filterstring.concat(startDate)
+      filterstring = filterstring.concat("&update_before"+endDate)
+
     }
 
     return filterstring;
