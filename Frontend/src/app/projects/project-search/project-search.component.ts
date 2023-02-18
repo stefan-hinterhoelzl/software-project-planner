@@ -57,7 +57,7 @@ export class ProjectSearchComponent implements OnInit {
 
     dialogConfig.data = {
       title: 'Delete Project?',
-      content: `Are you sure you want to delete the project \"${project.name}\"? It can not be restored.`,
+      content: `Are you sure you want to delete the project \"${project.title}\"? It can not be restored.`,
       button1: 'Delete',
       button2: 'Cancel',
     };

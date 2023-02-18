@@ -74,7 +74,7 @@ export class CreateProjectComponent implements OnInit {
 
   saveProject() {
     const newProject = {} as Project;
-    newProject.name = this.firstFormGroup.get('nameCtrl')?.value!;
+    newProject.title = this.firstFormGroup.get('nameCtrl')?.value!;
     newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
     newProject.owner = this.loggedUser?.uid!;
     newProject.ALMInstances = this.ALMInstances;

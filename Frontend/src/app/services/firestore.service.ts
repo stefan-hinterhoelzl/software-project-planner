@@ -32,7 +32,7 @@ export class FirestoreService implements OnDestroy {
     const db = getFirestore();
 
     return await addDoc(collection(db, 'projects'), {
-      name: project.name,
+      name: project.title,
       description: project.description,
       owner: project.owner,
       createdAt: serverTimestamp(),
@@ -48,7 +48,7 @@ export class FirestoreService implements OnDestroy {
     console.log(project)
 
     return updateDoc(doc(db, "projects", project.uid), {
-      name: project.name,
+      name: project.title,
       description: project.description,
       ALMInstances: project.ALMInstances,
       selectedIssues: project.selectedIssues,

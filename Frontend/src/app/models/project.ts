@@ -1,7 +1,7 @@
 import { Timestamp } from "@firebase/firestore";
 
 export interface Project {
-    name: string,
+    title: string,
     description: string,
     owner: string,
     createdAt: Timestamp,

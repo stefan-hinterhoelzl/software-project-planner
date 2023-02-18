@@ -36,9 +36,10 @@
       <div class="mat-step-div">
         <form [formGroup]="secondFormGroup">
           <div>
-            <mat-form-field appearance="outline" class="form-field">
+            <mat-form-field appearance="outline" class="form-field" hintLabel="Max 2000 Characters">
               <mat-label>Description</mat-label>
               <textarea
+                #descr
                 placeholder="Describe the project"
                 matInput
                 cdkTextareaAutosize
@@ -46,6 +47,7 @@
                 #autosize="cdkTextareaAutosize"
                 cdkAutosizeMinRows="3"
                 cdkAutosizeMaxRows="7"
+                maxlength="2000"
                 required
               ></textarea>
               <mat-error
@@ -55,6 +57,7 @@
               >
                 Description is mandatory
               </mat-error>
+              <mat-hint align="end">{{ descr.value.length }}/2000</mat-hint>
             </mat-form-field>
           </div>
           <br />
