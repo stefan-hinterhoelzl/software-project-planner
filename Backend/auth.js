@@ -1,4 +1,4 @@
-import { verifyIdToken} from 'firebase-admin'
+import verifyIdToken from 'firebase-admin'
 
 
 const authenticateJWT = async (req, res, next) => {

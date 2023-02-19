@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase-admin';
+import { initializeApp, credential } from 'firebase-admin';
 import * as dotenv from 'dotenv'
 import express from 'express'
 
@@ -6,13 +6,13 @@ import express from 'express'
 
 dotenv.config()
 
-initializeApp({
-    credential: admin.credential.cert({
-        private_key: 
-            process.env.FIREBASE_API_KEY,
+const firebase_app = initializeApp({
+    credential: credential.cert({
+        private_key: process.env.FIREBASE_API_KEY,
         projectId: process.env.FIREBASE_PROJECT_ID
     }),
 });
+
 
 
 
