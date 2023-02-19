@@ -29,8 +29,15 @@ export class AppComponent {
     this.authStatusListener();
   }
 
-  authStatusListener() {
+  async getToken() {
     const auth = getAuth();
+    let token: string = await auth.currentUser?.getIdToken(true)!
+    console.log(token)
+  }
+
+  async authStatusListener() {
+    const auth = getAuth();
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;

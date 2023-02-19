@@ -3,15 +3,28 @@
   "version": "1.0.0",
   "description": "Backend for Software Project Planner",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "npx nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/mysql2": "github:types/mysql2",
+    "@types/node": "^18.14.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "firebase-admin": "^11.5.0"
+    "firebase-admin": "^11.5.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.1.2",
+    "typescript": "^4.9.5",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/morgan": "^1.9.4",
+    "nodemon": "^2.0.20",
+    "rimraf": "^4.1.2",
+    "ts-node": "^10.9.1"
   }
 }
