@@ -1,12 +1,21 @@
+Create Table Users (
+    userId varchar(100) NOT NULL,
+    email varchar(100),
+    firstname varchar(100),
+    lastname varchar(100),
+    Primary Key (userId)
+);
+
 Create Table Projects (
 	projectId 		int NOT NULL AUTO_INCREMENT,
     title 			varchar(100),
     description 	varchar(2000),
-    owner			varchar(50),
+    owner			varchar(100),
     createdAt 		datetime,
     lastmodified	datetime,
     favourite		boolean,
-    Primary Key (ProjectID)
+    Primary Key (ProjectID),
+    Foreign Key (owner) References Users (userId) ON DELETE CASCADE
 );
 
 Create Table RemoteProjects (

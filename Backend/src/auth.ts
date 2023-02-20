@@ -1,8 +1,9 @@
 import { getAuth }from 'firebase-admin/auth'
+import { Request, Response } from 'express';
 import { firebase_app } from './server'
 import { logger } from './server'
 
-export const authenticateJWT = async (req: any, res: any, next: any) => {
+export const authenticateJWT = async (req: Request, res: Response, next: any) => {
     const auth = getAuth(firebase_app)
     const authHeader = req.headers.authorization;
   

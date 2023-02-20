@@ -1,7 +1,7 @@
 import { initializeApp, cert } from 'firebase-admin/app';
-import * as dotenv from 'dotenv'
-import * as express from 'express'
-import { authenticateJWT } from './auth'
+import * as dotenv from 'dotenv';
+import * as express from 'express';
+import { authenticateJWT } from './auth';
 import { createLogger, transports, format } from "winston";
 import * as morgan from 'morgan';
 import { createProject } from './controllers/project.controller';
