@@ -4,7 +4,9 @@ import * as express from 'express';
 import { authenticateJWT } from './auth';
 import { createLogger, transports, format } from "winston";
 import * as morgan from 'morgan';
-import { createProject } from './controllers/project.controller';
+import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
+import { createUser, getUserById } from './controllers/user.controller';
+import { addRemoteProjects } from './controllers/remoteproject.controller';
 
 
 
@@ -38,9 +40,44 @@ express_app.use(express.json())
 
 
 //Routes
-express_app.post('/project', authenticateJWT,  (req, res) => {
+//Projects
+express_app.post('/projects', authenticateJWT,  (req, res) => {
   createProject(req, res)
 })
+
+express_app.get('/projects/:owner', authenticateJWT, (req, res) => {
+  getProjectsByOwner(req, res)
+})
+
+express_app.get('/project/:id', authenticateJWT, (req, res) => {
+  getProjectById(req, res)
+})
+
+express_app.put('/project/:id', authenticateJWT, (req, res) => {
+  updateProjectById(req, res)
+})
+
+express_app.delete('/project/:id', authenticateJWT, (req, res) => {
+  deleteProjectById(req, res)
+})
+
+
+//Users
+express_app.post('/users', authenticateJWT, (req, res) => {
+  createUser(req, res)
+})
+
+express_app.get('users' , authenticateJWT, (req, res) => {
+  getUserById(req, res)
+})
+
+
+//RemoteProjects
+express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
+  addRemoteProjects(req, res)
+})
+
+
 
 
 

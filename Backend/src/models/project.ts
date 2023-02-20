@@ -1,4 +1,6 @@
-export interface Project {
+import { RowDataPacket } from "mysql2";
+
+export interface Project extends RowDataPacket {
     projectid?: number;
     title: string;
     description: string;

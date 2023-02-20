@@ -9,7 +9,7 @@ export async function connect() {
         database: process.env.DATABASE_NAME,
         connectionLimit: 10
     });
-    
+
     return connection;
 
 }
