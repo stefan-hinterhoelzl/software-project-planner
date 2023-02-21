@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { connect } from '../database'
 import { Project } from '../models/project';
+import { handleError } from './controller.util';
 
 export async function createProject(req: Request, res: Response) {
 
@@ -82,6 +83,3 @@ export async function deleteProjectById(req: Request, res: Response) {
 }
 
 
-async function handleError(res: Response, err: any) {
-    res.status(500).json({"Error Number": err.errno, "Error Code": err.code, "SQL Error Message": err.sqlMessage})
-}

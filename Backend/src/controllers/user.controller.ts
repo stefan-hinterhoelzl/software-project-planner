@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { connect } from '../database'
 import { User } from '../models/user';
+import { handleError } from './controller.util';
 
 export async function createUser(req: Request, res: Response) {
 
@@ -29,10 +30,3 @@ export async function getUserById(req: Request, res: Response) {
 
 }
 
-
-
-
-
-async function handleError(res: Response, err: any) {
-    res.status(500).json({"Error Number": err.errno, "Error Code": err.code, "SQL Error Message": err.sqlMessage})
-}

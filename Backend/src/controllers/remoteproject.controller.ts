@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import { RemoteProject } from "../models/remoteProjects";
+import { handleError } from "./controller.util";
 
 
 
@@ -18,6 +19,15 @@ export async function addRemoteProjects(req: Request, res: Response) {
       }
 }
 
-async function handleError(res: Response, err: any) {
-    res.status(500).json({"Error Number": err.errno, "Error Code": err.code, "SQL Error Message": err.sqlMessage})
+export async function getRomoteProjects(req: Request, res: Response) {
+    var id: number = Number(req.params.id)
+    try {
+        const conn = await connect()
+        const result: RemoteProject[] = (await conn.query<RemoteProject[]>('SELECT * FROM RemoteProjects Where projectId = ?', [id]))[0]
+        return result
+    } catch (err: any) {
+        handleError(res, err);
+      }
 }
+
+

@@ -25,8 +25,9 @@ export const authenticateJWT = async (req: Request, res: Response, next: any) =>
 };
 
 
-//Function to check whether project belongs to calling user
+//Function to check whether project belongs to calling user (read Claim from the token)
 
 
 
-//Function
+//Function to check whether altered user belongs to the calling user (read claim from the token)
+
