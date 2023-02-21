@@ -20,7 +20,7 @@ export async function addRemoteProjects(req: Request, res: Response) {
 }
 
 export async function getRomoteProjects(req: Request, res: Response) {
-    var id: number = Number(req.params.id)
+    var id: number = Number(req.params.projectId)
     try {
         const conn = await connect()
         const result: RemoteProject[] = (await conn.query<RemoteProject[]>('SELECT * FROM RemoteProjects Where projectId = ?', [id]))[0]
@@ -29,5 +29,29 @@ export async function getRomoteProjects(req: Request, res: Response) {
         handleError(res, err);
       }
 }
+
+
+export async function deleteRemoteProjectById(req: Request, res: Response) {
+    var projectId: number = Number(req.params.projectId);
+    var remoteProjectId: number = Number(req.params.remoteProjectId);
+    
+    try {
+        const conn = await connect()
+        const result: RemoteProject = (await conn.query<RemoteProject[]>('SELECT * FROM Remoteprojects Where projectId = ? and remoteprojectId = ?', [projectId, remoteProjectId]))[0][0]
+        if (result !== undefined) {
+            await conn.query('DELETE FROM Remoteprojects WHERE projectId = ? and remoteprojectId = ?', [projectId, remoteProjectId]);
+            res.json({"message": `RemotePpoject with ID ${remoteProjectId} from project with ID ${projectId} was deleted!`})
+        } else {
+            res.status(404).json({"message": `No Remoteproject with ID ${remoteProjectId} in project with ID ${projectId}`})
+        }
+    } catch (err: any) {
+        handleError(res, err);
+      }
+}
+
+
+
+
+
 
 

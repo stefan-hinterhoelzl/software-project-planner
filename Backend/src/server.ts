@@ -6,7 +6,7 @@ import { createLogger, transports, format } from "winston";
 import * as morgan from 'morgan';
 import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
 import { createUser, getUserById } from './controllers/user.controller';
-import { addRemoteProjects } from './controllers/remoteproject.controller';
+import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
 
 
 
@@ -76,6 +76,31 @@ express_app.get('users' , authenticateJWT, (req, res) => {
 express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
   addRemoteProjects(req, res)
 })
+
+express_app.get('project/:projectId/RemoteProejcts', authenticateJWT, (req, res) => {
+  getRomoteProjects(req, res)
+})
+
+express_app.delete('project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
+  deleteProjectById(req, res)
+})
+
+
+//ProjectViewpoint
+
+
+
+
+
+
+
+
+
+//Issues
+
+
+
+
 
 
 

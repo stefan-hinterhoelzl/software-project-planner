@@ -27,6 +27,7 @@ export async function getUserById(req: Request, res: Response) {
     } catch (err: any) {
         handleError(res, err);
       }
-
 }
+
+
 
