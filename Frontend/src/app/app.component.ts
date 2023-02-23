@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { getAuth, User, onAuthStateChanged } from '@firebase/auth';
 import { AuthService } from './services/auth.service';
+import { BackendService } from './services/backend.service';
 import { DataService } from './services/data.service';
 import { FirestoreService } from './services/firestore.service';
 
@@ -23,6 +24,7 @@ export class AppComponent {
   data = inject(DataService);
   router = inject(Router);
   firestore = inject(FirestoreService);
+  backend = inject(BackendService)
   user?: User;
 
   constructor() {
@@ -43,7 +45,8 @@ export class AppComponent {
         this.isLoggedIn = true;
         this.user = user;
         this.data.setUser(user);
-        this.firestore.projectCollector(user.uid);
+        this.backend.getProjects();
+
       } else {
         this.isLoggedIn = false;
       }

@@ -32,19 +32,19 @@ export class ProjectSearchComponent implements OnInit {
     this.navigationEvent.next(value);
   }
 
-  toggleFavourite(projectid: string, boolean: boolean) {
-    this.firestore
-      .toggleProjectFavourite(boolean, projectid)
-      .then(() => {
-        if (boolean) this.snackbar.openSnackBar('Project added to favourites!.', 'green-snackbar');
-        else this.snackbar.openSnackBar('Project removed from favourites', 'green-snackbar');
-      })
-      .catch((error) => {
-        this.snackbar.openSnackBar(
-          'An error occured',
-          'red-snackbar'
-        );
-      });
+  toggleFavourite(projectid: number, boolean: boolean) {
+    // this.firestore
+    //   .toggleProjectFavourite(boolean, projectid)
+    //   .then(() => {
+    //     if (boolean) this.snackbar.openSnackBar('Project added to favourites!.', 'green-snackbar');
+    //     else this.snackbar.openSnackBar('Project removed from favourites', 'green-snackbar');
+    //   })
+    //   .catch((error) => {
+    //     this.snackbar.openSnackBar(
+    //       'An error occured',
+    //       'red-snackbar'
+    //     );
+    //   });
   }
 
   deleteProject(project: Project) {
@@ -64,23 +64,23 @@ export class ProjectSearchComponent implements OnInit {
 
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfig);
 
-    dialogRef
-      .afterClosed()
-      .pipe(take(1))
-      .subscribe((data: boolean) => {
-        if (data) {
-          this.firestore
-            .deleteProject(project.uid)
-            .then(() => {
-              this.snackbar.openSnackBar('Project deleted.', 'green-snackbar');
-            })
-            .catch((error) => {
-              this.snackbar.openSnackBar(
-                'Project deletion failed.',
-                'red-snackbar'
-              );
-            });
-        }
-      });
+    // dialogRef
+    //   .afterClosed()
+    //   .pipe(take(1))
+    //   .subscribe((data: boolean) => {
+    //     if (data) {
+    //       this.firestore
+    //         .deleteProject(project.projectId)
+    //         .then(() => {
+    //           this.snackbar.openSnackBar('Project deleted.', 'green-snackbar');
+    //         })
+    //         .catch((error) => {
+    //           this.snackbar.openSnackBar(
+    //             'Project deletion failed.',
+    //             'red-snackbar'
+    //           );
+    //         });
+    //     }
+    //   });
   }
 }

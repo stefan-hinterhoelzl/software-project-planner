@@ -1,15 +1,14 @@
 import { Timestamp } from "@firebase/firestore";
 
 export interface Project {
+    projectId: number,
     title: string,
     description: string,
     owner: string,
-    createdAt: Timestamp,
-    lastModified: Timestamp,
-    ALMInstances: RemoteProject[],
-    selectedIssues: string[]
+    createdAt: Date,
+    lastModified: Date,
     favourite: boolean,
-    uid: string,
+
 }
 
 

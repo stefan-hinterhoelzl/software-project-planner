@@ -9,6 +9,7 @@ import { createUser, getUserById } from './controllers/user.controller';
 import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
 import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint  } from './controllers/issue.controller';
 import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById } from './controllers/projectviewpoint.controller'
+import * as cors from 'cors';
 
 
 
@@ -36,6 +37,19 @@ export const logger = createLogger({
     })
   ),
 });
+
+
+//CORS
+const allowedOrigins = ['http://localhost:4200'];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
+};
+
+express_app.use(cors(options))
+
+
+
 
 express_app.use(morgan('dev'));
 express_app.use(express.json())

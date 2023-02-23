@@ -15,7 +15,7 @@ export class ProjectViewComponent implements OnInit {
   data = inject(DataService)
   cd = inject(ChangeDetectorRef)
   routeSubscription?: Subscription
-  projectID?: string;
+  projectID?: number;
   project?: Project;
   activeView: string = ""
 
@@ -28,7 +28,7 @@ export class ProjectViewComponent implements OnInit {
 
   initialize() {
     this.data.projects.pipe(map(val => {
-      return val.find(val => { return val.uid === this.projectID; });
+      return val.find(val => { return val.projectId === this.projectID; });
     })
     ).subscribe((project) => {
       this.project = project;

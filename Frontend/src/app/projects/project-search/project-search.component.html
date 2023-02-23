@@ -28,7 +28,7 @@
       <button
         *ngIf="!project.favourite"
         mat-menu-item
-        (click)="toggleFavourite(project.uid, true)"
+        (click)="toggleFavourite(project.projectId, true)"
       >
         <mat-icon>favorite</mat-icon>
         <span>Add to favourites</span>
@@ -36,7 +36,7 @@
       <button
         *ngIf="project.favourite"
         mat-menu-item
-        (click)="toggleFavourite(project.uid, false)"
+        (click)="toggleFavourite(project.projectId, false)"
       >
         <mat-icon>favorite</mat-icon>
         <span>Remove from favourites</span>
@@ -48,7 +48,7 @@
     </mat-menu>
     <div matListItemTitle>
       <span
-        (click)="navigate('project/view/' + project.uid)"
+        (click)="navigate('project/view/' + project.projectId)"
         class="listitem"
         [matTooltipPosition]="'below'"
         matTooltip="{{ project.title }}"

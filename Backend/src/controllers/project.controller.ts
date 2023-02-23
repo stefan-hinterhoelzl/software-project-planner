@@ -6,12 +6,15 @@ import { handleError } from './controller.util';
 export async function createProject(req: Request, res: Response) {
 
     try {
+        console.log(req.body)
         const newProject: Project = req.body;
+        console.log(newProject)
         newProject.createdAt = new Date(Date.now())
         newProject.lastmodified = new Date(Date.now())
+        console.log(newProject)
 
         const conn = await connect()
-        await conn.query('INSERT INTO projects SET ?', [newProject]);
+        conn.query('INSERT INTO projects SET ?', [newProject]);
         res.json(newProject)
     } catch (err: any) {
         handleError(res, err);

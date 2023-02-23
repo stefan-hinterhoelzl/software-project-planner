@@ -4,11 +4,12 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
-import { User } from '@firebase/auth';
+import { User, getAuth } from '@firebase/auth';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ALMService } from 'src/app/services/alm.service';
+import { BackendService } from 'src/app/services/backend.service';
 
 @Component({
   selector: 'app-create-project',
@@ -20,6 +21,7 @@ export class CreateProjectComponent implements OnInit {
   data = inject(DataService);
   alm = inject(ALMService);
   firestore = inject(FirestoreService);
+  backend = inject(BackendService)
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
@@ -73,23 +75,38 @@ export class CreateProjectComponent implements OnInit {
   }
 
   saveProject() {
+    const auth = getAuth()
+
     const newProject = {} as Project;
     newProject.title = this.firstFormGroup.get('nameCtrl')?.value!;
     newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
-    newProject.owner = this.loggedUser?.uid!;
-    newProject.ALMInstances = this.ALMInstances;
     newProject.favourite = false;
-    newProject.selectedIssues = [];
+    newProject.owner = auth.currentUser?.uid!
 
-    this.firestore
-      .addProject(newProject)
-      .then((docRef) => {
-        this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-        this.router.navigate(['/project/view/' + docRef.id]);
-      })
-      .catch((err) => {
+    this.backend.addProject(newProject).pipe(take(1)).subscribe({
+
+      next: (project) => {
+      this.snackbar.openSnackBar('Project added!', 'green-snackbar');
+      console.log(project)
+      this.backend.getProjects()
+      this.router.navigate(['/project/view'+project.projectId]);
+
+      },
+      error: (error) => {
         this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
-      });
+        console.log(error)
+      }
+    })
+
+    // this.firestore
+    //   .addProject(newProject)
+    //   .then((docRef) => {
+    //     this.snackbar.openSnackBar('Project added!', 'green-snackbar');
+    //     this.router.navigate(['/project/view/' + docRef.id]);
+    //   })
+    //   .catch((err) => {
+    //     this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
+    //   });
   }
 
   addToALMMap() {
