@@ -1,4 +1,4 @@
-Drop Table remoteissues;
+Drop Table RemoteIssues;
 Drop Table RemoteProjects;
 Drop Table ProjectViewpoints
 Drop Table Projects;
