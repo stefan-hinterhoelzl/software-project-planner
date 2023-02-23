@@ -23,6 +23,16 @@ Create Table Projects (
     Foreign Key (owner) References Users (userId) ON DELETE CASCADE
 );
 
+Create Table ProjectViewpoints (
+    projectViewpointId int NOT NULL,
+    projectId          int NOT NULL,
+    title              varchar(100),
+    lastmodified       datetime,
+    Primary Key (projectId, projectViewpointId),
+    Foreign Key (projectId) References Projects (projectId) ON DELETE CASCADE
+
+)
+
 Create Table RemoteProjects (
 	projectId		int NOT NULL,
     remoteProjectId	int NOT NULL,
@@ -32,11 +42,11 @@ Create Table RemoteProjects (
 );
 
 Create Table RemoteIssues (
-	projectId		int NOT NULL,
-    remoteProjectId int NOT NULL,
-    issueRemoteId	int NOT NULL,
-    Primary KEY (projectId, remoteProjectId, issueRemoteId),
-    Foreign KEY (projectId) References Projects (projectId) ON DELETE CASCADE
+	projectViewpointId		int NOT NULL,
+    remoteProjectId         int NOT NULL,
+    issueRemoteId	        int NOT NULL,
+    Primary KEY (projectViewpointId, remoteProjectId, issueRemoteId),
+    Foreign KEY (projectViewpointId) References ProjectViewpoints (projectViewpointId) ON DELETE CASCADE
 );
 
 
