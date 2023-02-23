@@ -1,7 +1,7 @@
 import { RowDataPacket } from "mysql2";
 
 export interface RemoteIssues extends RowDataPacket {
-    projectid: number;
+    projectViewpointId: number;
     remoteProjectId: number;
     issueRemoteId: number;
 }

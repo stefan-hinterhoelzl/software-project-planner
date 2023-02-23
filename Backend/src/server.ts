@@ -7,6 +7,8 @@ import * as morgan from 'morgan';
 import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
 import { createUser, getUserById } from './controllers/user.controller';
 import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
+import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint  } from './controllers/issue.controller';
+import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById } from './controllers/projectviewpoint.controller'
 
 
 
@@ -67,7 +69,7 @@ express_app.post('/users', authenticateJWT, (req, res) => {
   createUser(req, res)
 })
 
-express_app.get('users' , authenticateJWT, (req, res) => {
+express_app.get('/users' , authenticateJWT, (req, res) => {
   getUserById(req, res)
 })
 
@@ -77,33 +79,42 @@ express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, (req, re
   addRemoteProjects(req, res)
 })
 
-express_app.get('project/:projectId/RemoteProejcts', authenticateJWT, (req, res) => {
+express_app.get('/project/:projectId/RemoteProejcts', authenticateJWT, (req, res) => {
   getRomoteProjects(req, res)
 })
 
-express_app.delete('project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
+express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
   deleteProjectById(req, res)
 })
 
 
 //ProjectViewpoint
 
+express_app.post('/project/:projectId/Viewpoints', authenticateJWT, (req, res) => {
+  createViewpoint(req, res)
+})
 
+express_app.get('/project/:projectId/Viewpoints', authenticateJWT, (req, res) => {
+  getViewpointsByProject(req, res)
+})
 
+express_app.put('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, (req, res) => {
+  updateViewpointById(req, res)
+})
 
-
-
-
+express_app.delete('/project/:projectId/Viewpoints/:viewpointId', authenticateJWT, (req, res) => {
+  deleteViewpointById(req, res)
+})
 
 
 //Issues
+express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
+  addRemoteIssuesToProjectViewpoint(req, res);
+});
 
-
-
-
-
-
-
+express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
+  removeRemoteIssuesFromProjectViewpoint(req, res);
+});
 
 
 //Start the Server

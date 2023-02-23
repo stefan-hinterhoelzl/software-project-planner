@@ -30,4 +30,10 @@ export async function getUserById(req: Request, res: Response) {
 }
 
 
+//Delete
+
+
+//Put
+
+
 
