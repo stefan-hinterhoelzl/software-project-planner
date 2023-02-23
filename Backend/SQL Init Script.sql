@@ -1,5 +1,6 @@
 Drop Table remoteissues;
 Drop Table RemoteProjects;
+Drop Table ProjectViewpoints
 Drop Table Projects;
 Drop Table Users;
 
