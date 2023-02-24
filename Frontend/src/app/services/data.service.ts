@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project } from '../models/project';
+import { UserSettings } from '../models/user';
 
 
 @Injectable({
@@ -11,6 +12,7 @@ export class DataService {
 
   private _header = new BehaviorSubject<string>("Software Project Planner")
   private _loggedInUser = new ReplaySubject<User>(1)
+  private _userSettings = new ReplaySubject<UserSettings>(1)
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeprojectview = new ReplaySubject<string>(1)
   private _activeViewProject = new ReplaySubject<Project>(1)
@@ -23,6 +25,10 @@ export class DataService {
 
   setUser(value: User) {
     this._loggedInUser.next(value);
+  }
+
+  setUserSettings(value: UserSettings) {
+    this._userSettings.next(value);
   }
 
   setProjects(value: Project[]) {
@@ -47,6 +53,10 @@ export class DataService {
 
   get projects() {
     return this._projects.asObservable();
+  }
+
+  get userSettings() {
+    return this._userSettings.asObservable();
   }
 
   get activeprojectview() {

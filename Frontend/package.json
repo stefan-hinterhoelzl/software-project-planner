@@ -42,5 +42,16 @@
     "karma-jasmine-html-reporter": "~2.0.0",
     "typescript": "~4.8.2",
     "webpack-bundle-analyzer": "^4.7.0"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "semi": true,
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "trailingComma": "es5",
+    "bracketSameLine": true,
+    "printWidth": 150
   }
 }

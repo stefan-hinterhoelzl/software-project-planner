@@ -1,7 +1,7 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Subscription, take } from 'rxjs';
+import { map, Subscription, switchMap, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { User, getAuth } from '@firebase/auth';
@@ -21,12 +21,11 @@ export class CreateProjectComponent implements OnInit {
   data = inject(DataService);
   alm = inject(ALMService);
   firestore = inject(FirestoreService);
-  backend = inject(BackendService)
+  backend = inject(BackendService);
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   route = inject(ActivatedRoute);
-
 
   @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
   loggedUser: User | undefined;
@@ -75,43 +74,42 @@ export class CreateProjectComponent implements OnInit {
   }
 
   saveProject() {
-    const auth = getAuth()
+    const auth = getAuth();
 
     const newProject = {} as Project;
     newProject.title = this.firstFormGroup.get('nameCtrl')?.value!;
     newProject.description = this.secondFormGroup.get('descrCtrl')?.value!;
     newProject.favourite = false;
-    newProject.owner = auth.currentUser?.uid!
+    newProject.owner = auth.currentUser?.uid!;
 
-    this.backend.addProject(newProject).pipe(take(1)).subscribe({
-
-      next: (project) => {
-      this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-      console.log(project)
-      this.backend.getProjects()
-      this.router.navigate(['/project/view'+project.projectId]);
-
-      },
-      error: (error) => {
-        this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
-        console.log(error)
-      }
-    })
-
-    // this.firestore
-    //   .addProject(newProject)
-    //   .then((docRef) => {
-    //     this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-    //     this.router.navigate(['/project/view/' + docRef.id]);
-    //   })
-    //   .catch((err) => {
-    //     this.snackbar.openSnackBar('Error adding Project', 'red-snackbar');
-    //   });
+    this.backend
+      .addProject(newProject)
+      .pipe(
+        switchMap((project: Project) => {
+            return this.backend
+            .addRemoteProjectsToProject(project.projectId, this.ALMInstances)
+            .pipe(map((remoteProjects) => ({ project, remoteProjects })));
+        })
+      )
+      .subscribe({
+        next: (value) => {
+          this.snackbar.openSnackBar('Project added!', 'green-snackbar');
+          this.backend.getProjects();
+          this.router.navigate(['/project/view/' + value.project.projectId]);
+        },
+        error: (error) => {
+          this.snackbar.openSnackBar(
+            'Error adding Project. Try again',
+            'red-snackbar'
+          );
+          console.error(error.error);
+        },
+      });
   }
 
   addToALMMap() {
     if (this.remoteID === undefined) {
-      console.log("I am here")
+      console.log('I am here');
       this.remoteIDHasError = true;
     } else {
       this.remoteIDHasError = false;
@@ -122,13 +120,13 @@ export class CreateProjectComponent implements OnInit {
           next: (response) => {
             if (
               this.ALMInstances.findIndex((value) => {
-                return value.remoteID === this.remoteID;
+                return value.remoteProjectId === this.remoteID;
               }) === -1
             ) {
               this.ALMInstances.push({
                 accessToken:
                   this.accessToken === undefined ? '' : this.accessToken,
-                remoteID: this.remoteID!,
+                remoteProjectId: this.remoteID!,
               });
 
               this.snackbar.openSnackBar(
@@ -167,7 +165,7 @@ export class CreateProjectComponent implements OnInit {
 
   removeFromALMMap(ID: number) {
     this.ALMInstances = this.ALMInstances.filter((val) => {
-      return val.remoteID !== ID;
+      return val.remoteProjectId !== ID;
     });
   }
 }

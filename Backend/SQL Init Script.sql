@@ -13,7 +13,7 @@ Create Table Users (
 );
 
 Create Table Projects (
-	projectId 		int NOT NULL AUTO_INCREMENT,
+	projectId 		varchar(100),
     title 			varchar(100),
     description 	varchar(2000),
     owner			varchar(100),
@@ -26,7 +26,7 @@ Create Table Projects (
 
 Create Table Viewpoints (
     viewpointId 	   int NOT NULL,
-    projectId          int NOT NULL,
+    projectId          varchar(100) NOT NULL,
     title              varchar(100),
     lastmodified       datetime,
     Primary Key (projectId, viewpointId),
@@ -35,7 +35,7 @@ Create Table Viewpoints (
 );
 
 Create Table RemoteProjects (
-	projectId		int NOT NULL,
+	projectId		varchar(100) NOT NULL,
     remoteProjectId	int NOT NULL,
     accessToken		varchar(100),
     Primary KEY (projectId, remoteProjectId),
@@ -44,7 +44,7 @@ Create Table RemoteProjects (
 
 Create Table RemoteIssues (
 	viewpointId				int NOT NULL,
-    projectId				int NOT NULL,
+    projectId				varchar(100) NOT NULL,
     remoteProjectId         int NOT NULL,
     issueRemoteId	        int NOT NULL,
     Primary KEY (viewpointId, projectId, remoteProjectId, issueRemoteId),

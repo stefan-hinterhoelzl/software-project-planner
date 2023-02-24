@@ -15,7 +15,7 @@ export class ProjectViewComponent implements OnInit {
   data = inject(DataService)
   cd = inject(ChangeDetectorRef)
   routeSubscription?: Subscription
-  projectID?: number;
+  projectID?: string;
   project?: Project;
   activeView: string = ""
 

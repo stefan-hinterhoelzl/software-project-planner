@@ -1,34 +1,64 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
-import { Project } from '../models/project';
+import { Project, RemoteProject } from '../models/project';
 import { DataService } from './data.service';
-import { getAuth, User} from '@firebase/auth';
+import { getAuth, User } from '@firebase/auth';
+import { UserSettings } from '../models/user';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BackendService {
+  BASE_URL = 'http://localhost:3000/';
+  private data = inject(DataService);
+  private http = inject(HttpClient);
+  private snackbar = inject(SnackbarComponent);
 
-  BASE_URL = "http://localhost:3000/"
-  private data = inject(DataService)
-  private http = inject(HttpClient)
+  constructor() {}
 
-  constructor() { }
+  //Users
 
+  getUserData() {
+    const auth = getAuth();
+    this.http.get<UserSettings>(this.BASE_URL + 'user/' + auth.currentUser?.uid).subscribe({
+      next: userSettings => {
+        this.data.setUserSettings(userSettings);
+      },
+      error: error => {
+        this.snackbar.openSnackBar('Error loading user settings! Try again later.', 'red-snackbar');
+        console.log(error.error);
+      },
+    });
+  }
 
-addProject(project: Project): Observable<Project> {
-  return this.http.post<Project>(this.BASE_URL+"projects", project)
-}
+  updateUserData(value: UserSettings) {
+    //TODO
+  }
 
-getProjects() {
-  const auth = getAuth()
-  this.http.get<Project[]>(this.BASE_URL+"projects/"+auth.currentUser?.uid).pipe(take(1)).subscribe(projects => {
-    this.data.setProjects(projects)
-  });
-}
+  //Projects
 
+  addProject(project: Project): Observable<Project> {
+    return this.http.post<Project>(this.BASE_URL + 'projects', project);
+  }
 
+  getProjects() {
+    const auth = getAuth();
+    this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid).subscribe({
+      next: projects => {
+        this.data.setProjects(projects);
+      },
+      error: error => {
+        this.snackbar.openSnackBar('Error loading projects! Try again later.', 'red-snackbar');
+        console.log(error.error);
+      },
+    });
+  }
 
-
+  //Remoteprojects
+  addRemoteProjectsToProject(projectId: string, remoteProjects: RemoteProject[]): Observable<RemoteProject[]> {
+    console.log(projectId)
+    return this.http.post<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', remoteProjects);
+  }
 }

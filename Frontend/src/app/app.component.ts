@@ -31,11 +31,6 @@ export class AppComponent {
     this.authStatusListener();
   }
 
-  async getToken() {
-    const auth = getAuth();
-    let token: string = await auth.currentUser?.getIdToken(true)!
-    console.log(token)
-  }
 
   async authStatusListener() {
     const auth = getAuth();
@@ -46,7 +41,7 @@ export class AppComponent {
         this.user = user;
         this.data.setUser(user);
         this.backend.getProjects();
-
+        this.backend.getUserData();
       } else {
         this.isLoggedIn = false;
       }

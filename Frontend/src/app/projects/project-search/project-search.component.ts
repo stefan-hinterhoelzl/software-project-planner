@@ -32,55 +32,55 @@ export class ProjectSearchComponent implements OnInit {
     this.navigationEvent.next(value);
   }
 
-  toggleFavourite(projectid: number, boolean: boolean) {
-    // this.firestore
-    //   .toggleProjectFavourite(boolean, projectid)
-    //   .then(() => {
-    //     if (boolean) this.snackbar.openSnackBar('Project added to favourites!.', 'green-snackbar');
-    //     else this.snackbar.openSnackBar('Project removed from favourites', 'green-snackbar');
-    //   })
-    //   .catch((error) => {
-    //     this.snackbar.openSnackBar(
-    //       'An error occured',
-    //       'red-snackbar'
-    //     );
-    //   });
-  }
+  // toggleFavourite(projectid: string, boolean: boolean) {
+  //   // this.firestore
+  //   //   .toggleProjectFavourite(boolean, projectid)
+  //   //   .then(() => {
+  //   //     if (boolean) this.snackbar.openSnackBar('Project added to favourites!.', 'green-snackbar');
+  //   //     else this.snackbar.openSnackBar('Project removed from favourites', 'green-snackbar');
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     this.snackbar.openSnackBar(
+  //   //       'An error occured',
+  //   //       'red-snackbar'
+  //   //     );
+  //   //   });
+  // }
 
-  deleteProject(project: Project) {
-    const dialogConfig = new MatDialogConfig();
+  // deleteProject(project: Project) {
+  //   const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = '30%';
-    dialogConfig.minWidth = '30%';
+  //   dialogConfig.disableClose = true;
+  //   dialogConfig.autoFocus = true;
+  //   dialogConfig.width = '30%';
+  //   dialogConfig.minWidth = '30%';
 
-    dialogConfig.data = {
-      title: 'Delete Project?',
-      content: `Are you sure you want to delete the project \"${project.title}\"? It can not be restored.`,
-      button1: 'Delete',
-      button2: 'Cancel',
-    };
+  //   dialogConfig.data = {
+  //     title: 'Delete Project?',
+  //     content: `Are you sure you want to delete the project \"${project.title}\"? It can not be restored.`,
+  //     button1: 'Delete',
+  //     button2: 'Cancel',
+  //   };
 
-    const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfig);
+  //   const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfig);
 
-    // dialogRef
-    //   .afterClosed()
-    //   .pipe(take(1))
-    //   .subscribe((data: boolean) => {
-    //     if (data) {
-    //       this.firestore
-    //         .deleteProject(project.projectId)
-    //         .then(() => {
-    //           this.snackbar.openSnackBar('Project deleted.', 'green-snackbar');
-    //         })
-    //         .catch((error) => {
-    //           this.snackbar.openSnackBar(
-    //             'Project deletion failed.',
-    //             'red-snackbar'
-    //           );
-    //         });
-    //     }
-    //   });
-  }
+  //   // dialogRef
+  //   //   .afterClosed()
+  //   //   .pipe(take(1))
+  //   //   .subscribe((data: boolean) => {
+  //   //     if (data) {
+  //   //       this.firestore
+  //   //         .deleteProject(project.projectId)
+  //   //         .then(() => {
+  //   //           this.snackbar.openSnackBar('Project deleted.', 'green-snackbar');
+  //   //         })
+  //   //         .catch((error) => {
+  //   //           this.snackbar.openSnackBar(
+  //   //             'Project deletion failed.',
+  //   //             'red-snackbar'
+  //   //           );
+  //   //         });
+  //   //     }
+  //   //   });
+  // }
 }

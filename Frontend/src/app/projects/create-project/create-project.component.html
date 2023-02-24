@@ -121,13 +121,13 @@
             <input
               matInput
               disabled="true"
-              value="{{ entry.remoteID}}"
+              value="{{ entry.remoteProjectId}}"
             />
             <mat-icon
               matSuffix
               style="cursor: pointer"
               color="warn"
-              (click)="removeFromALMMap(entry.remoteID)"
+              (click)="removeFromALMMap(entry.remoteProjectId)"
               >delete</mat-icon
             >
           </mat-form-field>

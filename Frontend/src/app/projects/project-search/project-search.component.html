@@ -1,30 +1,16 @@
 <div class="project-header">
   <h2 cdkFocusRegionStart>My Projects</h2>
   <span class="spacer"></span>
-  <button
-    mat-fab
-    color="primary"
-    matTooltip="Create a new project"
-    [matTooltipShowDelay]="2000"
-    (click)="navigate('project/create')"
-  >
+  <button mat-fab color="primary" matTooltip="Create a new project" [matTooltipShowDelay]="2000" (click)="navigate('project/create')">
     <mat-icon>add</mat-icon>
   </button>
 </div>
 
 <mat-list>
   <mat-list-item *ngFor="let project of projects">
-    <mat-icon
-      [matMenuTriggerFor]="menu"
-      class="listicon"
-      matListItemIcon
-      [matTooltipPosition]="'below'"
-      matTooltip="Project menu"
-      [matTooltipShowDelay]="2000"
-      >folder</mat-icon
-    >
+    <mat-icon class="listicon" matListItemIcon [matTooltipPosition]="'below'" matTooltip="Project menu" [matTooltipShowDelay]="2000">folder</mat-icon>
 
-    <mat-menu #menu="matMenu">
+    <!-- <mat-menu #menu="matMenu">
       <button
         *ngIf="!project.favourite"
         mat-menu-item
@@ -45,7 +31,7 @@
         <mat-icon>delete</mat-icon>
         <span>Delete</span>
       </button>
-    </mat-menu>
+    </mat-menu> -->
     <div matListItemTitle>
       <span
         (click)="navigate('project/view/' + project.projectId)"

@@ -1,7 +1,7 @@
 import { RowDataPacket } from "mysql2";
 
 export interface RemoteProject extends RowDataPacket {
-    projectid: number;
+    projectid: string;
     remoteProjectId: number;
     accessToken: string;
 }
