@@ -11,8 +11,20 @@ export interface Project {
 
 }
 
-
 export interface RemoteProject {
+    projectId?: string,
     remoteProjectId: number,
     accessToken: string,
+}
+
+export interface Viewpoint {
+    viewpointId?: number,
+    projectId?: string,
+    title: string,
+    lastModified: Date,
+}
+
+export interface ProjectWrapper {
+    project: Project,
+    viewPoints: Viewpoint[],
 }

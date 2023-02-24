@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
-import { Project, RemoteProject } from '../models/project';
+import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { DataService } from './data.service';
 import { getAuth, User } from '@firebase/auth';
 import { UserSettings } from '../models/user';
@@ -58,7 +58,19 @@ export class BackendService {
 
   //Remoteprojects
   addRemoteProjectsToProject(projectId: string, remoteProjects: RemoteProject[]): Observable<RemoteProject[]> {
-    console.log(projectId)
     return this.http.post<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', remoteProjects);
+  }
+
+  getRemoteProjectsForProject(projectId: string) {
+    return this.http.get<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects');
+  }
+
+  //Viewpoints
+  addViewpointToProject(projectId: string, viewPoint: Viewpoint) {
+    return this.http.post<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoints', viewPoint);
+  }
+
+  getViewpointsFromProject(projectId: string) {
+    return this.http.get<Viewpoint[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoints')
   }
 }

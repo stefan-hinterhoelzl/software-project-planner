@@ -4,12 +4,12 @@ import { Viewpoint } from "../models/projectViewpoint";
 import { handleError } from "./controller.util";
 
 export async function createViewpoint(req: Request, res: Response) {
-    var projectId: number = Number(req.params.projectId);
+    var projectId: string = req.params.projectId;
 
     try {
         const conn = await connect()
         const newViewpoint: Viewpoint = req.body
-        newViewpoint.lastmodified = new Date(Date.now())
+        newViewpoint.lastModified = new Date(Date.now())
         let result: number  = (await conn.query<any>('SELECT MAX(viewpointid) as max FROM Viewpoints WHERE projectId = ?', [projectId]))[0][0].max
         
         if (result===null) {
@@ -26,7 +26,7 @@ export async function createViewpoint(req: Request, res: Response) {
 }
 
 export async function getViewpointsByProject(req: Request, res: Response) {
-    var projectId: number = Number(req.params.projectId);
+    var projectId:string = req.params.projectId;
     
     try {
         const conn = await connect()
@@ -37,7 +37,7 @@ export async function getViewpointsByProject(req: Request, res: Response) {
       }
 }
 export async function updateViewpointById(req: Request, res: Response) {
-    var projectId: number = Number(req.params.projectId);
+    var projectId: string = req.params.projectId;
     var viewpointId: number = Number(req.params.viewpointId);
     const updateViewpoint = req.body;
 

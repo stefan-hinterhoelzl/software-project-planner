@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Create new Viewpoint</h2>
+<mat-dialog-content>
+  <div style="height: 10px"></div>
+  <form [formGroup]="viewPointTitle">
+    <mat-form-field color="accent" appearance="outline">
+      <mat-label>Viewpoint Title</mat-label>
+      <input (keyup.enter)="save()" matInput #title placeholder="Title of the viewpoint" formControlName="title" maxlength="100" required />
+      <mat-error *ngIf="viewPointTitle.controls['title'].hasError('required')">Title is mandatory</mat-error>
+      <mat-hint align="end">{{ title.value.length }}/100</mat-hint>
+    </mat-form-field>
+  </form>
+  <div style="height: 10px"></div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button mat-raised-button color="primary" [disabled]="!viewPointTitle.valid" (click)="save()">Save</button>
+  <button mat-button mat-raised-button color="warn" (click)="close()">Cancel</button>
+</mat-dialog-actions>

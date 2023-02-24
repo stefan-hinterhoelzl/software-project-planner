@@ -15,6 +15,16 @@
     cursor: pointer;
 }
 
+mat-list mat-list-item {
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+mat-list mat-list-item:hover {
+  background: grey;
+  cursor: pointer;
+}
+
 .listicon {
     font-size: 1.5rem;
 }
