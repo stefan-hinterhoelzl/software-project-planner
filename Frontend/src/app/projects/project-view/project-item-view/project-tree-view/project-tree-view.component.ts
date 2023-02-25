@@ -11,7 +11,7 @@ export class ProjectTreeViewComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.data.setActiveProjectView('tree');
+
   }
 
   data = inject(DataService)

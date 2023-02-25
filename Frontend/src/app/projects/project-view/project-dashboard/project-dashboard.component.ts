@@ -10,7 +10,7 @@ import { ALMService } from 'src/app/services/alm.service';
 export class ProjectDashboardComponent {
 
   ngOnInit(): void {
-    this.data.setActiveProjectView('dashboard');
+
   }
 
   data = inject(DataService)

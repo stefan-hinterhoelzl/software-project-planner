@@ -16,8 +16,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectViewComponent } from './project-view/project-view/project-view.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
-import { ProjectListViewComponent } from './project-view/project-list-view/project-list-view.component';
-import { ProjectTreeViewComponent } from './project-view/project-tree-view/project-tree-view.component';
+import { ProjectListViewComponent } from './project-view/project-item-view/project-list-view/project-list-view.component';
+import { ProjectTreeViewComponent } from './project-view/project-item-view/project-tree-view/project-tree-view.component';
 import { ProjectConfigViewComponent } from './project-view/project-config-view/project-config-view.component';
 import { ProjectRoutingModule } from './project-routing.module';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -29,6 +29,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ProjectItemViewComponent } from './project-view/project-item-view/project-item-view.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 
@@ -41,7 +43,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     ProjectListViewComponent,
     ProjectTreeViewComponent,
     ProjectConfigViewComponent,
-    ProjectDashboardComponent
+    ProjectDashboardComponent,
+    ProjectItemViewComponent,
   ],
   imports: [
     CommonModule,
@@ -71,6 +74,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatPaginatorModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatMenuModule,
+    MatSidenavModule,
 
 
   ],

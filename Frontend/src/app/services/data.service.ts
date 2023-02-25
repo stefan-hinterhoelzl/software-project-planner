@@ -14,7 +14,6 @@ export class DataService {
   private _loggedInUser = new ReplaySubject<User>(1)
   private _userSettings = new ReplaySubject<UserSettings>(1)
   private _projects = new ReplaySubject<Project[]>(1)
-  private _activeprojectview = new ReplaySubject<string>(1)
   private _activeViewProject = new ReplaySubject<Project>(1)
 
   constructor() { }
@@ -33,10 +32,6 @@ export class DataService {
 
   setProjects(value: Project[]) {
     this._projects.next(value);
-  }
-
-  setActiveProjectView(value: string) {
-    this._activeprojectview.next(value);
   }
 
   setActiveViewProject(value: Project) {
@@ -59,9 +54,6 @@ export class DataService {
     return this._userSettings.asObservable();
   }
 
-  get activeprojectview() {
-    return this._activeprojectview.asObservable();
-  }
 
   get activeviewproject() {
     return this._activeViewProject.asObservable();

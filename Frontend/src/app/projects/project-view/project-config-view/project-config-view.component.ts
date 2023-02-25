@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -10,7 +10,7 @@ export class ProjectConfigViewComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.data.setActiveProjectView('config');
+
   }
 
   data = inject(DataService)
