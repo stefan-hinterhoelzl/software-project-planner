@@ -1,6 +1,25 @@
 <div class="main-wrapper">
-  <mat-drawer-container class="example-container">
-    <mat-drawer mode="side" opened>Drawer content</mat-drawer>
+  <mat-drawer-container>
+    <mat-drawer mode="side" opened>
+      <div class = "drawer">
+        <div class="menu-item" [routerLink]="['list']">
+          <mat-icon class="icon">list</mat-icon>
+          <span>List</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="menu-item" [routerLink]="['tree']">
+          <mat-icon class="icon">filter_list</mat-icon>
+          <span>Hierarchy</span>
+        </div>
+        <mat-divider></mat-divider>
+        <span class="spacer"></span>
+        <mat-divider></mat-divider>
+        <div class="menu-item">
+          <mat-icon class="icon">settings</mat-icon>
+          <span>Options</span>
+        </div>
+      </div>
+    </mat-drawer>
     <mat-drawer-content>
       <div class="main-content">
         <router-outlet> </router-outlet>

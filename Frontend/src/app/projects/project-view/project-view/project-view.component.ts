@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import {
   filter,
   map,
@@ -39,6 +39,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   projectID?: string;
   currentRoute: string = '';
   _routeSubscription?: Subscription;
+  _routerSubscription?: Subscription;
   _project?: Observable<Project>;
   _viewpoints?: Observable<Viewpoint[]>;
   _activeView?: Observable<string>;
@@ -48,13 +49,23 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
+    this._routerSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
+
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['id'];
+      console.log("i am here")
       this.initialize();
     });
+
+    this._routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.applyVisualSettings(event.url)
+      }
+    })
+
   }
 
   initialize() {
@@ -66,21 +77,25 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     );
 
     this._viewpoints = this.getViewpointsObservable();
-
-    let path = this.route.firstChild?.snapshot.routeConfig?.path;
-
+    console.log(this.router.url)
 
     //Apply correct visual settings after reload
-    if (path === 'overview') {
+    this.applyVisualSettings(this.router.url)
+
+
+  }
+
+  applyVisualSettings(path: string) {
+    if (path.includes('overview')) {
       this.currentRoute = 'dashboard';
       this.$activeViewpoint.next('Select a Viewpoint...');
-    } else if (path === 'config') {
+    } else if (path.includes('config')) {
       this.currentRoute = 'config';
       this.$activeViewpoint.next('Select a Viewpoint...');
     } else {
       this.currentRoute = 'viewpoint';
       let id: number = Number(this.route.firstChild?.snapshot.params['viewpointId']);
-      this._viewpoints
+      this._viewpoints!
         .pipe(
           map(value => {
             console.log(value);
@@ -129,8 +144,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   }
 
   chooseViewpoint(viewpoint: Viewpoint) {
-    this.$activeViewpoint.next(viewpoint.title);
-    this.currentRoute = 'viewpoint';
+    // this.$activeViewpoint.next(viewpoint.title);
+    // this.currentRoute = 'viewpoint';
     this.router.navigate(['viewpoint', viewpoint.viewpointId], { relativeTo: this.route });
   }
 

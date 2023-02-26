@@ -3,6 +3,7 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project } from '../models/project';
 import { UserSettings } from '../models/user';
+import { ALMProject } from '../models/alm.models';
 
 
 @Injectable({
@@ -15,6 +16,8 @@ export class DataService {
   private _userSettings = new ReplaySubject<UserSettings>(1)
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeViewProject = new ReplaySubject<Project>(1)
+  private _almprojects = new ReplaySubject<ALMProject[]>(1)
+
 
   constructor() { }
 
@@ -38,6 +41,10 @@ export class DataService {
     this._activeViewProject.next(value);
   }
 
+  setAlmProjects(value: ALMProject[]) {
+    this._almprojects.next(value)
+  }
+
   get header() {
     return this._header.asObservable();
   }
@@ -54,9 +61,12 @@ export class DataService {
     return this._userSettings.asObservable();
   }
 
-
   get activeviewproject() {
     return this._activeViewProject.asObservable();
+  }
+
+  get almProjects() {
+    return this._almprojects.asObservable();
   }
 
 }
