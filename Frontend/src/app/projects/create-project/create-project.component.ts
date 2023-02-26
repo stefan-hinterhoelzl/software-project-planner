@@ -126,7 +126,7 @@ export class CreateProjectComponent implements OnInit {
               this.ALMInstances.push({
                 accessToken:
                   this.accessToken === undefined ? '' : this.accessToken,
-                remoteProjectId: this.remoteID!,
+                  remoteProjectId: this.remoteID!,
               });
 
               this.snackbar.openSnackBar(

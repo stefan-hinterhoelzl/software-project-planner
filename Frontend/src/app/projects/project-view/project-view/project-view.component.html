@@ -3,10 +3,10 @@
     <mat-toolbar-row>
       <h2 class="project-title-span">{{ (_project | async)?.title }}</h2>
 
-      <button [ngClass]="{ 'active-view': currentRoute === 'dashboard' }" (click)="handleClick('dashboard')" mat-button class="second-line-button" [routerLink]="['overview']">
+      <button [ngClass]="{ 'active-view': currentRoute === 'dashboard' }" mat-button class="second-line-button" [routerLink]="['overview']">
         Overview
       </button>
-      <button [ngClass]="{ 'active-view': currentRoute === 'config' }" (click)="handleClick('config')" mat-button class="second-line-button" [routerLink]="['config']">
+      <button [ngClass]="{ 'active-view': currentRoute === 'config' }"  mat-button class="second-line-button" [routerLink]="['config']">
         Configuration
       </button>
 
