@@ -7,9 +7,9 @@
   <form [formGroup]="viewPointTitle">
     <mat-form-field color="accent" appearance="outline">
       <mat-label>Viewpoint Title</mat-label>
-      <input (keyup.enter)="save()" matInput #title placeholder="Title of the viewpoint" formControlName="title" maxlength="100" required />
+      <input (keyup.enter)="save()" matInput #title placeholder="Title of the viewpoint" formControlName="title" maxlength="25" required />
       <mat-error *ngIf="viewPointTitle.controls['title'].hasError('required')">Title is mandatory</mat-error>
-      <mat-hint align="end">{{ title.value.length }}/100</mat-hint>
+      <mat-hint align="end">{{ title.value.length }}/25</mat-hint>
     </mat-form-field>
   </form>
   <div style="height: 10px"></div>

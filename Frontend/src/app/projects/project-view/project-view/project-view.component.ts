@@ -82,7 +82,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((data: string) => {
-      if (data !== '') {
+      if (data !== undefined) {
         const newViewpoint = <Viewpoint>{
           title: data,
         };

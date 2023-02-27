@@ -32,7 +32,7 @@ export class NewViewpointDialogComponent {
   }
 
   close() {
-    this.dialogRef.close("")
+    this.dialogRef.close()
   }
 
 
