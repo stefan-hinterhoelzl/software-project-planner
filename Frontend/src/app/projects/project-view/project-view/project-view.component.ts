@@ -43,6 +43,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
+    this.data.setActiveViewpoint(undefined);
     this._activeViewpointSubscription?.unsubscribe();
   }
 

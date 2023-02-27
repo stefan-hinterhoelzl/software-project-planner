@@ -17,7 +17,7 @@ export class DataService {
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeViewProject = new ReplaySubject<Project>(1)
   private _almprojects = new ReplaySubject<ALMProject[]>(1)
-  private _activeViewpoint = new ReplaySubject<Viewpoint>(1);
+  private _activeViewpoint = new ReplaySubject<Viewpoint | undefined>(1);
   private _activeViewpointTitle = new ReplaySubject<string>(1);
 
 
@@ -48,9 +48,9 @@ export class DataService {
   }
   
   //also set the title
-  setActiveViewpoint(value: Viewpoint) {
+  setActiveViewpoint(value: Viewpoint | undefined) {
     this._activeViewpoint.next(value)
-    this._activeViewpointTitle.next(value.title)
+    if (value !== undefined) this._activeViewpointTitle.next(value.title)
   }
 
   setActiveViewpointTitle(value: string) {
