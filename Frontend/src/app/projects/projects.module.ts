@@ -31,6 +31,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ProjectItemViewComponent } from './project-view/project-item-view/project-item-view.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { ProjectItemOptionsComponent } from './project-view/project-item-view/project-item-options/project-item-options.component';
 
 
 
@@ -45,6 +46,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     ProjectConfigViewComponent,
     ProjectDashboardComponent,
     ProjectItemViewComponent,
+    ProjectItemOptionsComponent,
   ],
   imports: [
     CommonModule,

@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angula
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  
+
   map,
   Observable,
- 
+
   Subscription,
- 
+
   tap,
   of,
   share,
@@ -40,7 +40,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   _activeViewpointSubscription?: Subscription;
   _activeViewpointTitle?: Observable<string>;
 
-  
+
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
     this.data.setActiveViewpoint(undefined);
@@ -48,12 +48,11 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.data.setActiveViewpointTitle("Select a Viewpoint...")
     this._activeViewpointSubscription = this.data.activeViewpoint.subscribe(value => {
       this.currentViewpoint = value;
     });
     this._activeViewpointTitle = this.data.activeViewpointTitle.pipe(share());
-    
+
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['id'];
       this.initialize();
@@ -61,6 +60,9 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   }
 
   initialize() {
+    //Reset the Viewpoints on Destroy and on Load
+    this.data.setActiveViewpointTitle("Select a Viewpoint...")
+    this.data.setActiveViewpoint(undefined);
     this._project = this.data.projects.pipe(
       map(val => val.find(val => val.projectId === this.projectID)!),
       tap(val => this.data.setActiveViewProject(val!)),
@@ -69,7 +71,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     );
 
     this._viewpoints = this.getViewpointsObservable();
-    
+
   }
 
   createViewpoint() {
@@ -102,6 +104,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   chooseViewpoint(viewpoint: Viewpoint) {
     this.currentViewpoint = viewpoint;
     this.data.setActiveViewpoint(viewpoint)
+    this.router.navigate(['viewpoint', viewpoint.viewpointId], {relativeTo: this.route})
   }
 
   getViewpointsObservable() {

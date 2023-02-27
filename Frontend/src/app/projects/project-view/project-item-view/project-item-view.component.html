@@ -1,29 +1,27 @@
 <div class="main-wrapper">
-  <mat-drawer-container>
-    <mat-drawer mode="side" opened>
-      <div class = "drawer">
-        <div class="menu-item" [routerLink]="['list']">
-          <mat-icon class="icon">list</mat-icon>
-          <span>List</span>
-        </div>
-        <mat-divider></mat-divider>
-        <div class="menu-item" [routerLink]="['tree']">
-          <mat-icon class="icon">filter_list</mat-icon>
-          <span>Hierarchy</span>
-        </div>
-        <mat-divider></mat-divider>
-        <span class="spacer"></span>
-        <mat-divider></mat-divider>
-        <div class="menu-item">
-          <mat-icon class="icon">settings</mat-icon>
-          <span>Options</span>
-        </div>
+  <div class = "sidenav">
+    <mat-card class="drawer">
+      <div routerLinkActive="active" class="menu-item" [routerLink]="['list']">
+        <mat-icon class="icon">list</mat-icon>
+        <span>List</span>
       </div>
-    </mat-drawer>
-    <mat-drawer-content>
-      <div class="main-content">
-        <router-outlet> </router-outlet>
+      <mat-divider></mat-divider>
+      <div routerLinkActive="active" class="menu-item" [routerLink]="['tree']">
+        <mat-icon class="icon">filter_list</mat-icon>
+        <span>Hierarchy</span>
       </div>
-    </mat-drawer-content>
-  </mat-drawer-container>
+      <mat-divider></mat-divider>
+      <span class="spacer"></span>
+      <mat-divider></mat-divider>
+      <div routerLinkActive="active" class="menu-item" [routerLink]="['options']">
+        <mat-icon class="icon">settings</mat-icon>
+        <span>Options</span>
+      </div>
+    </mat-card>
+  </div>
+  <div class = "content">
+    <div class="main-content">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
 </div>

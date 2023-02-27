@@ -11,9 +11,13 @@
   height: 100%;
 }
 
-mat-drawer-container {
-  width: 100%;
+.sidenav {
+  width: 75px;
   height: 100%;
+}
+
+.content {
+  flex: 1 1 auto;
 }
 
 .drawer {
@@ -50,4 +54,20 @@ mat-drawer-container {
 
 span {
   font-size: small;
+}
+
+.active {
+  border-left: 5px solid #b0bec5;
+  font-weight: 550;
+  box-sizing: border-box;
+
+}
+
+.active span {
+  transform: translateX(-2.5px)
+}
+
+.active mat-icon {
+  transform: translateX(-2.5px);
+  color: #b0bec5
 }

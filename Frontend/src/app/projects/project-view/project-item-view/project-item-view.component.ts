@@ -19,7 +19,7 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
 
 
   constructor() {
-    //possible logic determining the type of aggregator
+    //move to onInit with possible logic determining the type of aggregator
     this.aggregator = new GitLabService()
   }
 
