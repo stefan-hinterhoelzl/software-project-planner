@@ -1,21 +1,17 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
-  filter,
+  
   map,
   Observable,
-  BehaviorSubject,
+ 
   Subscription,
-  switchMap,
+ 
   tap,
   of,
   share,
   catchError,
-  pipe,
-  EMPTY,
-  ReplaySubject,
-  take,
 } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Project, ProjectWrapper, Viewpoint } from 'src/app/models/project';
@@ -37,35 +33,30 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   projectID?: string;
-  currentRoute: string = '';
+  currentViewpoint?: Viewpoint;
   _routeSubscription?: Subscription;
-  _routerSubscription?: Subscription;
   _project?: Observable<Project>;
   _viewpoints?: Observable<Viewpoint[]>;
-  _activeView?: Observable<string>;
+  _activeViewpointSubscription?: Subscription;
+  _activeViewpointTitle?: Observable<string>;
 
-  $activeViewpoint = new ReplaySubject<string>(1);
-  _activeViewpoint = this.$activeViewpoint.asObservable();
-
+  
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
-    this._routerSubscription?.unsubscribe();
+    this._activeViewpointSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
-
+    this.data.setActiveViewpointTitle("Select a Viewpoint...")
+    this._activeViewpointSubscription = this.data.activeViewpoint.subscribe(value => {
+      this.currentViewpoint = value;
+    });
+    this._activeViewpointTitle = this.data.activeViewpointTitle.pipe(share());
+    
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['id'];
-      console.log("i am here")
       this.initialize();
     });
-
-    this._routerSubscription = this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.applyVisualSettings(event.url)
-      }
-    })
-
   }
 
   initialize() {
@@ -77,38 +68,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     );
 
     this._viewpoints = this.getViewpointsObservable();
-    console.log(this.router.url)
-
-    //Apply correct visual settings after reload
-    this.applyVisualSettings(this.router.url)
-
-
-  }
-
-  applyVisualSettings(path: string) {
-    if (path.includes('overview')) {
-      this.currentRoute = 'dashboard';
-      this.$activeViewpoint.next('Select a Viewpoint...');
-    } else if (path.includes('config')) {
-      this.currentRoute = 'config';
-      this.$activeViewpoint.next('Select a Viewpoint...');
-    } else {
-      this.currentRoute = 'viewpoint';
-      let id: number = Number(this.route.firstChild?.snapshot.params['viewpointId']);
-      this._viewpoints!
-        .pipe(
-          map(value => {
-            console.log(value);
-            return value.find(view => {
-              return view.viewpointId === id;
-            });
-          }),
-          take(1)
-        )
-        .subscribe(value => {
-          return this.$activeViewpoint.next(value?.title!);
-        });
-    }
+    
   }
 
   createViewpoint() {
@@ -138,15 +98,9 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleClick(activeButton: string) {
-    this.currentRoute = activeButton;
-    this.$activeViewpoint.next('Select a Viewpoint...');
-  }
-
   chooseViewpoint(viewpoint: Viewpoint) {
-    // this.$activeViewpoint.next(viewpoint.title);
-    // this.currentRoute = 'viewpoint';
-    this.router.navigate(['viewpoint', viewpoint.viewpointId], { relativeTo: this.route });
+    this.currentViewpoint = viewpoint;
+    this.data.setActiveViewpoint(viewpoint)
   }
 
   getViewpointsObservable() {

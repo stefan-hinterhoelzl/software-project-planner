@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { User } from '@firebase/auth';
-import { Project } from '../models/project';
+import { Project, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
 
@@ -17,6 +17,8 @@ export class DataService {
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeViewProject = new ReplaySubject<Project>(1)
   private _almprojects = new ReplaySubject<ALMProject[]>(1)
+  private _activeViewpoint = new ReplaySubject<Viewpoint>(1);
+  private _activeViewpointTitle = new ReplaySubject<string>(1);
 
 
   constructor() { }
@@ -44,6 +46,16 @@ export class DataService {
   setAlmProjects(value: ALMProject[]) {
     this._almprojects.next(value)
   }
+  
+  //also set the title
+  setActiveViewpoint(value: Viewpoint) {
+    this._activeViewpoint.next(value)
+    this._activeViewpointTitle.next(value.title)
+  }
+
+  setActiveViewpointTitle(value: string) {
+    this._activeViewpointTitle.next(value)
+  }
 
   get header() {
     return this._header.asObservable();
@@ -67,6 +79,14 @@ export class DataService {
 
   get almProjects() {
     return this._almprojects.asObservable();
+  }
+
+  get activeViewpoint() {
+    return this._activeViewpoint.asObservable();
+  }
+
+  get activeViewpointTitle() {
+    return this._activeViewpointTitle.asObservable();
   }
 
 }

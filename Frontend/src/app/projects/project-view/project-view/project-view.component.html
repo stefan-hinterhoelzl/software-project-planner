@@ -3,11 +3,14 @@
     <mat-toolbar-row>
       <h2 class="project-title-span">{{ (_project | async)?.title }}</h2>
 
-      <button [ngClass]="{ 'active-view': currentRoute === 'dashboard' }" mat-button class="second-line-button" [routerLink]="['overview']">
+      <button routerLinkActive="active-view" mat-button class="second-line-button" [routerLink]="['overview']">
         Overview
       </button>
-      <button [ngClass]="{ 'active-view': currentRoute === 'config' }"  mat-button class="second-line-button" [routerLink]="['config']">
+      <button routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['config']">
         Configuration
+      </button>
+      <button *ngIf="currentViewpoint !== undefined" routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint/', currentViewpoint.viewpointId]">
+        Item Views
       </button>
 
 
@@ -20,8 +23,8 @@
 
       <span class = "spacer"></span>
 
-      <button [ngClass]="{ 'active-view': currentRoute === 'viewpoint' }" mat-button class="second-line-button" [matMenuTriggerFor]="menu">
-        {{ _activeViewpoint | async }} <mat-icon>view_carousel</mat-icon>
+      <button  routerLinkActive="active-view" mat-button class="second-line-button" [matMenuTriggerFor]="menu">
+        {{ (_activeViewpointTitle | async) }} <mat-icon>view_carousel</mat-icon>
        </button>
 
       <mat-menu #menu="matMenu">
