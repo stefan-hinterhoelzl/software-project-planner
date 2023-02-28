@@ -73,4 +73,9 @@ export class BackendService {
   getViewpointsFromProject(projectId: string) {
     return this.http.get<Viewpoint[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoints')
   }
+
+  getViewpointByID(viewpointId: number, projectId: string) {
+    return this.http.get<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId)
+  }
+
 }

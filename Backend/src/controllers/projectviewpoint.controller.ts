@@ -43,7 +43,7 @@ export async function updateViewpointById(req: Request, res: Response) {
 
     try {
         const conn = await connect()
-        const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpontId = ?' , [projectId, viewpointId]))[0][0]
+        const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpointId = ?' , [projectId, viewpointId]))[0][0]
         if (result !== undefined) {
             updateViewpoint.lastmodified = new Date(Date.now())
             //reformat for entering again, also use server sided string to prevent manipulation
@@ -63,13 +63,28 @@ export async function deleteViewpointById(req: Request, res: Response) {
 
     try {
         const conn = await connect()
-        const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpontId = ?' , [projectId, viewpointId]))[0][0]
+        const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpointId = ?' , [projectId, viewpointId]))[0][0]
         if (result !== undefined) {
             await conn.query('DELETE FROM Viewpoints WHERE projectId = ? AND viewpointId = ', [projectId, viewpointId]);
             res.json({"message": `Viewpoint with ID ${viewpointId} in Project with ID ${projectId} was deleted!`})
         } else {
             res.status(404).json({"message": `Viewpoint does not exist in project with ID ${projectId}`})
         }
+    } catch (err: any) {
+        handleError(res, err);
+      }
+}
+
+export async function getViewpointById(req: Request, res: Response) {
+    var projectId: string = req.params.projectId;
+    var viewpointId: number = Number(req.params.viewpointId);
+
+    try {
+        const conn = await connect()
+        const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpointId = ?' , [projectId, viewpointId]))[0][0]
+        if (result === undefined) {
+            res.status(404).json({"message": `Viewpoint with ID ${viewpointId} does not exist in project with ID ${projectId}`})
+        } else return res.json(result)
     } catch (err: any) {
         handleError(res, err);
       }

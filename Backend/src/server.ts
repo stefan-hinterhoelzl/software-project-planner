@@ -8,7 +8,7 @@ import { createProject, getProjectsByOwner, getProjectById, updateProjectById, d
 import { createUser, getUserById } from './controllers/user.controller';
 import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
 import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint } from './controllers/issue.controller';
-import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById } from './controllers/projectviewpoint.controller';
+import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById, getViewpointById } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
 
 dotenv.config();
@@ -99,6 +99,10 @@ express_app.post('/project/:projectId/Viewpoints', authenticateJWT, (req, res) =
 
 express_app.get('/project/:projectId/Viewpoints', authenticateJWT, (req, res) => {
   getViewpointsByProject(req, res);
+});
+
+express_app.get('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, (req, res) => {
+  getViewpointById(req, res)
 });
 
 express_app.put('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, (req, res) => {
