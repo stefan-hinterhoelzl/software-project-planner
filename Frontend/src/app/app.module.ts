@@ -24,6 +24,8 @@ import { ProjectSearchComponent } from './projects/project-search/project-search
 import { MatListModule } from '@angular/material/list';
 import { HttpClientModule } from '@angular/common/http';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { NotFoundComponent } from './error/not-found/not-found.component';
+import { ServerErrorComponent } from './error/server-error/server-error.component';
 
 
 

@@ -18,15 +18,16 @@ $dark-theme: mat.define-dark-theme((
     color: (
         primary: $my-custom-primary,
         accent: $my-custom-accent,
-    )
+    ),
 ));
 
 
 //Apply the light theme by default
 @include mat.all-component-themes($light-theme);
+@include mat.all-component-colors($dark-theme);
 
 
 //Apply the dark theme only when the user prefers it
-@media (prefers-color-scheme: dark) {
-    @include mat.all-component-colors($dark-theme);
-}
+//  @media (prefers-color-scheme: dark) {
+//      @include mat.all-component-colors($dark-theme);
+//  }

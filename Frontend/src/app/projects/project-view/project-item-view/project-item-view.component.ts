@@ -10,50 +10,52 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 @Component({
   selector: 'app-project-item-view',
   templateUrl: './project-item-view.component.html',
-  styleUrls: ['./project-item-view.component.scss']
+  styleUrls: ['./project-item-view.component.scss'],
 })
 export class ProjectItemViewComponent implements OnInit, OnDestroy {
-
-  route = inject(ActivatedRoute)
-  data = inject(DataService)
-  snackbar = inject(SnackbarComponent)
-  backend = inject(BackendService)
+  route = inject(ActivatedRoute);
+  data = inject(DataService);
+  snackbar = inject(SnackbarComponent);
+  backend = inject(BackendService);
 
   aggregator: ALMDataAggregator;
   _routeSubscription?: Subscription;
   _project?: Observable<Project>;
   _viewPointSubscription?: Subscription;
   viewpoint?: Viewpoint;
-
-
+  notExisting: boolean = false;
+  loading: boolean = true;
 
   constructor() {
     //move to onInit with possible logic determining the type of aggregator
-    this.aggregator = new GitLabService()
+    this.aggregator = new GitLabService();
   }
-
 
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
-    this._viewPointSubscription = this.route.params.pipe(switchMap(value =>  {
-      let projectId: string = this.route.parent?.snapshot.params["id"]
-      return this.backend.getViewpointByID(Number(value["viewpointId"]), projectId)
-    })).pipe(share()).subscribe(value => {
-      if (value !== undefined) {
-        this.viewpoint = value
-        this.data.setActiveViewpoint(value)
-      } else {
-        this.snackbar.openSnackBar("This Viewpoint does not exist on this project (TODO)", "red-snackbar")
-      }
-    }
-    );
+    this.loading = true;
+    this.notExisting = false;
+    this._viewPointSubscription = this.route.params
+      .pipe(
+        switchMap(value => {
+          let projectId: string = this.route.parent?.snapshot.params['id'];
+          return this.backend.getViewpointByID(Number(value['viewpointId']), projectId);
+        })
+      )
+      .pipe(share())
+      .subscribe({
+        next: value => {
+          this.viewpoint = value;
+          this.data.setActiveViewpoint(value);
+          this.initialize()
+        }
+      });
   }
-
-  initialize(viewpointId: number) {
+  initialize() {
     this._project = this.data.activeviewproject.pipe(share());
+    this.loading = false;
   }
-
 }

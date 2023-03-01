@@ -1,8 +1,8 @@
-<div class="main-wrapper">
-  <div class = "sidenav">
+<div *ngIf="!loading" class="main-wrapper">
+  <div class="sidenav">
     <mat-card class="drawer">
       <p>Viewpoint Menu</p>
-      <div routerLinkActive="active" class="menu-item"  [routerLink]="['list']">
+      <div routerLinkActive="active" class="menu-item" [routerLink]="['list']">
         <mat-icon class="icon">list</mat-icon>
         <span>List</span>
       </div>
@@ -21,8 +21,16 @@
       </div>
     </mat-card>
   </div>
-  <div class = "content">
+  <div class="content">
     <div class="main-content">
       <router-outlet> </router-outlet>
     </div>
   </div>
+</div>
+
+<div *ngIf="notExisting && !loading" class="main-wrapper">
+  <div class="notfoundpage">
+    <img src="../../../../assets/images/not-found.jpg" alt="">
+  </div>
+
+</div>
