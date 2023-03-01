@@ -63,10 +63,10 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     //Reset the Viewpoints on Destroy and on Load
     this.data.setActiveViewpointTitle("Select a Viewpoint...")
     this.data.setActiveViewpoint(undefined);
-    this._project = this.data.projects.pipe(
-      map(val => val.find(val => val.projectId === this.projectID)!),
-      tap(val => this.data.setActiveViewProject(val!)),
-      catchError(err => of().pipe(tap(() => this.snackbar.openSnackBar('Server error while loading project! Try again later.', 'red-snackbar')))),
+
+
+    this._project = this.backend.getProjectById(this.projectID!).pipe(
+      tap(project => this.data.setActiveViewProject(project)),
       share()
     );
 

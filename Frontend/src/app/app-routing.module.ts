@@ -4,6 +4,8 @@ import { LoginComponent } from './authentication/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { AuthguardService } from './services/authguard.service';
 import { PreloadAllModules } from '@angular/router';
+import { NotFoundComponent } from './error/not-found/not-found.component';
+import { ServerErrorComponent } from './error/server-error/server-error.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -13,14 +15,25 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthguardService],
   },
+  {
+   path: '404',
+   component: NotFoundComponent
+  },
+
+  {path: '500',
+  component: ServerErrorComponent
+  },
 
   //Lazy loaded project module
 
   {
       path: 'project',
       loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)
-  }
- 
+  },
+
+  {path: '**',
+   component: NotFoundComponent
+  },
 ];
 
 @NgModule({
