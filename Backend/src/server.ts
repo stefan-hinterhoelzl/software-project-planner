@@ -57,15 +57,15 @@ express_app.get('/projects/:owner', authenticateJWT, (req, res) => {
   getProjectsByOwner(req, res);
 });
 
-express_app.get('/project/:id', authenticateJWT, (req, res) => {
+express_app.get('/project/:projectId', authenticateJWT, (req, res) => {
   getProjectById(req, res);
 });
 
-express_app.put('/project/:id', authenticateJWT, (req, res) => {
+express_app.put('/project/:projectId', authenticateJWT, (req, res) => {
   updateProjectById(req, res);
 });
 
-express_app.delete('/project/:id', authenticateJWT, (req, res) => {
+express_app.delete('/project/:projectId', authenticateJWT, (req, res) => {
   deleteProjectById(req, res);
 });
 
@@ -74,7 +74,7 @@ express_app.post('/users', authenticateJWT, (req, res) => {
   createUser(req, res);
 });
 
-express_app.get('/user/:id', authenticateJWT, (req, res) => {
+express_app.get('/user/:userId', authenticateJWT, (req, res) => {
   getUserById(req, res);
 });
 
@@ -83,7 +83,7 @@ express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, (req, re
   addRemoteProjects(req, res);
 });
 
-express_app.get('/project/:projectId/RemoteProejcts', authenticateJWT, (req, res) => {
+express_app.get('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
   getRomoteProjects(req, res);
 });
 

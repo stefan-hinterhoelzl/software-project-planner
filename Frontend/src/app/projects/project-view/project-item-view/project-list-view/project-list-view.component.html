@@ -6,8 +6,8 @@
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
             <mat-select formControlName="projectsControl">
-              <mat-option *ngFor="let project of remoteProjects" [value]="project.id">{{
-                project.name
+              <mat-option *ngFor="let project of (_ALMProjects | async)" [value]="project">{{
+                project.title
                 }}</mat-option>
             </mat-select>
           </mat-form-field>

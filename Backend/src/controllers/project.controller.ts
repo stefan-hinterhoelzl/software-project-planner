@@ -20,7 +20,7 @@ export async function createProject(req: Request, res: Response) {
 }
 
 export async function getProjectById(req: Request, res: Response) {
-  var id: string = req.params.id;
+  var id: string = req.params.projectId;
 
   try {
     const conn = await connect();
@@ -45,7 +45,7 @@ export async function getProjectsByOwner(req: Request, res: Response) {
 }
 
 export async function updateProjectById(req: Request, res: Response) {
-  var id: string = req.params.id;
+  var id: string = req.params.projectId;
   const updateProject = req.body;
 
   try {
@@ -66,7 +66,7 @@ export async function updateProjectById(req: Request, res: Response) {
 }
 
 export async function deleteProjectById(req: Request, res: Response) {
-  var id: string = req.params.id;
+  var id: string = req.params.projectId;
 
   try {
     const conn = await connect();
@@ -79,5 +79,15 @@ export async function deleteProjectById(req: Request, res: Response) {
     }
   } catch (err: any) {
     handleError(res, err);
+  }
+}
+
+export async function checkProjectAccess(projectId: string, userId: string): Promise<boolean> {
+  try {
+    const conn = await connect();
+    const result: Project = (await conn.query<Project[]>('SELECT * FROM Projects Where projectId = ? AND owner = ?', [projectId, userId]))[0][0];
+    return result === undefined;
+  } catch (err: any) {
+    return false;
   }
 }

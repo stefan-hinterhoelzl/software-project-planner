@@ -14,7 +14,7 @@ export async function createUser(req: Request, res: Response) {
 }
 
 export async function getUserById(req: Request, res: Response) {
-  var id: string = req.params.id;
+  var id: string = req.params.userId;
 
   try {
     const conn = await connect();

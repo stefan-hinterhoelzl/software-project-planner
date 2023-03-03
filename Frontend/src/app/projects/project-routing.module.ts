@@ -19,7 +19,7 @@ const routes: Routes = [
         canActivate: [AuthguardService],
     },
     {
-        path: 'view/:id',
+        path: 'view/:projectId',
         component: ProjectViewComponent,
         canActivate: [AuthguardService],
         children: [

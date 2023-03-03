@@ -54,7 +54,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     this._activeViewpointTitle = this.data.activeViewpointTitle.pipe(share());
 
     this._routeSubscription = this.route.params.subscribe(params => {
-      this.projectID = params['id'];
+      this.projectID = params['projectId'];
       this.initialize();
     });
   }

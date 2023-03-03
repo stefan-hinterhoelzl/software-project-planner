@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpParamsOptions } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { ALMProject } from 'src/app/models/alm.models';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ALMService {
+export class GitlabALMService {
 
   private http = inject(HttpClient)
 
@@ -27,7 +28,7 @@ export class ALMService {
 
   getProjectPerID(projectID: number, accesstoken: string) {
     return this.http.get<any>(this.BASE_URL+'projects/'+projectID,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'body', responseType: 'json'})
   }
 
   getLabelsPerProject(projectID: number, accesstoken: string, paginationstring: string) {

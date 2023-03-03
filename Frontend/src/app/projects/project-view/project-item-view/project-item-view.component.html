@@ -1,4 +1,4 @@
-<div *ngIf="!loading" class="main-wrapper">
+<div class="main-wrapper">
   <div class="sidenav">
     <mat-card class="drawer">
       <p>Viewpoint Menu</p>
@@ -21,16 +21,18 @@
       </div>
     </mat-card>
   </div>
-  <div class="content">
+  <div *ngIf="!loading" class="content">
     <div class="main-content">
       <router-outlet> </router-outlet>
     </div>
+  </div>
+  <div *ngIf="this.loading" class="main-content">
+    <mat-spinner class="progress-spinner"> </mat-spinner>
   </div>
 </div>
 
 <div *ngIf="notExisting && !loading" class="main-wrapper">
   <div class="notfoundpage">
-    <img src="../../../../assets/images/not-found.jpg" alt="">
+    <img src="../../../../assets/images/not-found.jpg" alt="" />
   </div>
-
 </div>

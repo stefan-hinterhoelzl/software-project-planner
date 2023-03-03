@@ -8,7 +8,7 @@ import { User, getAuth } from '@firebase/auth';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ALMService } from 'src/app/services/alm.service';
+import { GitlabALMService } from 'src/app/services/ALM/Adapater Services/gitLab.service';
 import { BackendService } from 'src/app/services/backend.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { BackendService } from 'src/app/services/backend.service';
 export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
   data = inject(DataService);
-  alm = inject(ALMService);
+  alm = inject(GitlabALMService);
   firestore = inject(FirestoreService);
   backend = inject(BackendService);
   _ngZone = inject(NgZone);

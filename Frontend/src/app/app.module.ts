@@ -27,6 +27,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NotFoundComponent } from './error/not-found/not-found.component';
 import { ServerErrorComponent } from './error/server-error/server-error.component';
 import { ErrorInterceptor } from './interceptors/error-interceptor';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 
 
 
@@ -65,7 +66,8 @@ const app = initializeApp(environment.firebase)
 
 
   ],
-  providers: [SnackbarComponent, DataService, {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}],
+  providers: [SnackbarComponent, DataService, {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+                                              {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

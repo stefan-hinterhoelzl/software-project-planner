@@ -1,9 +1,9 @@
 export interface ALMProject {
   projectId: number;
   title: string;
+  description: string;
   createdAt: Date;
   updatedAt: Date;
-  labels: string[];
   webURL: string;
 }
 

@@ -65,8 +65,8 @@ export class BackendService {
     return this.http.post<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', remoteProjects);
   }
 
-  getRemoteProjectsForProject(projectId: string) {
-    return this.http.get<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects');
+  getRemoteProjectsForProject(projectId: string): Observable<RemoteProject[]> {
+    return this.http.get<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', {observe: 'body', responseType: 'json'});
   }
 
   //Viewpoints

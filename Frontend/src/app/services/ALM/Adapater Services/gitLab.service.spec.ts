@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ALMService } from './alm.service';
+import { GitlabALMService } from './gitLab.service';
 
 describe('GitlabService', () => {
-  let service: ALMService;
+  let service: GitlabALMService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ALMService);
+    service = TestBed.inject(GitlabALMService);
   });
 
   it('should be created', () => {
