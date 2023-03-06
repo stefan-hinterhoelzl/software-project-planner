@@ -1,6 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, from, lastValueFrom, map, observable, Observable, of, tap } from 'rxjs';
 import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from '../../models/alm.models';
 import { RemoteProject } from '../../models/project';
 import { GitlabALMService } from './Adapater Services/gitLab.service';
@@ -10,6 +10,8 @@ export abstract class ALMDataAggregator {
   abstract getProjects(remoteProjects: RemoteProject[]): Observable<ALMProject[]>;
 
   abstract getIssues(project: RemoteProject, filteroptions?: ALMFilteroptions, paginationoptions?: ALMPaginationoptions): Observable<ALMIssue[]>;
+
+  abstract getLabels(project: RemoteProject): Observable<string[]>;
 }
 
 @Injectable({
@@ -45,6 +47,38 @@ export class GitLabAggregator implements ALMDataAggregator {
     paginationoptions?: ALMPaginationoptions | undefined
   ): Observable<ALMIssue[]> {
     throw new Error('Method not implemented.');
+  }
+
+  getLabels(project: RemoteProject): Observable<string[]> {
+    return from(this.labelsAggregator(project)).pipe(
+      map(labelsArrays => labelsArrays)
+    )
+
+  }
+
+  async labelsAggregator(project: RemoteProject) {
+    let requests: string[] = [];
+    let currentPage: number = 1;
+
+    let pageAmount = this.getLabelsForProject(project, '?per_page=100').pipe(map(res => (totalPages = Number(res.headers.get('x-total-pages')))));
+    let totalPages: number = await lastValueFrom(pageAmount);
+
+    while (currentPage <= totalPages) {
+      requests.push('?per_page=100&page=' + currentPage);
+      currentPage++;
+    }
+
+    //const o_labels = requests.map(req => this.getLabelsForProject(project, req).pipe(map(req => (req.body as string[]))));
+    const o_labels = requests.map(req => this.getLabelsForProject(project,req).pipe(map(res => res.body as string[])))
+
+    o_labels
+
+    return forkJoin(o_labels);
+  }
+
+  getLabelsForProject(project: RemoteProject, paginationString: string) {
+    const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteProjectId, project.accessToken, paginationString);
+    return labels;
   }
 }
 

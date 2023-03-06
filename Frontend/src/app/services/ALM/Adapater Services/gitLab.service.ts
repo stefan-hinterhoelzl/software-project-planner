@@ -33,7 +33,7 @@ export class GitlabALMService {
 
   getLabelsPerProject(projectID: number, accesstoken: string, paginationstring: string) {
     return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels'+paginationstring,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response', responseType: 'json'})
   }
 
 

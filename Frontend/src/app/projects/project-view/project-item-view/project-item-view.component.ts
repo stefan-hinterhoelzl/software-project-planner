@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, mergeMap, Observable, of, share, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, map, mergeMap, noop, Observable, of, share, Subscription, switchMap, tap } from 'rxjs';
 import { Project, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -28,6 +28,7 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
   viewpoint?: Viewpoint;
   notExisting: boolean = false;
   loading: boolean = true;
+  noRemoteProjects: boolean = false;
 
   constructor() {
     //move to onInit with possible logic determining the type of aggregator
@@ -62,6 +63,7 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
     this._ALMProjectsSubscription = this.data.activeviewproject
       .pipe(
         switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)),
+        tap(projects => projects.length === 0 ? this.noRemoteProjects = true : this.noRemoteProjects = false),
         switchMap(rProjects => this.aggregator.getProjects(rProjects))
       ).subscribe({
         next: almProjects => {
