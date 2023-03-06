@@ -8,6 +8,7 @@ import { forkJoin, map, Observable, of, share, take, tap } from 'rxjs';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { ALMProject } from 'src/app/models/alm.models';
 import { Project, RemoteProject } from 'src/app/models/project';
+import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { DataService } from 'src/app/services/data.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
@@ -52,10 +53,14 @@ export class ProjectListViewComponent implements OnInit {
   _ALMProjects?: Observable<ALMProject[]>;
   ALMProjects?: ALMProject[];
   selectedProject?: ALMProject;
+  aggregator: ALMDataAggregator;
+  _labels?: Observable<string[]>;
 
   constructor() {
     this.loading = true;
     this.init = true;
+    //move to onInit with possible logic determining the type of aggregator
+    this.aggregator = new GitLabAggregator();
   }
 
   ngOnInit(): void {
@@ -64,6 +69,8 @@ export class ProjectListViewComponent implements OnInit {
 
       this._ALMProjects = this.data.almProjects.pipe(share(), tap(projects => this.ALMProjects = projects));
 
+
+      //Hier eigentlich RemoteProjects notwendig, nicht ALM Projects
       this.filterGroup.get('projectsControl')?.valueChanges.subscribe(project => {
         this.selectedProject = project
         this.initializeData();
@@ -85,7 +92,9 @@ export class ProjectListViewComponent implements OnInit {
     this.pageSize = 20;
     let project: RemoteProject = this.remoteProject!;
 
-    this.aggregateLabelsForProject(project);
+    this._labels = this.aggregator.getLabels(project).pipe(
+      tap(labels => console.log(labels))
+    );
 
     this.getIssues();
   }

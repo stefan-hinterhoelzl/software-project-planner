@@ -14,7 +14,7 @@
           <mat-form-field color="accent">
             <mat-label>Labels</mat-label>
             <mat-select formControlName="labelsControl" multiple>
-              <mat-option *ngFor="let label of labels" [value]="label">
+              <mat-option *ngFor="let label of (_labels | async)" [value]="label">
                 {{ label }}</mat-option>
             </mat-select>
           </mat-form-field>

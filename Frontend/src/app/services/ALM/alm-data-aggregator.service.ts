@@ -50,10 +50,7 @@ export class GitLabAggregator implements ALMDataAggregator {
   }
 
   getLabels(project: RemoteProject): Observable<string[]> {
-    return from(this.labelsAggregator(project)).pipe(
-      map(labelsArrays => labelsArrays)
-    )
-
+    return from(this.labelsAggregator(project));
   }
 
   async labelsAggregator(project: RemoteProject) {
@@ -68,12 +65,20 @@ export class GitLabAggregator implements ALMDataAggregator {
       currentPage++;
     }
 
-    //const o_labels = requests.map(req => this.getLabelsForProject(project, req).pipe(map(req => (req.body as string[]))));
-    const o_labels = requests.map(req => this.getLabelsForProject(project,req).pipe(map(res => res.body as string[])))
+    const o_labels = requests.map((value, index, array) => {
+      return this.getLabelsForProject(project, value);
+    });
 
-    o_labels
-
-    return forkJoin(o_labels);
+    return lastValueFrom(
+      forkJoin(o_labels).pipe(
+        map(labels =>
+          labels
+            .flat()
+            .map(label => label.body as string[])
+            .flat()
+        )
+      )
+    );
   }
 
   getLabelsForProject(project: RemoteProject, paginationString: string) {
