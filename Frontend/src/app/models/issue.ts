@@ -1,5 +1,8 @@
 export interface Issue {
-  description: string;
-  labels: string[];
-
+  viewpointId: number,
+  projectId: string,
+  remoteProjectId: number,
+  remoteIssueId: number,
 }
+
+

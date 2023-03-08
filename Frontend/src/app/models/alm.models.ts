@@ -10,7 +10,7 @@ export interface ALMProject {
 export interface ALMIssue {
   projectId: number;
   issueId: number;
-  title: number;
+  title: string;
   description: string;
   labels: string[];
   createdAt: Date;
@@ -19,6 +19,7 @@ export interface ALMIssue {
   type: string;
   webURL: string;
   timeStats: ALMTimeStats;
+  selected: boolean;
 }
 
 export interface ALMTimeStats {
@@ -26,12 +27,18 @@ export interface ALMTimeStats {
   spentHours: number;
 }
 
+export interface ALMIssueResWrapper {
+  issues: ALMIssue[],
+  totalitems: number,
+  totalpages: number,
+}
+
 
 export interface ALMFilteroptions {
   labels: string[];
   state: string;
-  updatedBefore: Date;
-  updatedAfter: Date;
+  updatedBefore: string;
+  updatedAfter: string;
   titleDescription: string;
 }
 

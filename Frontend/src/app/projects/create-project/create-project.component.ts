@@ -5,7 +5,6 @@ import { map, Subscription, switchMap, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { User, getAuth } from '@firebase/auth';
-import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GitlabALMService } from 'src/app/services/ALM/Adapater Services/gitLab.service';
@@ -20,7 +19,6 @@ export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
   data = inject(DataService);
   alm = inject(GitlabALMService);
-  firestore = inject(FirestoreService);
   backend = inject(BackendService);
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);

@@ -6,6 +6,8 @@ import { DataService } from './data.service';
 import { getAuth, User } from '@firebase/auth';
 import { UserSettings } from '../models/user';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
+import { ALMIssue } from '../models/alm.models';
+import { Issue } from '../models/issue';
 
 @Injectable({
   providedIn: 'root',
@@ -81,5 +83,19 @@ export class BackendService {
   getViewpointByID(viewpointId: number, projectId: string) {
     return this.http.get<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId)
   }
+
+  //Selected Remote Issues
+  getSelectedRemoteIssuesForViewpoint(projectId: string, viewpointId: number, remoteProjectId: number) {
+    return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues', {params: {'remoteProjectId':remoteProjectId}})
+  }
+
+  addRemoteIssuesToViewpoint(rIssues: Issue[]) {
+    return this.http.post<Issue[]>(this.BASE_URL + 'project/' + rIssues[0].projectId + '/Viewpoint/' + rIssues[0].viewpointId + '/RemoteIssues', rIssues)
+  }
+
+  removeRemoteIssuesToViewpoint(rIssues: Issue[]) {
+    return this.http.put<Issue[]>(this.BASE_URL + 'project/' + rIssues[0].projectId + '/Viewpoint/' + rIssues[0].viewpointId + '/RemoteIssues', rIssues)
+  }
+
 
 }

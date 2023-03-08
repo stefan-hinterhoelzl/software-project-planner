@@ -4,7 +4,6 @@ import { DataService } from 'src/app/services/data.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { take } from 'rxjs';
-import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 
 @Component({
@@ -15,7 +14,6 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 export class ProjectSearchComponent implements OnInit {
   data = inject(DataService);
   dialog = inject(MatDialog);
-  firestore = inject(FirestoreService);
   snackbar = inject(SnackbarComponent);
 
   @Output() navigationEvent = new EventEmitter<string>();

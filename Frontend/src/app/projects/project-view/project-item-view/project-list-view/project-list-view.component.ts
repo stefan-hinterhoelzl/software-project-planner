@@ -1,16 +1,33 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { HttpResponse } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { forkJoin, map, Observable, of, share, take, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  filter,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  ReplaySubject,
+  share,
+  Subscribable,
+  Subscription,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
-import { ALMProject } from 'src/app/models/alm.models';
-import { Project, RemoteProject } from 'src/app/models/project';
+import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
+import { Issue } from 'src/app/models/issue';
+import { Project, RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
+import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
-import { FirestoreService } from 'src/app/services/firestore.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 
 @Component({
@@ -19,17 +36,29 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   styleUrls: ['./project-list-view.component.scss'],
 })
 export class ProjectListViewComponent implements OnInit {
+  //Providers
   data = inject(DataService);
-  firestore = inject(FirestoreService);
   snackbar = inject(SnackbarComponent);
   dialog = inject(MatDialog);
-  project?: Project;
-  remoteProject?: RemoteProject;
-  issues?: any[] = [];
-  remoteProjects?: any[] = [];
-  selectedIssues?: string[] = [];
-  loading: boolean;
+  backend = inject(BackendService);
+  aggregator: ALMDataAggregator;
+
+  //Form Data
+  filterGroup = new FormGroup({
+    labelsControl: new FormControl({ value: [], disabled: true }),
+    stateControl: new FormControl({ value: '', disabled: true }),
+    projectsControl: new FormControl(),
+    searchControl: new FormControl({ value: '', disabled: true }),
+    startDateControl: new FormControl({ value: '', disabled: true }),
+    endDateControl: new FormControl({ value: '', disabled: true }),
+  });
+
+  //state booleans
   init: boolean;
+  _loading: Observable<boolean>;
+  $loading: BehaviorSubject<boolean>;
+
+  // Pagination Options
   pageIndex: number = 0;
   pageSize: number = 20;
   pageSizeOptions = [20, 50, 100];
@@ -40,218 +69,229 @@ export class ProjectListViewComponent implements OnInit {
   lastPage: string = '';
   totalPagesGitlab: number = 0;
   showFirstLastButtons: boolean = true;
-  filterGroup = new FormGroup({
-    labelsControl: new FormControl({ value: [], disabled: true }),
-    stateControl: new FormControl({ value: '', disabled: true }),
-    projectsControl: new FormControl(),
-    searchControl: new FormControl({ value: '', disabled: true }),
-    startDateControl: new FormControl({ value: '', disabled: true }),
-    endDateControl: new FormControl({ value: '', disabled: true }),
-  });
+
   labels: string[] = [];
 
+  //First Level Data
+  project?: Project;
+  viewpoint?: Viewpoint;
+
+  //ALM Projects
   _ALMProjects?: Observable<ALMProject[]>;
   ALMProjects?: ALMProject[];
   selectedProject?: ALMProject;
-  aggregator: ALMDataAggregator;
+
+  //RemoteProjects
+  _RemoteProjects?: Observable<RemoteProject[]>;
+  selectedRemoteProject?: RemoteProject;
+
+  //Issues
+  SelectedIssues?: Issue[];
+  _selectedIssues?: Observable<Issue[]>;
+  selectedIssuesSub?: Subscription;
+  selectedDeltaPlus?: Issue[] = [];
+  selectedDeltaMinus?: Issue[] = [];
+
+  _issues?: Observable<ALMIssue[]>;
+  issues?: ALMIssue[];
+  issueSub?: Subscription;
+
+  //Labels
   _labels?: Observable<string[]>;
 
   constructor() {
-    this.loading = true;
+    this.$loading = new BehaviorSubject<boolean>(true);
+    this._loading = this.$loading.asObservable();
+
     this.init = true;
     //move to onInit with possible logic determining the type of aggregator
     this.aggregator = new GitLabAggregator();
   }
 
   ngOnInit(): void {
-    this.data.activeviewproject.pipe(take(1)).subscribe(project => {
-      this.project = project;
+    this.data.activeviewproject
+      .pipe(
+        tap(project => (this.project = project)),
+        switchMap(() => this.data.activeViewpoint),
+        tap(viewpoint => (this.viewpoint = viewpoint))
+      )
+      .subscribe(() => {
+        this._ALMProjects = this.data.almProjects.pipe(
+          share(),
+          tap(projects => (this.ALMProjects = projects))
+        );
 
-      this._ALMProjects = this.data.almProjects.pipe(share(), tap(projects => this.ALMProjects = projects));
-
-
-      //Hier eigentlich RemoteProjects notwendig, nicht ALM Projects
-      this.filterGroup.get('projectsControl')?.valueChanges.subscribe(project => {
-        this.selectedProject = project
-        this.initializeData();
+        this.filterGroup
+          .get('projectsControl')
+          ?.valueChanges.pipe(
+            tap(project => (this.selectedProject = project)),
+            switchMap(project =>
+              this.data.remoteProjects.pipe(map(rProjects => rProjects.find(rProject => rProject.remoteProjectId === project.projectId)))
+            )
+          )
+          .subscribe(rProject => {
+            this.selectedRemoteProject = rProject;
+            this.initializeData(true);
+          });
       });
-    });
   }
 
-  initializeData() {
+  initializeData(refresh: boolean) {
     this.init = false;
     this.labels = [];
-    this.filterGroup.get('labelsControl')?.setValue([]);
-    this.filterGroup.get('stateControl')?.setValue('');
-    this.filterGroup.get('searchControl')?.setValue('');
+    this.clearFilters();
     this.nextPage = '';
     this.prevPage = '';
     this.firstPage = '';
     this.lastPage = '';
     this.pageIndex = 0;
     this.pageSize = 20;
-    let project: RemoteProject = this.remoteProject!;
 
-    this._labels = this.aggregator.getLabels(project).pipe(
-      tap(labels => console.log(labels))
-    );
+    if (this.selectedRemoteProject !== undefined) {
+      this._labels = this.aggregator.getLabels(this.selectedRemoteProject).pipe(share());
 
-    this.getIssues();
+      this.getSelectedIssues()
+        .pipe(switchMap(() => this.getIssues()))
+        .subscribe({
+          next: () => {
+            this.$loading.next(false);
+            this.filterGroup.get('labelsControl')?.enable();
+            this.filterGroup.get('stateControl')?.enable();
+            this.filterGroup.get('searchControl')?.enable();
+            this.filterGroup.get('startDateControl')?.enable();
+            this.filterGroup.get('endDateControl')?.enable();
+          },
+        });
+    }
   }
 
   getIssues() {
-    this.loading = true;
-    this.issues = [];
-    let project: RemoteProject = this.remoteProject!;
-    console.log(this.project);
-    console.log(this.selectedIssues);
-    //this.selectedIssues?.push(...this.project?.selectedIssues!);
+    this.$loading.next(true);
 
-    let filterstring: string = this.createIssueFilterString();
+    let filter: ALMFilteroptions = this.createFilterOptions();
+    let pagination: ALMPaginationoptions = this.createPaginationOptions();
 
-    let paginationString: string = this.createIssuePaginationString(filterstring);
+    return this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination).pipe(
+      share(),
+      tap(value => {
+        this.issues = value.issues;
+        if (value.totalitems === undefined) {
+          this.showFirstLastButtons = false;
+          this.length = 10000;
+        } else this.length = value.totalitems;
+      }),
+      map(value => value.issues),
+      map(almIssues => {
+        return almIssues.map(almIssue => {
+          let i: Issue | undefined = this.SelectedIssues?.find(value => value.remoteIssueId === almIssue.issueId);
+          let i2: Issue | undefined = this.selectedDeltaPlus?.find(value => value.remoteIssueId === almIssue.issueId);
+          let i3: Issue | undefined = this.selectedDeltaMinus?.find(value => value.remoteIssueId === almIssue.issueId);
 
-    let optionstring = filterstring.concat(paginationString);
+          almIssue.selected = true;
+          if (i === undefined && i2 === undefined && i3 === undefined) almIssue.selected = false;
+          if (i !== undefined && i3 !== undefined && i2 === undefined) almIssue.selected = false;
 
-    console.log(optionstring);
-
-    // this.getIssuesForProject(project, optionstring).pipe(take(1)).subscribe(issues => {
-    //   let totalItems: string = issues.headers.get("x-total")!;
-    //   this.totalPagesGitlab  = Number(issues.headers.get("x-total-pages"))
-    //   if (totalItems === null) {
-    //     this.showFirstLastButtons = false
-    //     this.length = 10000
-    //   }
-    //   else this.length = Number(totalItems);
-
-    //   this.issues?.push(...issues.body!);
-    //   console.log(this.issues)
-
-    //   this.issues?.forEach((value, index, array) => {
-    //     let id: string = this.getIssueUniqueId(value)
-    //     value.uniqueID = id;
-    //     value.selected = false;
-    //     if (this.selectedIssues?.includes(id)) {
-    //       value.selected = true;
-    //     }
-    //   })
-    //   console.log(this.issues)
-    //   this.loading = false;
-    // });
+          return almIssue;
+        });
+      })
+    );
   }
 
-  getIssuesForProject(project: RemoteProject, filterstring: string) {
-    //const issues: Observable<HttpResponse<any[]>> = this.alm.getIssuesPerProject(project.remoteProjectId, project.accessToken, filterstring);
-    // return issues
+  getSelectedIssues() {
+    return this.backend
+      .getSelectedRemoteIssuesForViewpoint(this.project?.projectId!, this.viewpoint?.viewpointId!, this.selectedRemoteProject?.remoteProjectId!)
+      .pipe(
+        share(),
+        tap(value => (this.SelectedIssues = value))
+      );
   }
 
-  getProjects(projects: RemoteProject[]) {
-    // const o_projects: Observable<HttpResponse<any[]>>[] = projects.map(project =>
-    //   this.alm.getProjectPerID(project.remoteProjectId, project.accessToken));
-    //   return forkJoin(o_projects).pipe(map(project => project.map(project => project.body)))
-  }
+  setSelected(bool: boolean, issue: ALMIssue) {
+    issue.selected = bool;
 
-  aggregateLabelsForProject(project: RemoteProject) {
-    let requests: string[] = [];
-    let totalPages: number = 0;
-    let currentPage: number = 2;
-
-    // this.getLabelsForProject(project, "?per_page=100").pipe(take(1)).subscribe(res => {
-    //   totalPages = Number(res.headers.get('x-total-pages'))
-    //   this.labels.push(...res.body!.map(label => label.name));
-    //   console.log(totalPages)
-
-    //   while (currentPage<=totalPages) {
-    //     requests.push("?per_page=100&page="+currentPage)
-    //     currentPage++
-    //     console.log(requests)
-    //   }
-
-    //   if (requests.length !== 0) {
-    //     const o_labels = requests.map((value, index, array) => {
-    //       return this.getLabelsForProject(project, value)
-    //     })
-
-    //    forkJoin(o_labels).pipe(map(labels => labels.flat().map(label => label.body).flat())).subscribe(labels => {
-    //     console.log(labels.map(label=> label.name))
-    //     this.labels.push(...labels!.map(label => label.name))
-    //     this.filterGroup.get("labelsControl")?.enable();
-    //     this.filterGroup.get("searchControl")?.enable();
-    //     this.filterGroup.get("stateControl")?.enable();
-    //     this.filterGroup.get("startDateControl")?.enable();
-    //     this.filterGroup.get("endDateControl")?.enable();
-    //     })
-    //   } else {
-    //     this.filterGroup.get("labelsControl")?.enable();
-    //     this.filterGroup.get("searchControl")?.enable();
-    //     this.filterGroup.get("stateControl")?.enable();
-    //     this.filterGroup.get("startDateControl")?.enable();
-    //     this.filterGroup.get("endDateControl")?.enable();
-    //   }
-    // })
-  }
-
-  getLabelsForProject(project: RemoteProject, paginationString: string) {
-    // const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteProjectId, project.accessToken, paginationString);
-    //   return labels
-    //   //return labels.pipe(map(labels => labels.body))
+    if (bool) {
+      let i: Issue | undefined = this.selectedDeltaMinus?.find(value => value.remoteIssueId === issue.issueId);
+      if (i === undefined)
+        this.selectedDeltaPlus?.push(<Issue>{
+          remoteIssueId: issue.issueId,
+          remoteProjectId: issue.projectId,
+          projectId: this.project?.projectId,
+          viewpointId: this.viewpoint?.viewpointId,
+        });
+      else {
+        let n: number = this.selectedDeltaMinus?.findIndex(value => value.remoteIssueId === issue.issueId)!;
+        this.selectedDeltaMinus?.splice(n, 1);
+      }
+    } else {
+      let i: Issue | undefined = this.selectedDeltaPlus?.find(value => value.remoteIssueId === issue.issueId);
+      if (i === undefined)
+        this.selectedDeltaMinus?.push(<Issue>{
+          remoteIssueId: issue.issueId,
+          remoteProjectId: issue.projectId,
+          projectId: this.project?.projectId,
+          viewpointId: this.viewpoint?.viewpointId,
+        });
+      else {
+        let n: number = this.selectedDeltaPlus?.findIndex(value => value.remoteIssueId === issue.issueId)!;
+        this.selectedDeltaPlus?.splice(n, 1);
+      }
+    }
   }
 
   saveSelection() {
-    //How to Handle hierarchy? Probably with flat map
-    this.issues?.forEach((value, index, array) => {
-      let id: string = this.getIssueUniqueId(value);
-      if (!this.selectedIssues?.includes(id)) {
-        this.selectedIssues?.push(id);
-      }
-    });
+    this.$loading.next(true);
+    let plus: Observable<any>;
+    let minus: Observable<any>;
 
-    //this.project!.selectedIssues = this.selectedIssues!
+    if (this.selectedDeltaPlus !== undefined && this.selectedDeltaPlus.length !== 0) {
+      plus = this.backend.addRemoteIssuesToViewpoint(this.selectedDeltaPlus);
+    } else plus = of({});
 
-    this.firestore
-      .updateProject(this.project!)
-      .then(() => {
-        this.snackbar.openSnackBar('Item selection saved!', 'green-snackbar');
-      })
-      .catch(() => {
-        this.snackbar.openSnackBar('Error saving selection, pleaser try again!', 'red-snackbar');
+    if (this.selectedDeltaMinus !== undefined && this.selectedDeltaMinus.length !== 0) {
+      minus = this.backend.removeRemoteIssuesToViewpoint(this.selectedDeltaMinus);
+    } else minus = of({});
+
+    plus
+      .pipe(
+        switchMap(() => minus),
+        switchMap(() => this.getSelectedIssues()),
+        switchMap(() => this.getIssues())
+      )
+      .subscribe({
+        next: () => {
+          this.$loading.next(false);
+          this.selectedDeltaMinus = [];
+          this.selectedDeltaPlus = [];
+          this.snackbar.openSnackBar('Saved!', 'green-snackbar');
+        },
+        error: () => {
+          this.snackbar.openSnackBar('An error occured, try again.', 'red-snackbar');
+        },
       });
   }
 
   markAllItems(bool: boolean) {
     this.issues?.forEach((value, index, array) => {
-      this.setSelected(bool, value);
+      if (value.selected !== bool) this.setSelected(bool, value);
     });
-  }
-
-  setSelected(bool: boolean, issue: any) {
-    let id: string = this.getIssueUniqueId(issue);
-
-    if (bool) {
-      this.selectedIssues?.push(id);
-      issue.selected = bool;
-    } else {
-      let index: number = this.selectedIssues?.indexOf(id)!;
-      if (index != -1) {
-        this.selectedIssues?.splice(index, 1);
-        issue.selected = bool;
-      }
-    }
   }
 
   handlePageEvent(e: PageEvent) {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
-    console.log(e);
 
-    this.getIssues();
+    this.reloadIssues();
+  }
+
+  reloadIssues() {
+    this.getIssues().subscribe(() => this.$loading.next(false));
   }
 
   setLength(items: number) {
     this.length = items;
   }
 
-  openIssueDetailDialog(issue: any) {
+  openIssueDetailDialog(issue: ALMIssue) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.minWidth = '1000px';
@@ -261,22 +301,20 @@ export class ProjectListViewComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.setSelected(true, issue);
+        issue.selected = true;
       }
     });
   }
 
   selectAllAndSave() {
-    let filterstring: string = this.createIssueFilterString();
-    let currentPage: number = 2;
-    let requests: string[] = [];
-
-    while (currentPage < this.totalPagesGitlab) {
-      currentPage++;
-    }
+    // let filterstring: string = this.createFilterOptions();
+    // let currentPage: number = 2;
+    // let requests: string[] = [];
+    // while (currentPage < this.totalPagesGitlab) {
+    //   currentPage++;
+    // }
   }
 
   clearFilters() {
@@ -287,57 +325,20 @@ export class ProjectListViewComponent implements OnInit {
     this.filterGroup.get('endDateControl')?.setValue('');
   }
 
-  private createIssueFilterString() {
-    let filterstring: string = '';
-    let searchterm = this.filterGroup.get('searchControl')?.value!;
-    let selectedLabels = this.filterGroup.get('labelsControl')?.value!;
-    let selectedState = this.filterGroup.get('stateControl')?.value!;
-    let selectedStartDate: string = this.filterGroup.get('startDateControl')?.value!;
-    let selectedEndDate: string = this.filterGroup.get('startDateControl')?.value!;
-
-    if (searchterm !== '') filterstring = filterstring.concat('?search=', searchterm);
-    if (selectedLabels?.length !== 0) {
-      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?labels=');
-      else filterstring = filterstring.concat('&labels=');
-      selectedLabels?.forEach(value => {
-        filterstring = filterstring.concat(value, ',');
-      });
-      filterstring = filterstring.substring(0, filterstring.length - 1);
-    }
-    if (selectedState !== '') {
-      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?state=');
-      else filterstring = filterstring.concat('&state=');
-
-      filterstring = filterstring.concat(selectedState);
-    }
-
-    if (selectedEndDate !== '' && selectedStartDate !== '') {
-      let startDate: string = new Date(selectedStartDate).toISOString();
-      let endDate: string = new Date(selectedEndDate).toISOString();
-
-      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?updated_after=');
-      else filterstring = filterstring.concat('&updated_after=');
-
-      filterstring = filterstring.concat(startDate);
-      filterstring = filterstring.concat('&update_before' + endDate);
-    }
-
-    return filterstring;
+  private createFilterOptions(): ALMFilteroptions {
+    return <ALMFilteroptions>{
+      titleDescription: this.filterGroup.get('searchControl')?.value!,
+      labels: this.filterGroup.get('labelsControl')?.value!,
+      state: this.filterGroup.get('stateControl')?.value!,
+      updatedAfter: this.filterGroup.get('startDateControl')?.value!,
+      updatedBefore: this.filterGroup.get('startDateControl')?.value!,
+    };
   }
 
-  private createIssuePaginationString(filterstring: string) {
-    let paginationString: string = '';
-    if (filterstring.indexOf('?') === -1) paginationString = paginationString.concat('?');
-    else paginationString = paginationString.concat('&');
-    paginationString = paginationString.concat('page=', (this.pageIndex + 1).toString()); //Angular starts at 0, Gitlab at one
-
-    paginationString = paginationString.concat('&per_page=', this.pageSize.toString());
-
-    return paginationString;
-  }
-
-  private getIssueUniqueId(issue: any) {
-    let s: string = issue.project_id.toString() + issue.id.toString();
-    return s;
+  private createPaginationOptions(): ALMPaginationoptions {
+    return <ALMPaginationoptions>{
+      page: this.pageIndex,
+      perPage: this.pageSize,
+    };
   }
 }

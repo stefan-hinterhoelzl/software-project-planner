@@ -1,7 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { forkJoin, from, lastValueFrom, map, observable, Observable, of, tap } from 'rxjs';
-import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from '../../models/alm.models';
+import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject, ALMTimeStats } from '../../models/alm.models';
 import { RemoteProject } from '../../models/project';
 import { GitlabALMService } from './Adapater Services/gitLab.service';
 
@@ -9,7 +9,7 @@ import { GitlabALMService } from './Adapater Services/gitLab.service';
 export abstract class ALMDataAggregator {
   abstract getProjects(remoteProjects: RemoteProject[]): Observable<ALMProject[]>;
 
-  abstract getIssues(project: RemoteProject, filteroptions?: ALMFilteroptions, paginationoptions?: ALMPaginationoptions): Observable<ALMIssue[]>;
+  abstract getIssues(project: RemoteProject, filteroptions?: ALMFilteroptions, paginationoptions?: ALMPaginationoptions): Observable<ALMIssueResWrapper>;
 
   abstract getLabels(project: RemoteProject): Observable<string[]>;
 }
@@ -45,19 +45,104 @@ export class GitLabAggregator implements ALMDataAggregator {
     project: RemoteProject,
     filteroptions?: ALMFilteroptions | undefined,
     paginationoptions?: ALMPaginationoptions | undefined
-  ): Observable<ALMIssue[]> {
-    throw new Error('Method not implemented.');
+  ): Observable<ALMIssueResWrapper> {
+    let filterString = '';
+    let paginationString = '';
+
+    if (filteroptions !== undefined) filterString = this.createFilterString(filteroptions);
+    if (paginationoptions !== undefined) paginationString = this.createPaginationString(paginationoptions, filterString);
+
+    let optionsString = filterString.concat(paginationString);
+
+    console.log(optionsString)
+
+    return this.alm.getIssuesPerProject(project.remoteProjectId, project.accessToken, optionsString).pipe(
+      map(res => {
+        return <ALMIssueResWrapper>{
+          totalitems: Number(res.headers.get('x-total')),
+          totalpages: Number(res.headers.get('x-total-pages')),
+          issues: res.body?.map(issue => {
+            return <ALMIssue>{
+              projectId: issue.project_id,
+              issueId: issue.id,
+              title: issue.title,
+              description: issue.description,
+              labels: issue.labels,
+              createdAt: issue.created_at,
+              updatedAt: issue.updated_at,
+              state: issue.state,
+              type: issue.type,
+              webURL: issue.web_url,
+              timeStats: <ALMTimeStats>{
+                estimateHours: issue.time_stats.time_estimate,
+                spentHours: issue.time_stats.total_time_spent,
+              },
+              selected: false,
+            };
+          }),
+        };
+      })
+    )
+  }
+
+  private createFilterString(filter: ALMFilteroptions): string {
+    let filterstring: string = '';
+    let searchterm = filter.titleDescription;
+    let selectedLabels = filter.labels;
+    let selectedState = filter.state;
+    let selectedStartDate = filter.updatedAfter;
+    let selectedEndDate = filter.updatedBefore;
+
+    if (searchterm !== '') filterstring = filterstring.concat('?search=', searchterm);
+    if (selectedLabels?.length !== 0) {
+      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?labels=');
+      else filterstring = filterstring.concat('&labels=');
+      selectedLabels?.forEach(value => {
+        filterstring = filterstring.concat(value, ',');
+      });
+      filterstring = filterstring.substring(0, filterstring.length - 1);
+    }
+    if (selectedState !== '') {
+      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?state=');
+      else filterstring = filterstring.concat('&state=');
+
+      filterstring = filterstring.concat(selectedState);
+    }
+
+    if (selectedEndDate !== '' && selectedStartDate !== '') {
+      let startDate: string = new Date(selectedStartDate).toISOString();
+      let endDate: string = new Date(selectedEndDate).toISOString();
+
+      if (filterstring.indexOf('?') === -1) filterstring = filterstring.concat('?updated_after=');
+      else filterstring = filterstring.concat('&updated_after=');
+
+      filterstring = filterstring.concat(startDate);
+      filterstring = filterstring.concat('&update_before' + endDate);
+    }
+
+    return filterstring;
+  }
+
+  private createPaginationString(pagination: ALMPaginationoptions, filterstring: string): string {
+    let paginationString: string = '';
+    if (filterstring.indexOf('?') === -1) paginationString = paginationString.concat('?');
+    else paginationString = paginationString.concat('&');
+    paginationString = paginationString.concat('page=', (pagination.page! + 1).toString()); //Angular starts at 0, Gitlab at one
+    paginationString = paginationString.concat('&per_page=', pagination.perPage!.toString());
+
+    return paginationString;
   }
 
   getLabels(project: RemoteProject): Observable<string[]> {
     return from(this.labelsAggregator(project));
   }
 
-  async labelsAggregator(project: RemoteProject) {
+  private async labelsAggregator(project: RemoteProject) {
     let requests: string[] = [];
     let currentPage: number = 1;
+    let p: number;
 
-    let pageAmount = this.getLabelsForProject(project, '?per_page=100').pipe(map(res => (totalPages = Number(res.headers.get('x-total-pages')))));
+    let pageAmount = this.getLabelsForProject(project, '?per_page=100').pipe(map(res => (p = Number(res.headers.get('x-total-pages')))));
     let totalPages: number = await lastValueFrom(pageAmount);
 
     while (currentPage <= totalPages) {
@@ -74,14 +159,15 @@ export class GitLabAggregator implements ALMDataAggregator {
         map(labels =>
           labels
             .flat()
-            .map(label => label.body as string[])
+            .map(label => label.body)
             .flat()
+            .map(value => value.name)
         )
       )
     );
   }
 
-  getLabelsForProject(project: RemoteProject, paginationString: string) {
+  private getLabelsForProject(project: RemoteProject, paginationString: string) {
     const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteProjectId, project.accessToken, paginationString);
     return labels;
   }

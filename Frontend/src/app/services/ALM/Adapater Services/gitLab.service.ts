@@ -16,29 +16,26 @@ export class GitlabALMService {
 
 
 
-  checkForAccessToProject(projectID: number, accesstoken: string) {
-    return this.http.get(this.BASE_URL+'projects/'+projectID,
+  checkForAccessToProject(remoteProjectID: number, accesstoken: string) {
+    return this.http.get(this.BASE_URL+'projects/'+remoteProjectID,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
   }
 
-  getIssuesPerProject(projectID: number, accesstoken: string, filterstring: string) {
-    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/issues'+filterstring,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
-  }
-
-  getProjectPerID(projectID: number, accesstoken: string) {
-    return this.http.get<any>(this.BASE_URL+'projects/'+projectID,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'body', responseType: 'json'})
-  }
-
-  getLabelsPerProject(projectID: number, accesstoken: string, paginationstring: string) {
-    return this.http.get<any[]>(this.BASE_URL+'projects/'+projectID+'/labels'+paginationstring,
+  getIssuesPerProject(remoteProjectID: number, accesstoken: string, filterstring: string) {
+    console.log(filterstring)
+    console.log(accesstoken)
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+remoteProjectID+'/issues'+filterstring,
     {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response', responseType: 'json'})
   }
 
+  getProjectPerID(remoteProjectID: number, accesstoken: string) {
+    return this.http.get<any>(this.BASE_URL+'projects/'+remoteProjectID,
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'body', responseType: 'json'})
+  }
 
-  private createAuthHeader(accesstoken: string) {
-    return new HttpHeaders({'PRIVATE-TOKEN': accesstoken})
+  getLabelsPerProject(remoteProjectID: number, accesstoken: string, paginationstring: string) {
+    return this.http.get<any[]>(this.BASE_URL+'projects/'+remoteProjectID+'/labels'+paginationstring,
+    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response', responseType: 'json'})
   }
 
 }

@@ -13,21 +13,21 @@
           </mat-form-field>
           <mat-form-field color="accent">
             <mat-label>Labels</mat-label>
-            <mat-select formControlName="labelsControl" multiple>
-              <mat-option *ngFor="let label of (_labels | async)" [value]="label">
+            <mat-select (keyup.enter)="reloadIssues()" formControlName="labelsControl" multiple>
+              <mat-option  *ngFor="let label of (_labels | async)" [value]="label">
                 {{ label }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field color="accent">
             <mat-label>State</mat-label>
-            <mat-select formControlName="stateControl">
+            <mat-select (keyup.enter)="reloadIssues()" formControlName="stateControl">
               <mat-option value = "opened">Opened</mat-option>
               <mat-option value = "closed">Closed</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field color="accent">
             <mat-label>Created or Updated within</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
+            <mat-date-range-input (keyup.enter)="reloadIssues()" [rangePicker]="picker">
               <input formControlName="startDateControl" matStartDate placeholder="Start date">
               <input formControlName="endDateControl" matEndDate placeholder="End date">
             </mat-date-range-input>
@@ -36,12 +36,12 @@
           </mat-form-field>
           <mat-form-field color="accent">
             <mat-label>Title, Description</mat-label>
-            <input #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
+            <input (keyup.enter)="reloadIssues()" #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Clear Filters"
             [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) = "clearFilters()"><mat-icon>highlight_off</mat-icon></button>
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Reload Items"
-            [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) = "getIssues()"><mat-icon>check_circle_outline</mat-icon></button>
+            [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) ="this.reloadIssues();"><mat-icon>check_circle_outline</mat-icon></button>
         </div>
 
         <div>
@@ -66,10 +66,13 @@
           <div *ngIf="this.init" class="info-title">
             <h2>Select a Remote Project</h2>
           </div>
-          <mat-spinner *ngIf="this.loading && !this.init" class="progress-spinner">
+          <mat-spinner *ngIf="(this._loading | async) && !this.init" class="progress-spinner">
           </mat-spinner>
-          <div *ngIf="!this.loading && !this.init" class = "inner-list-wrapper">
+          <div *ngIf="!(this._loading | async) && !this.init" class = "inner-list-wrapper">
             <div dense class="list">
+              <div *ngIf="issues!.length === 0" class="info-title">
+                <h2>No Issues to display for this filter</h2>
+              </div>
               <div *ngFor="let issue of issues">
                 <div class="list-item">
                   <div (click)="openIssueDetailDialog(issue)" class="title-span"> <span>{{ issue.title }}</span></div>

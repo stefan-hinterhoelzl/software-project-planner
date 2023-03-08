@@ -7,7 +7,6 @@ import { getAuth, User, onAuthStateChanged } from '@firebase/auth';
 import { AuthService } from './services/auth.service';
 import { BackendService } from './services/backend.service';
 import { DataService } from './services/data.service';
-import { FirestoreService } from './services/firestore.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +22,6 @@ export class AppComponent {
   auth = inject(AuthService);
   data = inject(DataService);
   router = inject(Router);
-  firestore = inject(FirestoreService);
   backend = inject(BackendService)
   user?: User;
 

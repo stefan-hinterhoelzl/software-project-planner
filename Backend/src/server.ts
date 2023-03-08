@@ -7,7 +7,7 @@ import * as morgan from 'morgan';
 import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
 import { createUser, getUserById } from './controllers/user.controller';
 import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
-import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint } from './controllers/issue.controller';
+import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint, getRemoteIssuesFromProjectViewpoint } from './controllers/issue.controller';
 import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById, getViewpointById } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
 
@@ -121,6 +121,12 @@ express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', auth
 express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
   removeRemoteIssuesFromProjectViewpoint(req, res);
 });
+
+express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
+  getRemoteIssuesFromProjectViewpoint(req, res);
+});
+
+
 
 //Start the Server
 const server = express_app.listen(process.env.PORT, () => {

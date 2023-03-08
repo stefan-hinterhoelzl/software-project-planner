@@ -63,7 +63,14 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
     this._ALMProjectsSubscription = this.data.activeviewproject
       .pipe(
         switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)),
-        tap(projects => projects.length === 0 ? this.noRemoteProjects = true : this.noRemoteProjects = false),
+        tap(projects => {
+           if (projects.length === 0) {
+              this.noRemoteProjects = true
+           } else {
+              this.noRemoteProjects = false;
+              this.data.setRemoteProjects(projects);
+           }
+          }),
         switchMap(rProjects => this.aggregator.getProjects(rProjects))
       ).subscribe({
         next: almProjects => {
