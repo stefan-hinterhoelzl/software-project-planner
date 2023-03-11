@@ -18,24 +18,33 @@ export class GitlabALMService {
 
   checkForAccessToProject(remoteProjectID: number, accesstoken: string) {
     return this.http.get(this.BASE_URL+'projects/'+remoteProjectID,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response'})
+    {headers: this.createHeader(accesstoken), observe: 'response'})
   }
 
   getIssuesPerProject(remoteProjectID: number, accesstoken: string, filterstring: string) {
-    console.log(filterstring)
-    console.log(accesstoken)
     return this.http.get<any[]>(this.BASE_URL+'projects/'+remoteProjectID+'/issues'+filterstring,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response', responseType: 'json'})
+    {headers: this.createHeader(accesstoken), observe: 'response', responseType: 'json'})
   }
 
   getProjectPerID(remoteProjectID: number, accesstoken: string) {
     return this.http.get<any>(this.BASE_URL+'projects/'+remoteProjectID,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'body', responseType: 'json'})
+    {headers: this.createHeader(accesstoken), observe: 'body', responseType: 'json'})
   }
 
   getLabelsPerProject(remoteProjectID: number, accesstoken: string, paginationstring: string) {
+
+    console.log(accesstoken)
+
     return this.http.get<any[]>(this.BASE_URL+'projects/'+remoteProjectID+'/labels'+paginationstring,
-    {headers: new HttpHeaders({'PRIVATE-TOKEN': accesstoken}), observe: 'response', responseType: 'json'})
+    {headers: this.createHeader(accesstoken), observe: 'response', responseType: 'json'})
   }
 
+
+  private createHeader(accesstoken: string) {
+    let headers = new HttpHeaders()
+
+    if (accesstoken !== '') headers = headers.append('PRIVATE-TOKEN', accesstoken)
+
+    return headers
+  }
 }

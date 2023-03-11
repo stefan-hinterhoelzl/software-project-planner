@@ -73,7 +73,7 @@
             <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
             <mat-icon matSuffix style="cursor: pointer" color="warn" (click)="removeFromALMMap(entry.remoteProjectId)">delete</mat-icon>
           </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field-disabled">
+          <mat-form-field *ngIf ="entry.accessToken !== ''" appearance="outline" class="form-field-disabled">
             <mat-label>Access Token</mat-label>
             <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true" value="{{ entry.accessToken }}" />
           </mat-form-field>

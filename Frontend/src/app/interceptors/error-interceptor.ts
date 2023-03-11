@@ -38,6 +38,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
         if (err.status === 404) {
             this.router.navigate(['/404'], {queryParams: {e:"server"}})
+            return of(EMPTY);
         }
 
         return throwError(() => err);
