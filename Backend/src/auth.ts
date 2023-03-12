@@ -7,7 +7,6 @@ import { checkProjectAccess } from './controllers/project.controller';
 export const authenticateJWT = async (req: Request, res: Response, next: any) => {
     const auth = getAuth(firebase_app)
     const authHeader = req.headers.authorization;
-    console.log(req.params)
 
     if (authHeader) {
       const idToken = authHeader.split(" ")[1];

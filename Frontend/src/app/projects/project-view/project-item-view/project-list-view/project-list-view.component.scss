@@ -50,9 +50,6 @@ mat-select {
   align-items: flex-start;
 }
 
-
-
-
 .card-wrapper {
   display: flex;
   margin: auto auto;
@@ -99,8 +96,6 @@ mat-select {
   height: 100%;
   justify-content: center;
   align-items: center;
-
-
 }
 
 .list {
@@ -122,8 +117,21 @@ mat-select {
   min-height: 600px;
 }
 
-.btn {
-  float: right;
+.button-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
 }
 
+.icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+  margin: 0;
+  margin-right: 15px;
+}
 
+.spacer {
+  flex: 1 1 auto;
+}

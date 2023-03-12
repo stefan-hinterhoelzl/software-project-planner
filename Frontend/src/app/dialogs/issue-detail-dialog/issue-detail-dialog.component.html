@@ -2,11 +2,11 @@
 
 <mat-dialog-content class="mat-typography">
 
-  <button mat-flat-button color="primary" [autofocus]="false"> {{ issue.issue_type }} </button>
+  <button mat-flat-button color="primary" [autofocus]="false"> {{ issue.type }} </button>
   <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ issue.state }} </button>
 
 
-  <p>Issue last modified at: {{ issue.updated_at | date : "short" }}</p>
+  <p>Issue last modified at: {{ issue.updatedAt | date : "short" }}</p>
 
   <p [innerHTML]="issue.description | markdown"></p>
 </mat-dialog-content>

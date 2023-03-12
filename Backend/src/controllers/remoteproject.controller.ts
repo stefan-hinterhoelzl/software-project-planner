@@ -21,7 +21,6 @@ export async function addRemoteProjects(req: Request, res: Response) {
 
 export async function getRomoteProjects(req: Request, res: Response) {
   var id: string = req.params.projectId;
-  console.log(id)
   try {
     const conn = await connect();
     

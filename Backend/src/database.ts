@@ -1,8 +1,15 @@
-import { createPool } from 'mysql2/promise';
+import { createPool, Pool } from 'mysql2/promise';
 
-export async function connect() {
+let connection: Pool | undefined = undefined;
 
-    const connection = await createPool({
+export async function connect(): Promise<Pool> {
+
+    // If the pool was already created, return it instead of creating a new one.
+  if(typeof connection !== 'undefined') {
+    return connection;
+  }
+
+    connection = await createPool({
         host: process.env.DATABASE_URL,
         user: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,

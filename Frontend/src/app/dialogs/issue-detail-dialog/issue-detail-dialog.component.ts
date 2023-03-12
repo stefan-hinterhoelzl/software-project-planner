@@ -1,5 +1,6 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ALMIssue } from 'src/app/models/alm.models';
 
 @Component({
   selector: 'app-issue-detail-dialog',
@@ -8,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class IssueDetailDialogComponent {
 
-  public issue: any
+  public issue: ALMIssue
 
   dialogRef = inject(MatDialogRef<IssueDetailDialogComponent>)
 

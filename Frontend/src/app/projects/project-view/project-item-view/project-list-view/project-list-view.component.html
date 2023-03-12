@@ -44,7 +44,7 @@
             [matTooltipShowDelay]="2000"  mat-mini-fab color="accent" (click) ="this.reloadIssues();"><mat-icon>check_circle_outline</mat-icon></button>
         </div>
 
-        <div>
+        <div  *ngIf="!(this._loading | async) && !this.init" class = "button-row">
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
             <mat-icon>select_all</mat-icon> Select
@@ -52,14 +52,16 @@
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
             (click)="markAllItems(false)"><mat-icon>all_out</mat-icon> Unselect All on Page</button>
-          <div class="btn">
+            <span class = "spacer"></span>
+            <mat-icon color = "accent" *ngIf = "selectedDeltaMinus !== undefined && selectedDeltaMinus.length === 0 && selectedDeltaPlus !== undefined && selectedDeltaPlus.length === 0" class="icon">cloud_done</mat-icon>
+            <mat-icon color = "warn" *ngIf = "(selectedDeltaMinus !== undefined && selectedDeltaMinus.length !== 0) || (selectedDeltaPlus !== undefined && selectedDeltaPlus.length !== 0)" class="icon">cloud_off</mat-icon>
             <button [disabled]="this.init" style = "margin-right: 10px" [matTooltipPosition]="'below'" matTooltip="Save issue selection"
             [matTooltipShowDelay]="2000"  mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>save</mat-icon> Save </button>
             <button [disabled]="this.init || !this.showFirstLastButtons" [matTooltipPosition]="'below'" matTooltip="Save all currently filtered issues"
             [matTooltipShowDelay]="2000"   mat-raised-button color="primary"
             (click)="saveSelection()"><mat-icon>done_outline</mat-icon> Select All & Save</button>
-          </div>
+
         </div>
 
         <div class="list-wrapper">

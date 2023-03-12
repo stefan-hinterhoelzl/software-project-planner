@@ -242,14 +242,21 @@ export class ProjectListViewComponent implements OnInit {
     this.$loading.next(true);
     let plus: Observable<any>;
     let minus: Observable<any>;
+    let minussave: Issue[] | undefined = []
+    let plussave: Issue[] | undefined = []
 
     if (this.selectedDeltaPlus !== undefined && this.selectedDeltaPlus.length !== 0) {
       plus = this.backend.addRemoteIssuesToViewpoint(this.selectedDeltaPlus);
+      plussave = this.selectedDeltaMinus
     } else plus = of({});
 
     if (this.selectedDeltaMinus !== undefined && this.selectedDeltaMinus.length !== 0) {
       minus = this.backend.removeRemoteIssuesToViewpoint(this.selectedDeltaMinus);
+      minussave = this.selectedDeltaMinus
     } else minus = of({});
+
+    this.selectedDeltaMinus = [];
+    this.selectedDeltaPlus = [];
 
     plus
       .pipe(
@@ -260,12 +267,13 @@ export class ProjectListViewComponent implements OnInit {
       .subscribe({
         next: () => {
           this.$loading.next(false);
-          this.selectedDeltaMinus = [];
-          this.selectedDeltaPlus = [];
           this.snackbar.openSnackBar('Saved!', 'green-snackbar');
         },
         error: () => {
+          if (minussave !== undefined) this.selectedDeltaMinus = minussave;
+          if (plussave !== undefined) this.selectedDeltaPlus = plussave;
           this.snackbar.openSnackBar('An error occured, try again.', 'red-snackbar');
+          this.$loading.next(false);
         },
       });
   }

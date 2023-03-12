@@ -19,14 +19,14 @@ export async function removeRemoteIssuesFromProjectViewpoint(req: Request, res: 
     const issues: RemoteIssues[] = req.body;
     const conn = await connect();
     await Promise.all([
-      issues.map(value =>
+      issues.forEach(value => {
         conn.query('DELETE FROM RemoteIssues WHERE viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ? AND projectId = ?', [
-          value.projectViewpointId,
+          value.viewpointId,
           value.remoteProjectId,
-          value.issueRemoteId,
+          value.remoteIssueId,
           value.projectId
         ])
-      ),
+      }),
       res.json(issues)
     ]);
   } catch (err: any) {
