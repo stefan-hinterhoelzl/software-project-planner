@@ -50,25 +50,21 @@ export class CreateProjectComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.data.user.pipe(take(1)).subscribe((value) => {
+    this.data.user.pipe(take(1)).subscribe(value => {
       this.loggedUser = value;
     });
 
-    this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe((value) => {
+    this.thirdFormGroup.controls['remoteID'].valueChanges.subscribe(value => {
       this.remoteID = +value!;
     });
 
-    this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(
-      (value) => {
-        this.accessToken = value!;
-      }
-    );
+    this.thirdFormGroup.controls['accessToken'].valueChanges.subscribe(value => {
+      this.accessToken = value!;
+    });
   }
 
   triggerResize() {
-    this._ngZone.onStable
-      .pipe(take(1))
-      .subscribe(() => this.autosize.resizeToFitContent(true));
+    this._ngZone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
   saveProject() {
@@ -84,73 +80,64 @@ export class CreateProjectComponent implements OnInit {
       .addProject(newProject)
       .pipe(
         switchMap((project: Project) => {
-            return this.backend
+          return this.backend
             .addRemoteProjectsToProject(project.projectId, this.ALMInstances)
-            .pipe(map((remoteProjects) => ({ project, remoteProjects })));
+            .pipe(map(remoteProjects => ({ project, remoteProjects })));
         })
       )
       .subscribe({
-        next: (value) => {
+        next: value => {
           this.snackbar.openSnackBar('Project added!', 'green-snackbar');
           this.backend.getProjects();
           this.router.navigate(['/project/view/' + value.project.projectId]);
         },
-        error: (error) => {
-          this.snackbar.openSnackBar(
-            'Error adding Project. Try again',
-            'red-snackbar'
-          );
+        error: error => {
+          this.snackbar.openSnackBar('Error adding Project. Try again', 'red-snackbar');
           console.error(error.error);
         },
       });
   }
 
   addToALMMap() {
-    if (this.remoteID === undefined) {
-      console.log('I am here');
+    console.log(this.remoteID)
+    if (this.remoteID === undefined || this.remoteID === 0) {
       this.remoteIDHasError = true;
     } else {
       this.remoteIDHasError = false;
+
+      let token: string = '';
+
+      if (this.accessToken !== undefined) token = this.accessToken;
+
       this.alm
-        .checkForAccessToProject(this.remoteID!, this.accessToken!)
+        .checkForAccessToProject(this.remoteID!, token)
         .pipe(take(1))
         .subscribe({
-          next: (response) => {
+          next: response => {
+            console.log(response);
             if (
-              this.ALMInstances.findIndex((value) => {
+              this.ALMInstances.findIndex(value => {
                 return value.remoteProjectId === this.remoteID;
               }) === -1
             ) {
               this.ALMInstances.push({
-                accessToken:
-                  this.accessToken === undefined ? '' : this.accessToken,
-                  remoteProjectId: this.remoteID!,
+                accessToken: token,
+                remoteProjectId: this.remoteID!,
               });
 
-              this.snackbar.openSnackBar(
-                'Remote project added!',
-                'green-snackbar'
-              );
+              this.snackbar.openSnackBar('Remote project added!', 'green-snackbar');
             } else {
-              this.snackbar.openSnackBar(
-                'Project already added!',
-                'red-snackbar'
-              );
+              this.snackbar.openSnackBar('Project already added!', 'red-snackbar');
             }
             this.thirdFormGroup.get('remoteID')?.setValue('');
             this.thirdFormGroup.get('accessToken')?.setValue('');
           },
-          error: (error) => {
+          error: error => {
+            console.log(error);
             if (error.status === 401) {
-              this.snackbar.openSnackBar(
-                'Access token is invalid!',
-                'red-snackbar'
-              );
+              this.snackbar.openSnackBar('Access token is invalid!', 'red-snackbar');
             } else if (error.status === 404) {
-              this.snackbar.openSnackBar(
-                'Remote project ID does not exist!',
-                'red-snackbar'
-              );
+              this.snackbar.openSnackBar('Remote project ID does not exist!', 'red-snackbar');
             } else {
               this.snackbar.openSnackBar('Error!');
             }
@@ -162,7 +149,7 @@ export class CreateProjectComponent implements OnInit {
   }
 
   removeFromALMMap(ID: number) {
-    this.ALMInstances = this.ALMInstances.filter((val) => {
+    this.ALMInstances = this.ALMInstances.filter(val => {
       return val.remoteProjectId !== ID;
     });
   }

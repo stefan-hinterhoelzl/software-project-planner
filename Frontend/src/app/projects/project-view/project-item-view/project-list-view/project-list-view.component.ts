@@ -99,6 +99,13 @@ export class ProjectListViewComponent implements OnInit {
   //Labels
   _labels?: Observable<string[]>;
 
+
+
+
+
+  //reactive Coding
+  activeProject$ = this.data.activeviewproject.pipe(tap(project => this.project = project))
+
   constructor() {
     this.$loading = new BehaviorSubject<boolean>(true);
     this._loading = this.$loading.asObservable();
@@ -131,6 +138,7 @@ export class ProjectListViewComponent implements OnInit {
           )
           .subscribe(rProject => {
             this.selectedRemoteProject = rProject;
+            console.log("i am here")
             this.initializeData(true);
           });
       });
