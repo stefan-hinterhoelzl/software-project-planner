@@ -58,6 +58,12 @@ export class BackendService {
     });
   }
 
+
+  // getProjects() {
+  //   const auth = getAuth();
+  //   return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid)
+  // }
+
   getProjectById(projectId: string): Observable<Project> {
     return this.http.get<Project>(this.BASE_URL + 'project/' + projectId)
   }

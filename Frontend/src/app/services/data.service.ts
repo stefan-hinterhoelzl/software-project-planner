@@ -11,6 +11,19 @@ import { ALMProject } from '../models/alm.models';
 })
 export class DataService {
 
+
+  //reactive trys here
+
+
+  private activeProjectSub = new ReplaySubject<Project>(1)
+  private remoteProjectsSub = new ReplaySubject<RemoteProject[]>(1);
+  readonly activeProject$ = this.remoteProjectsSub.asObservable();
+  readonly remoteProjects$ = this.remoteProjectsSub.asObservable();
+
+
+
+
+
   private _header = new BehaviorSubject<string>("Software Project Planner")
   private _loggedInUser = new ReplaySubject<User>(1)
   private _userSettings = new ReplaySubject<UserSettings>(1)
@@ -23,6 +36,16 @@ export class DataService {
 
 
   constructor() { }
+
+  // //reactive try here
+
+  // loadProject()
+
+
+
+
+  // //reactive trys ende here
+
 
   setHeader(value: string) {
     this._header.next(value);

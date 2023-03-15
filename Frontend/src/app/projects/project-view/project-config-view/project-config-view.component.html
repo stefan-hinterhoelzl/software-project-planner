@@ -1,1 +1,77 @@
-<button mat-raised-button color="warn" style = "margin: auto auto">Delete Project</button>
+<div class="main-wrapper">
+  <mat-card>
+    <h1 matCardTitle>Project Details</h1>
+    <mat-divider></mat-divider>
+    <form [formGroup]="projectDetails">
+      <div>
+        <mat-form-field color="accent" hintLabel="Max 100 Characters " appearance="outline">
+          <mat-label>Title</mat-label>
+          <input #title matInput placeholder="Name of the project" formControlName="nameCtrl" maxlength="100" required />
+          <mat-error *ngIf="projectDetails.controls['nameCtrl'].hasError('required')"> Title is mandatory </mat-error>
+          <mat-hint align="end">{{ title.value.length }}/100</mat-hint>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field color="accent" appearance="outline" hintLabel="Max 2000 Characters">
+          <mat-label>Description</mat-label>
+          <textarea
+            #descr
+            placeholder="Describe the project"
+            matInput
+            cdkTextareaAutosize
+            formControlName="descrCtrl"
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="3"
+            cdkAutosizeMaxRows="7"
+            maxlength="2000"
+            required></textarea>
+          <mat-error *ngIf="projectDetails.controls['descrCtrl'].hasError('required')"> Description is mandatory </mat-error>
+          <mat-hint align="end">{{ descr.value.length }}/2000</mat-hint>
+        </mat-form-field>
+      </div>
+    </form>
+    <div>
+      <button class = "margin-top" mat-raised-button color="primary">Save</button>
+    </div>
+  </mat-card>
+
+  <mat-card>
+    <h1 matCardTitle>ALM Instances</h1>
+    <mat-divider></mat-divider>
+    <form [formGroup]="ALMInstances">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>ALM Remote Project ID</mat-label>
+        <input #remoteID matInput type="number" placeholder="ALM Project Remote ID" formControlName="remoteID" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Access Token</mat-label>
+        <input #accessToken matInput [type]="hide ? 'password' : 'text'" placeholder="Access Token" formControlName="accessToken" />
+      </mat-form-field>
+    </form>
+    <div class = "alm-action-row">
+      <button mat-stroked-button (click)="addToALMMap()">Add Remote Project</button>
+      <mat-slide-toggle class="slide-toggle" color="primary" [(ngModel)]="hide">Hide Access Tokens</mat-slide-toggle>
+    </div>
+
+    <div class="disabled-list" *ngFor="let entry of remoteProjects$ | async">
+      <mat-divider></mat-divider>
+      <mat-form-field appearance="outline">
+        <mat-label>Remote Project ID</mat-label>
+        <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
+        <mat-icon matSuffix style="cursor: pointer" color="warn" (click)="removeFromALMMap(entry.remoteProjectId)">delete</mat-icon>
+      </mat-form-field>
+      <mat-form-field *ngIf="entry.accessToken !== ''" appearance="outline">
+        <mat-label>Access Token</mat-label>
+        <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true" value="{{ entry.accessToken }}" />
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <mat-card style = "margin-bottom: 50px">
+    <h1 matCardTitle>Danger Zone</h1>
+    <mat-divider></mat-divider>
+    <div>
+      <button class = "margin-top" mat-raised-button color="warn">Delete Project</button>
+    </div>
+  </mat-card>
+</div>
