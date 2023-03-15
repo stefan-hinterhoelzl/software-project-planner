@@ -6,7 +6,7 @@ import { createLogger, transports, format } from 'winston';
 import * as morgan from 'morgan';
 import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
 import { createUser, getUserById } from './controllers/user.controller';
-import { addRemoteProjects, getRomoteProjects } from './controllers/remoteproject.controller';
+import { addRemoteProjects, deleteRemoteProjectById, getRomoteProjects } from './controllers/remoteproject.controller';
 import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint, getRemoteIssuesFromProjectViewpoint } from './controllers/issue.controller';
 import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById, getViewpointById } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
@@ -88,7 +88,7 @@ express_app.get('/project/:projectId/RemoteProjects', authenticateJWT, (req, res
 });
 
 express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
-  deleteProjectById(req, res);
+  deleteRemoteProjectById(req, res);
 });
 
 //ProjectViewpoint
