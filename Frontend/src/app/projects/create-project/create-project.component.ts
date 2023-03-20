@@ -50,7 +50,7 @@ export class CreateProjectComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.data.user.pipe(take(1)).subscribe(value => {
+    this.data.loggedInUser$.pipe(take(1)).subscribe(value => {
       this.loggedUser = value;
     });
 

@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
+import { BackendService } from './backend.service';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 
 @Injectable({
@@ -11,48 +13,75 @@ import { ALMProject } from '../models/alm.models';
 })
 export class DataService {
 
-
+  backend = inject(BackendService)
+  snackbar = inject(SnackbarComponent)
   //reactive trys here
 
+  //**Subjects**
+  //Projects
+  private _projects = new ReplaySubject<Project[]>(1)
+  private _activeProject = new Subject<Project>
+  private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
+  private _almprojects = new ReplaySubject<ALMProject[]>(1)
 
-  private activeProjectSub = new ReplaySubject<Project>(1)
-  private remoteProjectsSub = new ReplaySubject<RemoteProject[]>(1);
-  readonly activeProject$ = this.remoteProjectsSub.asObservable();
-  readonly remoteProjects$ = this.remoteProjectsSub.asObservable();
-
-
-
-
-
-  private _header = new BehaviorSubject<string>("Software Project Planner")
+  //User
   private _loggedInUser = new ReplaySubject<User>(1)
   private _userSettings = new ReplaySubject<UserSettings>(1)
-  private _projects = new ReplaySubject<Project[]>(1)
-  private _activeViewProject = new ReplaySubject<Project>(1)
-  private _almprojects = new ReplaySubject<ALMProject[]>(1)
-  private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
+
+
+  //Viewpoints
   private _activeViewpoint = new ReplaySubject<Viewpoint | undefined>(1);
-  private _activeViewpointTitle = new ReplaySubject<string>(1);
+
+
+  //Observables
+  readonly projects$ = this._projects.asObservable();
+  readonly activeProject$ = this._activeProject.asObservable();
+  readonly remoteProjects$ = this._remoteProjects.asObservable();
+  readonly almProjects$ = this._almprojects.asObservable();
+  readonly loggedInUser$ = this._loggedInUser.asObservable();
+  readonly userSettings$ = this._userSettings.asObservable();
+  readonly activeViewpoint$ = this._activeViewpoint.asObservable();
+
 
 
   constructor() { }
 
-  // //reactive try here
-
-  // loadProject()
-
-
-
-
-  // //reactive trys ende here
-
-
-  setHeader(value: string) {
-    this._header.next(value);
+  getProjects() {
+    this.backend.getProjects().subscribe({
+      next: projects => {
+        this._projects.next(projects);
+      },
+      error: error => {
+        console.error(error)
+        this.snackbar.openSnackBar('Error loading projects! Try again later.', 'red-snackbar');
+      },
+    });
   }
 
+  getLocalProjectByID() {
+    return this.projects$.pipe()
+  }
+
+  addProject(newProject: Project, projects: Project[]) {
+    this.backend.addProject(newProject).subscribe({
+      next: () => {
+        this._projects.next([...projects, newProject])
+      },
+      error: error => {
+        console.error(error)
+        this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar')
+      }
+    })
+  }
+
+
+// Setters
   setUser(value: User) {
     this._loggedInUser.next(value);
+  }
+
+  setActiveProject(value: Project) {
+    this._activeProject.next(value)
   }
 
   setUserSettings(value: UserSettings) {
@@ -63,10 +92,6 @@ export class DataService {
     this._projects.next(value);
   }
 
-  setActiveViewProject(value: Project) {
-    this._activeViewProject.next(value);
-  }
-
   setAlmProjects(value: ALMProject[]) {
     this._almprojects.next(value)
   }
@@ -75,50 +100,7 @@ export class DataService {
     this._remoteProjects.next(value);
   }
 
-  //also set the title
   setActiveViewpoint(value: Viewpoint | undefined) {
     this._activeViewpoint.next(value)
-    if (value !== undefined) this._activeViewpointTitle.next(value.title)
   }
-
-  setActiveViewpointTitle(value: string) {
-    this._activeViewpointTitle.next(value)
-  }
-
-  get header() {
-    return this._header.asObservable();
-  }
-
-  get user() {
-    return this._loggedInUser.asObservable();
-  }
-
-  get projects() {
-    return this._projects.asObservable();
-  }
-
-  get userSettings() {
-    return this._userSettings.asObservable();
-  }
-
-  get activeviewproject() {
-    return this._activeViewProject.asObservable();
-  }
-
-  get almProjects() {
-    return this._almprojects.asObservable();
-  }
-
-  get activeViewpoint() {
-    return this._activeViewpoint.asObservable();
-  }
-
-  get activeViewpointTitle() {
-    return this._activeViewpointTitle.asObservable();
-  }
-
-  get remoteProjects() {
-    return this._remoteProjects.asObservable();
-  }
-
 }

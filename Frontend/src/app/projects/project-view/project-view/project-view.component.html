@@ -1,5 +1,5 @@
 <div class="main-wrapper">
-  <mat-toolbar color="accent" class="toolbar">
+  <mat-toolbar color="accent" class="toolbar" *ngIf="(_project | async)">
     <mat-toolbar-row>
       <h2 class="project-title-span">{{ (_project | async)?.title }}</h2>
 

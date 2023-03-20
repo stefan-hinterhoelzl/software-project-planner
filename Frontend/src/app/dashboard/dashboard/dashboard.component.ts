@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
 
 
 ngOnInit(): void {
-  this.data.projects.subscribe((value) => {
+  this.data.projects$.subscribe((value) => {
     this.favourites = value.filter(project => project.favourite === true)
   });
 }

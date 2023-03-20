@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { RemoteProject } from 'src/app/models/project';
 import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
@@ -10,15 +10,12 @@ import { DataService } from 'src/app/services/data.service';
   templateUrl: './project-config-view.component.html',
   styleUrls: ['./project-config-view.component.scss']
 })
-export class ProjectConfigViewComponent implements OnInit {
+export class ProjectConfigViewComponent  {
 
   data = inject(DataService)
   backend = inject(BackendService)
   fb = inject(FormBuilder)
 
-  project$ = this.data.activeviewproject;
-
-  remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)));
 
   projectDetails = this.fb.group({
     nameCtrl: ['', Validators.required],
@@ -30,14 +27,16 @@ export class ProjectConfigViewComponent implements OnInit {
     accessToken: [''],
   })
 
-  hide = true;
+  project$ = this.data.activeProject$.pipe(
+              tap(project => {
+                  this.projectDetails.get("nameCtrl")!.setValue(project.title);
+                  this.projectDetails.get("descrCtrl")!.setValue(project.description);
+              })
+  );
 
+  remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)));
 
-
-  ngOnInit(): void {
-
-  }
-
+  hide: boolean = true;
 
   addToALMMap() {
 

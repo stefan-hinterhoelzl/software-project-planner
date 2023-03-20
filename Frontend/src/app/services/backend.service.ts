@@ -45,17 +45,9 @@ export class BackendService {
     return this.http.post<Project>(this.BASE_URL + 'projects', project);
   }
 
-  getProjects() {
+  getProjects(): Observable<Project[]> {
     const auth = getAuth();
-    this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid).subscribe({
-      next: projects => {
-        this.data.setProjects(projects);
-      },
-      error: error => {
-        this.snackbar.openSnackBar('Error loading projects! Try again later.', 'red-snackbar');
-        console.log(error.error);
-      },
-    });
+    return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid);
   }
 
 
