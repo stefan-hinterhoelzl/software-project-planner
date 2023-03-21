@@ -46,8 +46,8 @@ Create Table RemoteIssues (
 	viewpointId				int NOT NULL,
     projectId				varchar(100) NOT NULL,
     remoteProjectId         int NOT NULL,
-    issueRemoteId	        int NOT NULL,
-    Primary KEY (viewpointId, projectId, remoteProjectId, issueRemoteId),
+    remoteIssueId	        int NOT NULL,
+    Primary KEY (viewpointId, projectId, remoteProjectId, remoteIssueId),
     Foreign KEY (projectId, viewpointId) References Viewpoints (projectId, viewpointId) ON DELETE CASCADE
 );
 
