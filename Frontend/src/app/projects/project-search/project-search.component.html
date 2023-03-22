@@ -7,31 +7,8 @@
 </div>
 
 <mat-list>
-  <mat-list-item *ngFor="let project of projects" (click)="navigate('project/view/' + project.projectId)">
+  <mat-list-item *ngFor="let project of projects$ | async" (click)="navigate('project/view/' + project.projectId)">
     <mat-icon class="listicon" matListItemIcon [matTooltipPosition]="'below'" matTooltip="Project menu" [matTooltipShowDelay]="2000">folder</mat-icon>
-
-    <!-- <mat-menu #menu="matMenu">
-      <button
-        *ngIf="!project.favourite"
-        mat-menu-item
-        (click)="toggleFavourite(project.projectId, true)"
-      >
-        <mat-icon>favorite</mat-icon>
-        <span>Add to favourites</span>
-      </button>
-      <button
-        *ngIf="project.favourite"
-        mat-menu-item
-        (click)="toggleFavourite(project.projectId, false)"
-      >
-        <mat-icon>favorite</mat-icon>
-        <span>Remove from favourites</span>
-      </button>
-      <button mat-menu-item (click)="deleteProject(project)">
-        <mat-icon>delete</mat-icon>
-        <span>Delete</span>
-      </button>
-    </mat-menu> -->
     <div matListItemTitle>
       <span
         [matTooltipPosition]="'below'"

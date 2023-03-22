@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, map, ReplaySubject, Subject, switchMap } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
@@ -20,7 +20,7 @@ export class DataService {
   //**Subjects**
   //Projects
   private _projects = new ReplaySubject<Project[]>(1)
-  private _activeProject = new Subject<Project>
+  private _activeProjectId = new ReplaySubject<string>(1)
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
   private _almprojects = new ReplaySubject<ALMProject[]>(1)
 
@@ -35,7 +35,13 @@ export class DataService {
 
   //Observables
   readonly projects$ = this._projects.asObservable();
-  readonly activeProject$ = this._activeProject.asObservable();
+  readonly activeProject$ = this._activeProjectId.asObservable().pipe(
+    switchMap(id => this.projects$.pipe(
+      map(projects => projects.find(value => value.projectId = id)
+      )
+    )
+    )
+  );
   readonly remoteProjects$ = this._remoteProjects.asObservable();
   readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
@@ -58,10 +64,6 @@ export class DataService {
     });
   }
 
-  getLocalProjectByID() {
-    return this.projects$.pipe()
-  }
-
   addProject(newProject: Project, projects: Project[]) {
     this.backend.addProject(newProject).subscribe({
       next: () => {
@@ -75,13 +77,13 @@ export class DataService {
   }
 
 
-// Setters
+  // Setters
   setUser(value: User) {
     this._loggedInUser.next(value);
   }
 
-  setActiveProject(value: Project) {
-    this._activeProject.next(value)
+  setActiveProject(value: string) {
+    this._activeProjectId.next(value)
   }
 
   setUserSettings(value: UserSettings) {

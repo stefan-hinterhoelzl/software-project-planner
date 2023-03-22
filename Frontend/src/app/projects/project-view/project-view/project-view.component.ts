@@ -33,12 +33,14 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   projectID?: string;
-  currentViewpoint?: Viewpoint;
   _routeSubscription?: Subscription;
-  _project?: Observable<Project>;
   _viewpoints?: Observable<Viewpoint[]>;
   _activeViewpointSubscription?: Subscription;
   _activeViewpointTitle?: Observable<string>;
+
+
+  project$ = this.data.activeProject$;
+  activeViewpoint$ = this.data.activeViewpoint$;
 
 
   ngOnDestroy(): void {
@@ -48,11 +50,6 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._activeViewpointSubscription = this.data.activeViewpoint.subscribe(value => {
-      this.currentViewpoint = value;
-    });
-    this._activeViewpointTitle = this.data.activeViewpointTitle.pipe(share());
-
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['projectId'];
       this.initialize();
@@ -61,9 +58,9 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
 
   initialize() {
     //Reset the Viewpoints on Destroy and on Load
-    this.data.setActiveViewpointTitle("Select a Viewpoint...")
     this.data.setActiveViewpoint(undefined);
 
+    //Set 
 
     this._project = this.backend.getProjectById(this.projectID!).pipe(
       tap(project => this.data.setActiveViewProject(project)),
