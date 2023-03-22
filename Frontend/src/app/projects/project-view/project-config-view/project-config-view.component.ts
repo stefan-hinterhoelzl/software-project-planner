@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { switchMap, tap } from 'rxjs';
+import { noop, switchMap, tap } from 'rxjs';
 import { RemoteProject } from 'src/app/models/project';
 import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
@@ -10,7 +10,7 @@ import { DataService } from 'src/app/services/data.service';
   templateUrl: './project-config-view.component.html',
   styleUrls: ['./project-config-view.component.scss']
 })
-export class ProjectConfigViewComponent  {
+export class ProjectConfigViewComponent {
 
   data = inject(DataService)
   backend = inject(BackendService)
@@ -28,10 +28,10 @@ export class ProjectConfigViewComponent  {
   })
 
   project$ = this.data.activeProject$.pipe(
-              tap(project => {
-                  this.projectDetails.get("nameCtrl")!.setValue(project.title);
-                  this.projectDetails.get("descrCtrl")!.setValue(project.description);
-              })
+    tap(project => {
+        this.projectDetails.get("nameCtrl")!.setValue(project.title);
+        this.projectDetails.get("descrCtrl")!.setValue(project.description);
+    })
   );
 
   remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)));

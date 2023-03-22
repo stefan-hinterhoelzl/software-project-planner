@@ -22,6 +22,7 @@ export class DataService {
   private _projects = new ReplaySubject<Project[]>(1)
   private _activeProjectId = new ReplaySubject<string>(1)
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
+  private _activeRemoteProjectId = new ReplaySubject<string>(1);
   private _almprojects = new ReplaySubject<ALMProject[]>(1)
 
   //User
@@ -37,12 +38,20 @@ export class DataService {
   readonly projects$ = this._projects.asObservable();
   readonly activeProject$ = this._activeProjectId.asObservable().pipe(
     switchMap(id => this.projects$.pipe(
-      map(projects => projects.find(value => value.projectId = id)
+      map(projects => projects.find(value => value.projectId === id)!
       )
     )
     )
   );
   readonly remoteProjects$ = this._remoteProjects.asObservable();
+  readonly activeRemoteProject$ = this._activeRemoteProjectId.asObservable().pipe(
+    switchMap(id => this.remoteProjects$.pipe(
+      map(remoteProjects => remoteProjects.find(value => value.projectId === id)!
+      )
+    )
+    )
+  );
+
   readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
   readonly userSettings$ = this._userSettings.asObservable();
@@ -84,6 +93,10 @@ export class DataService {
 
   setActiveProject(value: string) {
     this._activeProjectId.next(value)
+  }
+
+  setActiveRemoteproject(value: string){
+    this._activeRemoteProjectId.next(value)
   }
 
   setUserSettings(value: UserSettings) {

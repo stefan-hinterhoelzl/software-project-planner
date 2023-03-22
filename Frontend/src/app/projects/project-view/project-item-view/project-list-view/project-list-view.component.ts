@@ -15,6 +15,7 @@ import {
   of,
   ReplaySubject,
   share,
+  shareReplay,
   Subscribable,
   Subscription,
   switchMap,
@@ -99,12 +100,14 @@ export class ProjectListViewComponent implements OnInit {
   //Labels
   _labels?: Observable<string[]>;
 
+  //Data Observables
+  project$ = this.data.activeProject$;
+  viewpoint$ = this.data.activeViewpoint$;
+  almProjects$ = this.data.almProjects$;
+  activeRemoteProject$ = this.data.activeRemoteProject$.pipe();
+  view$ = combineLatest([this.project$, this.viewpoint$, this.almProjects$]).pipe(share())
 
 
-
-
-  //reactive Coding
-  activeProject$ = this.data.activeviewproject.pipe(tap(project => this.project = project))
 
   constructor() {
     this.$loading = new BehaviorSubject<boolean>(true);
@@ -116,32 +119,26 @@ export class ProjectListViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.data.activeviewproject
-      .pipe(
-        tap(project => (this.project = project)),
-        switchMap(() => this.data.activeViewpoint),
-        tap(viewpoint => (this.viewpoint = viewpoint))
+    // this.data.activeviewproject
+    //   .pipe(
+    //     tap(project => (this.project = project)),
+    //     switchMap(() => this.data.activeViewpoint),
+    //     tap(viewpoint => (this.viewpoint = viewpoint))
+    //   )
+    //   .subscribe(() => {
+    //     this._ALMProjects = this.data.almProjects.pipe(
+    //       share(),
+    //       tap(projects => (this.ALMProjects = projects))
+    //     );
+    this.filterGroup
+      .get('projectsControl')
+      ?.valueChanges.pipe(
+        tap(projectId => this.data.setActiveRemoteproject(projectId as string))
       )
       .subscribe(() => {
-        this._ALMProjects = this.data.almProjects.pipe(
-          share(),
-          tap(projects => (this.ALMProjects = projects))
-        );
-
-        this.filterGroup
-          .get('projectsControl')
-          ?.valueChanges.pipe(
-            tap(project => (this.selectedProject = project)),
-            switchMap(project =>
-              this.data.remoteProjects.pipe(map(rProjects => rProjects.find(rProject => rProject.remoteProjectId === project.projectId)))
-            )
-          )
-          .subscribe(rProject => {
-            this.selectedRemoteProject = rProject;
-            console.log("i am here")
-            this.initializeData(true);
-          });
+        this.initializeData(true);
       });
+
   }
 
   initializeData(refresh: boolean) {
@@ -179,7 +176,7 @@ export class ProjectListViewComponent implements OnInit {
     let filter: ALMFilteroptions = this.createFilterOptions();
     let pagination: ALMPaginationoptions = this.createPaginationOptions();
 
-    return this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination).pipe(
+    return this.activeRemoteProject$.pipe(switchMap(remoteProject => this.aggregator.getIssues(remoteProject, filter, pagination)),
       share(),
       tap(value => {
         this.issues = value.issues;
