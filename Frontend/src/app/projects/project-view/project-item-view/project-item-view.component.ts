@@ -1,6 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, mergeMap, noop, Observable, of, share, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, map, mergeMap, noop, Observable, of, share, Subscription, switchMap, tap, throwError, timeout, timeoutWith } from 'rxjs';
 import { Project, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -16,6 +16,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 export class ProjectItemViewComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
   data = inject(DataService);
+  cd = inject(ChangeDetectorRef);
   snackbar = inject(SnackbarComponent);
   backend = inject(BackendService);
 
@@ -26,9 +27,15 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
   _project?: Observable<Project>;
   _viewPointSubscription?: Subscription;
   viewpoint?: Viewpoint;
-  notExisting: boolean = false;
-  loading: boolean = true;
-  noRemoteProjects: boolean = false;
+
+  project$ = this.data.activeProject$.pipe(tap(project => {
+    if (project !== undefined)
+    this.data.getRemoteProjects(project.projectId, this.aggregator)
+  }));
+  viewpoint$ = this.data.activeViewpoint$;
+  remoteProjects$ = this.data.remoteProjects$.pipe(share(), tap(value => console.log(value)));
+  view$ = combineLatest([this.project$, this.viewpoint$]).pipe(share(), tap(value => console.log(value)))
+
 
   constructor() {
     //move to onInit with possible logic determining the type of aggregator
@@ -37,49 +44,13 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
-    this._ALMProjectsSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.loading = true;
-    this.notExisting = false;
-    this._viewPointSubscription = this.route.params
-      .pipe(
-        switchMap(value => {
-          let projectId: string = this.route.parent?.snapshot.params['projectId'];
-          return this.backend.getViewpointByID(Number(value['viewpointId']), projectId);
-        })
-      )
-      .pipe(share())
-      .subscribe({
-        next: value => {
-          this.viewpoint = value;
-          this.data.setActiveViewpoint(value);
-          this.initialize();
-        },
-      });
-  }
-  initialize() {
-    this._ALMProjectsSubscription = this.data.activeviewproject
-      .pipe(
-        switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)),
-        tap(projects => {
-           if (projects.length === 0) {
-              this.noRemoteProjects = true
-           } else {
-              this.noRemoteProjects = false;
-              this.data.setRemoteProjects(projects);
-           }
-          }),
-        switchMap(rProjects => this.aggregator.getProjects(rProjects))
-      ).subscribe({
-        next: almProjects => {
-          this.data.setAlmProjects(almProjects);
-          this.loading = false;
-        },
-        error: err => {
-          this.snackbar.openSnackBar(`Error loading projects from the ALM provider. (Code: ${err.code}.`, 'red-snackbar');
-        },
-      });
+    this.route.params.subscribe({
+      next: value => {
+        this.data.setActiveViewpoint(Number(value['viewpointId']));
+      },
+    });
   }
 }

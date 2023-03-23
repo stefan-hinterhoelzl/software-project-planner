@@ -29,12 +29,14 @@ export class ProjectConfigViewComponent {
 
   project$ = this.data.activeProject$.pipe(
     tap(project => {
-        this.projectDetails.get("nameCtrl")!.setValue(project.title);
-        this.projectDetails.get("descrCtrl")!.setValue(project.description);
+        if (project !== undefined) {
+          this.projectDetails.get("nameCtrl")!.setValue(project.title);
+          this.projectDetails.get("descrCtrl")!.setValue(project.description);
+        }
     })
   );
 
-  remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project.projectId)));
+  remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project!.projectId)));
 
   hide: boolean = true;
 

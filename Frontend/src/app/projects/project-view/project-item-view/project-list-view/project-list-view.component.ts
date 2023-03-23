@@ -4,25 +4,20 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
   combineLatest,
-  EMPTY,
-  filter,
-  forkJoin,
   map,
   Observable,
   of,
-  ReplaySubject,
   share,
-  shareReplay,
-  Subscribable,
   Subscription,
   switchMap,
-  take,
   tap,
 } from 'rxjs';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
+import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
 import { Issue } from 'src/app/models/issue';
 import { Project, RemoteProject, Viewpoint } from 'src/app/models/project';
@@ -42,6 +37,8 @@ export class ProjectListViewComponent implements OnInit {
   snackbar = inject(SnackbarComponent);
   dialog = inject(MatDialog);
   backend = inject(BackendService);
+  router = inject(Router)
+  route = inject(ActivatedRoute);
   aggregator: ALMDataAggregator;
 
   //Form Data
@@ -104,18 +101,17 @@ export class ProjectListViewComponent implements OnInit {
   project$ = this.data.activeProject$;
   viewpoint$ = this.data.activeViewpoint$;
   almProjects$ = this.data.almProjects$;
-  activeRemoteProject$ = this.data.activeRemoteProject$.pipe();
-  view$ = combineLatest([this.project$, this.viewpoint$, this.almProjects$]).pipe(share())
+  activeRemoteProject$ = this.data.activeRemoteProject$
+  viewpoints$ = this.data.viewpoints$.pipe(share())
+  view$ = combineLatest([this.project$, this.viewpoint$, this.almProjects$, this.viewpoints$]).pipe(share());
 
 
 
   constructor() {
     this.$loading = new BehaviorSubject<boolean>(true);
     this._loading = this.$loading.asObservable();
-
-    this.init = true;
-    //move to onInit with possible logic determining the type of aggregator
     this.aggregator = new GitLabAggregator();
+    this.init = false;
   }
 
   ngOnInit(): void {
@@ -130,6 +126,7 @@ export class ProjectListViewComponent implements OnInit {
     //       share(),
     //       tap(projects => (this.ALMProjects = projects))
     //     );
+    console.log("hi")
     this.filterGroup
       .get('projectsControl')
       ?.valueChanges.pipe(
@@ -142,7 +139,7 @@ export class ProjectListViewComponent implements OnInit {
   }
 
   initializeData(refresh: boolean) {
-    this.init = false;
+    //this.init = false;
     this.labels = [];
     this.clearFilters();
     this.nextPage = '';
@@ -176,7 +173,7 @@ export class ProjectListViewComponent implements OnInit {
     let filter: ALMFilteroptions = this.createFilterOptions();
     let pagination: ALMPaginationoptions = this.createPaginationOptions();
 
-    return this.activeRemoteProject$.pipe(switchMap(remoteProject => this.aggregator.getIssues(remoteProject, filter, pagination)),
+    return this.activeRemoteProject$.pipe(switchMap(remoteProject => this.aggregator.getIssues(remoteProject!, filter, pagination)),
       share(),
       tap(value => {
         this.issues = value.issues;
@@ -353,5 +350,31 @@ export class ProjectListViewComponent implements OnInit {
       page: this.pageIndex,
       perPage: this.pageSize,
     };
+  }
+
+
+
+  createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((data: string) => {
+      if (data !== undefined) {
+        const newViewpoint = <Viewpoint>{
+          title: data,
+        };
+
+        this.data.addViewpoint(projectId, newViewpoint, viewpoints)
+
+      }
+    });
+  }
+
+  chooseViewpoint(viewpoint: Viewpoint) {
+    console.log(viewpoint)
+    this.router.navigate(['viewpoint', viewpoint.viewpointId], {relativeTo: this.route})
   }
 }

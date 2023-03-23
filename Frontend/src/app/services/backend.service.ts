@@ -14,7 +14,7 @@ import { Issue } from '../models/issue';
 })
 export class BackendService {
   BASE_URL = 'http://localhost:3000/';
-  private data = inject(DataService);
+  //private data = inject(DataService);
   private http = inject(HttpClient);
   private snackbar = inject(SnackbarComponent);
 
@@ -22,18 +22,18 @@ export class BackendService {
 
   //Users
 
-  getUserData() {
-    const auth = getAuth();
-    this.http.get<UserSettings>(this.BASE_URL + 'user/' + auth.currentUser?.uid).subscribe({
-      next: userSettings => {
-        this.data.setUserSettings(userSettings);
-      },
-      error: error => {
-        this.snackbar.openSnackBar('Error loading user settings! Try again later.', 'red-snackbar');
-        console.log(error.error);
-      },
-    });
-  }
+  // getUserData() {
+  //   const auth = getAuth();
+  //   this.http.get<UserSettings>(this.BASE_URL + 'user/' + auth.currentUser?.uid).subscribe({
+  //     next: userSettings => {
+  //       this.data.setUserSettings(userSettings);
+  //     },
+  //     error: error => {
+  //       this.snackbar.openSnackBar('Error loading user settings! Try again later.', 'red-snackbar');
+  //       console.log(error.error);
+  //     },
+  //   });
+  // }
 
   updateUserData(value: UserSettings) {
     //TODO
@@ -70,8 +70,8 @@ export class BackendService {
   }
 
   //Viewpoints
-  addViewpointToProject(projectId: string, viewPoint: Viewpoint) {
-    return this.http.post<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoints', viewPoint);
+  addViewpointToProject(projectId: string, viewPoint: Viewpoint): Observable<Viewpoint> {
+    return this.http.post<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoints', viewPoint, {observe: 'body', responseType: 'json'});
   }
 
   getViewpointsFromProject(projectId: string) {

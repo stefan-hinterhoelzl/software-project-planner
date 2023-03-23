@@ -1,13 +1,32 @@
-<div class="main-wrapper">
+<div class="main-wrapper" *ngIf="this.view$ | async as view; else elseBlock">
+  <div class ="viewpoint-button">
+    <button *ngIf="view[1] as viewpoint; else ElseBlock" mat-button class="second-line-button" [matMenuTriggerFor]="menu">
+      {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
+    </button>
+    <ng-template #ElseBlock>
+      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
+    </ng-template>
+
+    <mat-menu #menu="matMenu">
+      <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[3]; first as isFirst">
+        <span>{{ viewpoint.title }}</span>
+      </button>
+      <mat-divider *ngIf="view[3].length! > 0"></mat-divider>
+      <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[3])">
+        <mat-icon>add</mat-icon>
+        <span>Create new Viewpoint</span>
+      </button>
+    </mat-menu>
+  </div>
+
   <div class="card-wrapper">
     <mat-card class="card">
       <div class="card-internal-wrapper">
-        <div [formGroup]="filterGroup" class="filter-group" *ngIf="this.view$ | async as view">
+        <div [formGroup]="filterGroup" class="filter-group">
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
             <mat-select formControlName="projectsControl">
-              <mat-option *ngFor="let project of view[2]" [value]="project.projectId">{{ project.title
-                }}</mat-option>
+              <mat-option *ngFor="let project of ALMProjects" [value]="project.projectId">{{ project.title }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field color="accent">
@@ -34,55 +53,99 @@
           </mat-form-field>
           <mat-form-field color="accent">
             <mat-label>Title, Description</mat-label>
-            <input (keyup.enter)="reloadIssues()" #search matInput placeholder="Title, Description includes..."
-              formControlName="searchControl" />
+            <input (keyup.enter)="reloadIssues()" #search matInput placeholder="Title, Description includes..." formControlName="searchControl" />
           </mat-form-field>
 
           <div class="action-button">
-            <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Clear Filters"
-              [matTooltipShowDelay]="2000" mat-mini-fab color="accent" (click)="clearFilters()">
+            <button
+              [disabled]="this.init"
+              [matTooltipPosition]="'below'"
+              matTooltip="Clear Filters"
+              [matTooltipShowDelay]="2000"
+              mat-mini-fab
+              color="accent"
+              (click)="clearFilters()">
               <mat-icon>highlight_off</mat-icon>
             </button>
             <p class="button-text">Clear</p>
           </div>
           <div class="action-button">
-            <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Reload Items"
-              [matTooltipShowDelay]="2000" mat-mini-fab color="accent" (click)="this.reloadIssues()">
+            <button
+              [disabled]="this.init"
+              [matTooltipPosition]="'below'"
+              matTooltip="Reload Items"
+              [matTooltipShowDelay]="2000"
+              mat-mini-fab
+              color="accent"
+              (click)="this.reloadIssues()">
               <mat-icon>check_circle_outline</mat-icon>
             </button>
             <p class="button-text">Apply</p>
           </div>
         </div>
-        <mat-spinner *ngIf="!(this.view$ | async)" class="progress-spinner">
+        <!-- <mat-spinner *ngIf="!(this.view$ | async)" class="progress-spinner">
 
-        </mat-spinner>
+        </mat-spinner> -->
 
         <div *ngIf="!(this._loading | async) && !this.init" class="button-row">
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items on current page"
-            [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
+          <button
+            [disabled]="this.init"
+            [matTooltipPosition]="'below'"
+            matTooltip="Select all items on current page"
+            [matTooltipShowDelay]="2000"
+            mat-raised-button
+            color="accent"
+            (click)="markAllItems(true)">
             <mat-icon>select_all</mat-icon> Select All on Page
           </button>
-          <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Unselect all items on current page"
-            [matTooltipShowDelay]="2000" mat-raised-button color="accent" style="margin-left: 10px"
+          <button
+            [disabled]="this.init"
+            [matTooltipPosition]="'below'"
+            matTooltip="Unselect all items on current page"
+            [matTooltipShowDelay]="2000"
+            mat-raised-button
+            color="accent"
+            style="margin-left: 10px"
             (click)="markAllItems(false)">
             <mat-icon>all_out</mat-icon> Unselect All on Page
           </button>
           <span class="spacer"></span>
-          <mat-icon color="accent" *ngIf="
+          <mat-icon
+            color="accent"
+            *ngIf="
               selectedDeltaMinus !== undefined && selectedDeltaMinus.length === 0 && selectedDeltaPlus !== undefined && selectedDeltaPlus.length === 0
-            " class="icon">cloud_done</mat-icon>
-          <mat-icon color="warn" *ngIf="
+            "
+            class="icon"
+            >cloud_done</mat-icon
+          >
+          <mat-icon
+            color="warn"
+            *ngIf="
               (selectedDeltaMinus !== undefined && selectedDeltaMinus.length !== 0) ||
               (selectedDeltaPlus !== undefined && selectedDeltaPlus.length !== 0)
-            " class="icon">cloud_off</mat-icon>
-          <button [disabled]="this.init" style="margin-right: 10px" [matTooltipPosition]="'below'"
-            matTooltip="Save issue selection" [matTooltipShowDelay]="2000" mat-raised-button color="primary"
+            "
+            class="icon"
+            >cloud_off</mat-icon
+          >
+          <button
+            [disabled]="this.init"
+            style="margin-right: 10px"
+            [matTooltipPosition]="'below'"
+            matTooltip="Save issue selection"
+            [matTooltipShowDelay]="2000"
+            mat-raised-button
+            color="primary"
             (click)="saveSelection()">
             <mat-icon>save</mat-icon> Save
           </button>
-          <button [disabled]="this.init || !this.showFirstLastButtons" [matTooltipPosition]="'below'"
-            matTooltip="Save all currently filtered issues" [matTooltipShowDelay]="2000" mat-raised-button
-            color="primary" (click)="saveSelection()">
+          <button
+            [disabled]="this.init || !this.showFirstLastButtons"
+            [matTooltipPosition]="'below'"
+            matTooltip="Save all currently filtered issues"
+            [matTooltipShowDelay]="2000"
+            mat-raised-button
+            color="primary"
+            (click)="saveSelection()">
             <mat-icon>done_outline</mat-icon> Select All & Save
           </button>
         </div>
@@ -103,15 +166,21 @@
                     <span>{{ issue.title }}</span>
                   </div>
                   <div style="padding-right: 15px">
-                    <mat-checkbox (change)="setSelected($event.checked, issue)"
-                      [(ngModel)]="issue.selected"></mat-checkbox>
+                    <mat-checkbox (change)="setSelected($event.checked, issue)" [(ngModel)]="issue.selected"></mat-checkbox>
                   </div>
                 </div>
               </div>
             </div>
-            <mat-paginator color="accent" aria-label="Select page" (page)="handlePageEvent($event)"
-              [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [pageIndex]="pageIndex"
-              [pageSize]="pageSize" [showFirstLastButtons]="showFirstLastButtons" [length]="length">
+            <mat-paginator
+              color="accent"
+              aria-label="Select page"
+              (page)="handlePageEvent($event)"
+              [pageSizeOptions]="pageSizeOptions"
+              [showFirstLastButtons]="true"
+              [pageIndex]="pageIndex"
+              [pageSize]="pageSize"
+              [showFirstLastButtons]="showFirstLastButtons"
+              [length]="length">
             </mat-paginator>
           </div>
         </div>
@@ -119,3 +188,9 @@
     </mat-card>
   </div>
 </div>
+
+<ng-template #elseBlock class="main-wrapper">
+  <div class="progress-spinner">
+    <mat-spinner> </mat-spinner>
+  </div>
+</ng-template>

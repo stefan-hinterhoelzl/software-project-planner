@@ -12,6 +12,7 @@ import {
   of,
   share,
   catchError,
+  delay,
 } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Project, ProjectWrapper, Viewpoint } from 'src/app/models/project';
@@ -33,44 +34,35 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   projectID?: string;
+  currentViewpoint?: Viewpoint;
   _routeSubscription?: Subscription;
-  _viewpoints?: Observable<Viewpoint[]>;
+  _project?: Observable<Project>;
+  viewpoints?: Viewpoint[];
   _activeViewpointSubscription?: Subscription;
   _activeViewpointTitle?: Observable<string>;
 
-
-  project$ = this.data.activeProject$;
-  activeViewpoint$ = this.data.activeViewpoint$;
+  viewpoints$ = this.data.viewpoints$.pipe(share(), tap(viewpoints => this.viewpoints = viewpoints))
+  activeViewpoint$ = this.data.activeViewpoint$.pipe(delay(0),share())
+  project$ = this.data.activeProject$.pipe(share(), tap(value => console.log(value)))
 
 
   ngOnDestroy(): void {
     this._routeSubscription?.unsubscribe();
-    this.data.setActiveViewpoint(undefined);
-    this._activeViewpointSubscription?.unsubscribe();
+    this.data.setActiveViewpoint(0);
   }
 
   ngOnInit(): void {
+    // this._activeViewpointSubscription = this.data.activeViewpoint$.subscribe(value => {
+    //   this.currentViewpoint = value;
+    // });
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['projectId'];
-      this.initialize();
+      this.data.setActiveProject(this.projectID!)
+      this.data.getViewpoints(this.projectID!)
+      this.data.setActiveViewpoint(0);
+
     });
   }
-
-  initialize() {
-    //Reset the Viewpoints on Destroy and on Load
-    this.data.setActiveViewpoint(undefined);
-
-    //Set 
-
-    this._project = this.backend.getProjectById(this.projectID!).pipe(
-      tap(project => this.data.setActiveViewProject(project)),
-      share()
-    );
-
-    this._viewpoints = this.getViewpointsObservable();
-
-  }
-
   createViewpoint() {
     const dialogConfig = new MatDialogConfig();
 
@@ -84,32 +76,23 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
           title: data,
         };
 
-        this.backend.addViewpointToProject(this.projectID!, newViewpoint).subscribe({
-          next: value => {
-            this.snackbar.openSnackBar('Viewpoint was added to the project', 'green-snackbar');
-            this._viewpoints = this.getViewpointsObservable();
-          },
-          error: error => {
-            this.snackbar.openSnackBar('Server error while saving viewpoint! Try again later', 'red-snackbar');
-            console.error(error.error);
-          },
-        });
+        this.data.addViewpoint(this.projectID!, newViewpoint, this.viewpoints!)
+
       }
     });
   }
 
   chooseViewpoint(viewpoint: Viewpoint) {
-    this.currentViewpoint = viewpoint;
-    this.data.setActiveViewpoint(viewpoint)
+    console.log(viewpoint)
     this.router.navigate(['viewpoint', viewpoint.viewpointId], {relativeTo: this.route})
   }
 
-  getViewpointsObservable() {
-    return this.backend.getViewpointsFromProject(this.projectID!).pipe(
-      catchError(err =>
-        of().pipe(tap(() => this.snackbar.openSnackBar('Server error while loading viewpoints for the project! Try again later.', 'red-snackbar')))
-      ),
-      share()
-    );
-  }
+  // getViewpointsObservable() {
+  //   return this.backend.getViewpointsFromProject(this.projectID!).pipe(
+  //     catchError(err =>
+  //       of().pipe(tap(() => this.snackbar.openSnackBar('Server error while loading viewpoints for the project! Try again later.', 'red-snackbar')))
+  //     ),
+  //     share()
+  //   );
+  // }
 }

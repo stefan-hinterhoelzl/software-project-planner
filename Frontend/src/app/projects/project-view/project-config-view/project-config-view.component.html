@@ -1,5 +1,5 @@
-<div class="main-wrapper">
-  <h1>{{(project$ | async)?.title}}</h1>
+<div *ngIf="project$ | async as project; else elseBlock" class="main-wrapper">
+  <h1>{{project.title}}</h1>
   <mat-card>
     <h1 matCardTitle>Project Details</h1>
     <mat-divider></mat-divider>
@@ -76,3 +76,9 @@
     </div>
   </mat-card>
 </div>
+
+<ng-template #elseBlock class="main-wrapper">
+  <div class="progress-spinner">
+    <mat-spinner> </mat-spinner>
+  </div>
+</ng-template>

@@ -1,65 +1,56 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, ReplaySubject, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, map, of, ReplaySubject, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
 import { BackendService } from './backend.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
-
+import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
-
-  backend = inject(BackendService)
-  snackbar = inject(SnackbarComponent)
+  backend = inject(BackendService);
+  snackbar = inject(SnackbarComponent);
   //reactive trys here
 
   //**Subjects**
   //Projects
-  private _projects = new ReplaySubject<Project[]>(1)
-  private _activeProjectId = new ReplaySubject<string>(1)
+  private _projects = new ReplaySubject<Project[]>(1);
+  private _activeProjectId = new ReplaySubject<string>(1);
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
   private _activeRemoteProjectId = new ReplaySubject<string>(1);
-  private _almprojects = new ReplaySubject<ALMProject[]>(1)
+  private _almprojects = new ReplaySubject<ALMProject[]>(1);
 
   //User
-  private _loggedInUser = new ReplaySubject<User>(1)
-  private _userSettings = new ReplaySubject<UserSettings>(1)
-
+  private _loggedInUser = new ReplaySubject<User>(1);
+  private _userSettings = new ReplaySubject<UserSettings>(1);
 
   //Viewpoints
-  private _activeViewpoint = new ReplaySubject<Viewpoint | undefined>(1);
-
+  private _viewpoints = new ReplaySubject<Viewpoint[]>(1);
+  private _activeViewpointId = new ReplaySubject<number>(1);
 
   //Observables
   readonly projects$ = this._projects.asObservable();
   readonly activeProject$ = this._activeProjectId.asObservable().pipe(
-    switchMap(id => this.projects$.pipe(
-      map(projects => projects.find(value => value.projectId === id)!
-      )
-    )
-    )
+    switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id))))
   );
   readonly remoteProjects$ = this._remoteProjects.asObservable();
   readonly activeRemoteProject$ = this._activeRemoteProjectId.asObservable().pipe(
-    switchMap(id => this.remoteProjects$.pipe(
-      map(remoteProjects => remoteProjects.find(value => value.projectId === id)!
-      )
-    )
-    )
+    switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.projectId === id))))
   );
 
-  readonly almProjects$ = this._almprojects.asObservable();
+  readonly almProjects$ = this._almprojects.asObservable().pipe(tap(value => console.log(value)));
   readonly loggedInUser$ = this._loggedInUser.asObservable();
   readonly userSettings$ = this._userSettings.asObservable();
-  readonly activeViewpoint$ = this._activeViewpoint.asObservable();
+  readonly viewpoints$ = this._viewpoints.asObservable();
+  readonly activeViewpoint$ = this._activeViewpointId.asObservable().pipe(
+    switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id))))
+  );
 
-
-
-  constructor() { }
+  constructor() {}
 
   getProjects() {
     this.backend.getProjects().subscribe({
@@ -67,7 +58,7 @@ export class DataService {
         this._projects.next(projects);
       },
       error: error => {
-        console.error(error)
+        console.error(error);
         this.snackbar.openSnackBar('Error loading projects! Try again later.', 'red-snackbar');
       },
     });
@@ -76,15 +67,64 @@ export class DataService {
   addProject(newProject: Project, projects: Project[]) {
     this.backend.addProject(newProject).subscribe({
       next: () => {
-        this._projects.next([...projects, newProject])
+        this._projects.next([...projects, newProject]);
       },
       error: error => {
-        console.error(error)
-        this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar')
-      }
-    })
+        console.error(error);
+        this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar');
+      },
+    });
   }
 
+  getViewpoints(projectId: string) {
+    this.backend.getViewpointsFromProject(projectId).subscribe({
+      next: viewpoints => {
+        this._viewpoints.next(viewpoints);
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error loading viewpoints! Try again later.', 'red-snackbar');
+      },
+    });
+  }
+
+  addViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
+    this.backend.addViewpointToProject(projectId, viewpoint).subscribe({
+      next: (newViewpoint: Viewpoint) => {
+        this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`);
+        this._viewpoints.next([...viewpoints, newViewpoint]);
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error saving Viewpoint! Try again later.', 'red-snackbar');
+      },
+    });
+  }
+
+  getRemoteProjects(projectId: string, aggreagtor: ALMDataAggregator) {
+    this.backend.getRemoteProjectsForProject(projectId).subscribe({
+      next: value => {
+        console.log(value);
+        if (value !== undefined) {
+          this._remoteProjects.next(value);
+          aggreagtor.getProjects(value).subscribe({
+            next: ALMvalue => {
+              console.log(ALMvalue);
+              this._almprojects.next(ALMvalue);
+            },
+            error: err => {
+              console.error(err);
+              this.snackbar.openSnackBar(`Error loading projects from the ALM provider. (Code: ${err.code}.`, 'red-snackbar');
+            },
+          });
+        }
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error loading remote projects! Try again later.', 'red-snackbar');
+      },
+    });
+  }
 
   // Setters
   setUser(value: User) {
@@ -92,11 +132,11 @@ export class DataService {
   }
 
   setActiveProject(value: string) {
-    this._activeProjectId.next(value)
+    this._activeProjectId.next(value);
   }
 
-  setActiveRemoteproject(value: string){
-    this._activeRemoteProjectId.next(value)
+  setActiveRemoteproject(value: string) {
+    this._activeRemoteProjectId.next(value);
   }
 
   setUserSettings(value: UserSettings) {
@@ -108,14 +148,14 @@ export class DataService {
   }
 
   setAlmProjects(value: ALMProject[]) {
-    this._almprojects.next(value)
+    this._almprojects.next(value);
   }
 
   setRemoteProjects(value: RemoteProject[]) {
     this._remoteProjects.next(value);
   }
 
-  setActiveViewpoint(value: Viewpoint | undefined) {
-    this._activeViewpoint.next(value)
+  setActiveViewpoint(value: number) {
+    this._activeViewpointId.next(value);
   }
 }

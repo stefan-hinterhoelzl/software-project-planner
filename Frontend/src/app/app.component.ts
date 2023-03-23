@@ -38,8 +38,7 @@ export class AppComponent {
         this.isLoggedIn = true;
         this.user = user;
         this.data.setUser(user);
-        this.backend.getProjects();
-        this.backend.getUserData();
+        this.data.getProjects()
       } else {
         this.isLoggedIn = false;
       }

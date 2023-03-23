@@ -1,7 +1,7 @@
-<div class="main-wrapper">
-  <mat-toolbar color="accent" class="toolbar" *ngIf="(_project | async)">
+<div class="main-wrapper" *ngIf="(project$ | async) as project; else elseBlock">
+  <mat-toolbar color="accent" class="toolbar" >
     <mat-toolbar-row>
-      <h2 class="project-title-span">{{ (_project | async)?.title }}</h2>
+      <h2 class="project-title-span">{{project.title}}</h2>
 
       <button routerLinkActive="active-view" mat-button class="second-line-button" [routerLink]="['overview']">
         Overview
@@ -9,29 +9,27 @@
       <button routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['config']">
         Project Settings
       </button>
-      <button *ngIf="currentViewpoint !== undefined" routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint/', currentViewpoint.viewpointId]">
+      <button *ngIf="activeViewpoint$ | async as currentViewpoint" routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint/', currentViewpoint.viewpointId]">
         Item Views
       </button>
 
-
-      <!-- <button [ngClass]="{ 'active-view': (_activeView | async) === 'list' }" mat-button class="second-line-button" [routerLink]="['list']">
-        <span>List View</span>
-      </button>
-      <button [ngClass]="{ 'active-view': (_activeView | async) === 'tree' }" mat-button class="second-line-button" [routerLink]="['tree']">
-        <span>Tree View</span>
-      </button> -->
-
       <span class = "spacer"></span>
 
-      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">
-        {{ (_activeViewpointTitle | async) }} <mat-icon>view_carousel</mat-icon>
+      <button *ngIf="(activeViewpoint$ | async) as viewpoint; else ElseBlock"  mat-button class="second-line-button" [matMenuTriggerFor]="menu">
+        {{ viewpoint.title  }} <mat-icon>view_carousel</mat-icon>
        </button>
+       <ng-template #ElseBlock>
+        <button  mat-button class="second-line-button" [matMenuTriggerFor]="menu">
+        Select a Viewpoint <mat-icon>view_carousel</mat-icon>
+       </button>
+      </ng-template>
+
 
       <mat-menu #menu="matMenu">
-        <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of (_viewpoints | async); first as isFirst">
+        <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of (viewpoints$ | async); first as isFirst">
           <span>{{viewpoint.title}}</span>
         </button>
-        <mat-divider *ngIf = "(_viewpoints | async)?.length! > 0"></mat-divider>
+        <mat-divider *ngIf = "(viewpoints$ | async)?.length! > 0"></mat-divider>
         <button mat-menu-item (click)="createViewpoint()">
           <mat-icon>add</mat-icon>
           <span>Create new Viewpoint</span>
@@ -45,3 +43,9 @@
     <router-outlet> </router-outlet>
   </div>
 </div>
+
+<ng-template #elseBlock class="main-wrapper">
+  <div class="progress-spinner">
+    <mat-spinner> </mat-spinner>
+  </div>
+</ng-template>
