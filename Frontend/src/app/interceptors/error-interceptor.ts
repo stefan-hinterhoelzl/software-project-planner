@@ -33,11 +33,13 @@ export class ErrorInterceptor implements HttpInterceptor {
 
         if (err.status === 0 || err.status === 500) {
             this.router.navigate(['/500'])
+            console.log(err)
             return of(EMPTY);
         }
 
         if (err.status === 404) {
             this.router.navigate(['/404'], {queryParams: {e:"server"}})
+            console.log(err)
             return of(EMPTY);
         }
 

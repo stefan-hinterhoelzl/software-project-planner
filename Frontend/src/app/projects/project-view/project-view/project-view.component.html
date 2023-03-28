@@ -10,10 +10,10 @@
         Project Settings
       </button>
       <button *ngIf="activeViewpoint$ | async as currentViewpoint" routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint/', currentViewpoint.viewpointId]">
-        Item Views
+        Viewpoints
       </button>
 
-      <span class = "spacer"></span>
+      <!-- <span class = "spacer"></span>
 
       <button *ngIf="(activeViewpoint$ | async) as viewpoint; else ElseBlock"  mat-button class="second-line-button" [matMenuTriggerFor]="menu">
         {{ viewpoint.title  }} <mat-icon>view_carousel</mat-icon>
@@ -34,7 +34,7 @@
           <mat-icon>add</mat-icon>
           <span>Create new Viewpoint</span>
         </button>
-      </mat-menu>
+      </mat-menu> -->
 
     </mat-toolbar-row>
   </mat-toolbar>
