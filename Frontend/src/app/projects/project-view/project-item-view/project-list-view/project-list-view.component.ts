@@ -103,7 +103,8 @@ export class ProjectListViewComponent implements OnInit {
   almProjects$ = this.data.almProjects$;
   activeRemoteProject$ = this.data.activeRemoteProject$
   viewpoints$ = this.data.viewpoints$.pipe(share())
-  view$ = combineLatest([this.project$, this.viewpoint$, this.almProjects$, this.viewpoints$]).pipe(share());
+  view$ = combineLatest([this.project$, this.almProjects$, this.viewpoints$]).pipe(share());
+  selectedViewpoint$ = this.route.queryParams.pipe(map(params => params["viewpointId"] as number), tap(id => this.data.setActiveViewpoint(id)))
 
 
 
@@ -126,7 +127,6 @@ export class ProjectListViewComponent implements OnInit {
     //       share(),
     //       tap(projects => (this.ALMProjects = projects))
     //     );
-    console.log("hi")
     this.filterGroup
       .get('projectsControl')
       ?.valueChanges.pipe(

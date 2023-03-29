@@ -3,7 +3,7 @@
   <div class="card-wrapper">
     <div class="viewpoint-button">
       <h3>Viewpoint:</h3>
-      <button *ngIf="view[1] as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button"
+      <button *ngIf="viewpoint$ | async  as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button"
         [matMenuTriggerFor]="menu">
         {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
       </button>
@@ -12,18 +12,20 @@
           <mat-icon>view_carousel</mat-icon></button>
       </ng-template>
     </div>
-  
-  
+
+
     <mat-menu #menu="matMenu">
-      <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[3]; first as isFirst">
+      <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[2]; first as isFirst">
         <span>{{ viewpoint.title }}</span>
       </button>
-      <mat-divider *ngIf="view[3].length! > 0"></mat-divider>
-      <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[3])">
+      <mat-divider *ngIf="view[2].length! > 0"></mat-divider>
+      <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[2])">
         <mat-icon>add</mat-icon>
         <span>Create new Viewpoint</span>
       </button>
     </mat-menu>
+
+
     <mat-card class="card">
       <div class="card-internal-wrapper">
         <div [formGroup]="filterGroup" class="filter-group">

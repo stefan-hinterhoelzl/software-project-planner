@@ -25,7 +25,7 @@ const routes: Routes = [
         children: [
             { path: '', redirectTo: 'overview', pathMatch: 'full' },
             { path: 'overview', component: ProjectDashboardComponent },
-            { path: 'viewpoint/:viewpointId',
+            { path: 'viewpoint',
              component: ProjectItemViewComponent,
              children: [
               {path: '', redirectTo: 'list', pathMatch: 'full'},

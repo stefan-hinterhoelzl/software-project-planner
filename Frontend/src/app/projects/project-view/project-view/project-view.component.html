@@ -9,7 +9,7 @@
       <button routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['config']">
         Project Settings
       </button>
-      <button *ngIf="activeViewpoint$ | async as currentViewpoint" routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint/', currentViewpoint.viewpointId]">
+      <button routerLinkActive="active-view"  mat-button class="second-line-button" [routerLink]="['viewpoint']">
         Viewpoints
       </button>
 

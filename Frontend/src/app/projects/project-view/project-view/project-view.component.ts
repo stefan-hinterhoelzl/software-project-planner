@@ -59,7 +59,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
       this.projectID = params['projectId'];
       this.data.setActiveProject(this.projectID!)
       this.data.getViewpoints(this.projectID!)
-      this.data.setActiveViewpoint(0);
+      //this.data.setActiveViewpoint(0);
 
     });
   }
@@ -82,10 +82,9 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  chooseViewpoint(viewpoint: Viewpoint) {
-    console.log(viewpoint)
-    this.router.navigate(['viewpoint', viewpoint.viewpointId], {relativeTo: this.route})
-  }
+  // chooseViewpoint(viewpoint: Viewpoint) {
+  //   this.router.navigate(['viewpoint'], {relativeTo: this.route})
+  // }
 
   // getViewpointsObservable() {
   //   return this.backend.getViewpointsFromProject(this.projectID!).pipe(
