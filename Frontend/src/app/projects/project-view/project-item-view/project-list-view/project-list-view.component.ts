@@ -54,7 +54,7 @@ export class ProjectListViewComponent implements OnInit {
   prevPage: string = '';
   firstPage: string = '';
   lastPage: string = '';
-  totalPagesGitlab: number = 0;
+  totalPagesWith100: number = 0;
   showFirstLastButtons: boolean = true;
 
   labels: string[] = [];
@@ -185,6 +185,7 @@ export class ProjectListViewComponent implements OnInit {
           this.length = 10000;
         } else {
          this.length = value.totalitems;
+         this.totalPagesWith100 = Math.ceil(this.length/100)
          this.clearFilters();
         }
       }),
@@ -331,6 +332,31 @@ export class ProjectListViewComponent implements OnInit {
     // while (currentPage < this.totalPagesGitlab) {
     //   currentPage++;
     // }
+
+
+    let filter = this.createFilterOptions()
+    let pagination = <ALMPaginationoptions> {
+      perPage: 100
+    }
+
+    let index: number = 0;
+    let issues: ALMIssue[] = [];
+    while (index <= this.totalPagesWith100) {
+      pagination.page = index
+      this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination).subscribe({
+        next: value => {
+          issues.push(...value.issues)
+        },
+        error: error => {
+          console.error(error)
+          this.snackbar.openSnackBar("Error saving Items, try again!", "red-snackbar")
+          this.reloadIssues();
+        }
+      })
+
+
+    }
+
   }
 
   clearFilters() {
