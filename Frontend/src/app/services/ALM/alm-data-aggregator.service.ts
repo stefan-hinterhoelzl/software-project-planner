@@ -54,7 +54,6 @@ export class GitLabAggregator implements ALMDataAggregator {
 
     let optionsString = filterString.concat(paginationString);
 
-    console.log(optionsString)
 
     return this.alm.getIssuesPerProject(project.remoteProjectId, project.accessToken, optionsString).pipe(
       map(res => {

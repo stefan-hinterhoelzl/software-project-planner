@@ -1,21 +1,10 @@
-import { DialogRef } from '@angular/cdk/dialog';
-import { HttpResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  of,
-  share,
-  Subscription,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest,  map,  Observable, of, share,  Subscription, switchMap, tap } from 'rxjs';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
@@ -37,7 +26,7 @@ export class ProjectListViewComponent implements OnInit {
   snackbar = inject(SnackbarComponent);
   dialog = inject(MatDialog);
   backend = inject(BackendService);
-  router = inject(Router)
+  router = inject(Router);
   route = inject(ActivatedRoute);
   aggregator: ALMDataAggregator;
 
@@ -98,48 +87,66 @@ export class ProjectListViewComponent implements OnInit {
   _labels?: Observable<string[]>;
 
   //Data Observables
-  project$ = this.data.activeProject$;
-  viewpoint$ = this.data.activeViewpoint$;
+  project$ = this.data.activeProject$.pipe(tap(project => (this.project = project)));
+  viewpoint$ = this.data.activeViewpoint$.pipe(tap(viewpoint => {
+    this.viewpoint = viewpoint
+    this.data.setActiveRemoteproject(0)
+  }));
+
+
   almProjects$ = this.data.almProjects$;
-  activeRemoteProject$ = this.data.activeRemoteProject$
-  viewpoints$ = this.data.viewpoints$.pipe(share())
+
+
+  activeRemoteProject$ = this.data.activeRemoteProject$.pipe(
+    tap(remoteProject => {
+      if (remoteProject !== undefined) {
+        this.selectedRemoteProject = remoteProject;
+        this.init = false;
+        this.initializeData();
+      } else {
+        //reset everything
+        this.init = true;
+        this.$loading.next(true)
+        this.clearFilters();
+        this.filterGroup.get('projectsControl')?.setValue('');
+      }
+
+    }),
+    share()
+  );
+
+
+  viewpoints$ = this.data.viewpoints$.pipe(share());
+
+
   view$ = combineLatest([this.project$, this.almProjects$, this.viewpoints$]).pipe(share());
-  selectedViewpoint$ = this.route.queryParams.pipe(map(params => params["viewpointId"] as number), tap(id => this.data.setActiveViewpoint(id)))
 
 
+  labels$ = this.activeRemoteProject$.pipe(
+    switchMap(project => this.aggregator.getLabels(project!)),
+    share()
+  );
 
   constructor() {
     this.$loading = new BehaviorSubject<boolean>(true);
     this._loading = this.$loading.asObservable();
     this.aggregator = new GitLabAggregator();
-    this.init = false;
+    this.init = true;
   }
 
   ngOnInit(): void {
-    // this.data.activeviewproject
-    //   .pipe(
-    //     tap(project => (this.project = project)),
-    //     switchMap(() => this.data.activeViewpoint),
-    //     tap(viewpoint => (this.viewpoint = viewpoint))
-    //   )
-    //   .subscribe(() => {
-    //     this._ALMProjects = this.data.almProjects.pipe(
-    //       share(),
-    //       tap(projects => (this.ALMProjects = projects))
-    //     );
     this.filterGroup
       .get('projectsControl')
       ?.valueChanges.pipe(
-        tap(projectId => this.data.setActiveRemoteproject(projectId as string))
+        tap(projectId => {
+          if (projectId !== '')
+          this.data.setActiveRemoteproject(projectId as number);
+        })
       )
-      .subscribe(() => {
-        this.initializeData(true);
-      });
-
+      .subscribe();
   }
 
-  initializeData(refresh: boolean) {
-    //this.init = false;
+  initializeData() {
     this.labels = [];
     this.clearFilters();
     this.nextPage = '';
@@ -149,22 +156,18 @@ export class ProjectListViewComponent implements OnInit {
     this.pageIndex = 0;
     this.pageSize = 20;
 
-    if (this.selectedRemoteProject !== undefined) {
-      this._labels = this.aggregator.getLabels(this.selectedRemoteProject).pipe(share());
-
-      this.getSelectedIssues()
-        .pipe(switchMap(() => this.getIssues()))
-        .subscribe({
-          next: () => {
-            this.$loading.next(false);
-            this.filterGroup.get('labelsControl')?.enable();
-            this.filterGroup.get('stateControl')?.enable();
-            this.filterGroup.get('searchControl')?.enable();
-            this.filterGroup.get('startDateControl')?.enable();
-            this.filterGroup.get('endDateControl')?.enable();
-          },
-        });
-    }
+    this.getSelectedIssues()
+      .pipe(switchMap(() => this.getIssues()))
+      .subscribe({
+        next: () => {
+          this.$loading.next(false);
+          this.filterGroup.get('labelsControl')?.enable();
+          this.filterGroup.get('stateControl')?.enable();
+          this.filterGroup.get('searchControl')?.enable();
+          this.filterGroup.get('startDateControl')?.enable();
+          this.filterGroup.get('endDateControl')?.enable();
+        },
+      });
   }
 
   getIssues() {
@@ -173,14 +176,17 @@ export class ProjectListViewComponent implements OnInit {
     let filter: ALMFilteroptions = this.createFilterOptions();
     let pagination: ALMPaginationoptions = this.createPaginationOptions();
 
-    return this.activeRemoteProject$.pipe(switchMap(remoteProject => this.aggregator.getIssues(remoteProject!, filter, pagination)),
+    return this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination).pipe(
       share(),
       tap(value => {
         this.issues = value.issues;
         if (value.totalitems === undefined) {
           this.showFirstLastButtons = false;
           this.length = 10000;
-        } else this.length = value.totalitems;
+        } else {
+         this.length = value.totalitems;
+         this.clearFilters();
+        }
       }),
       map(value => value.issues),
       map(almIssues => {
@@ -244,17 +250,17 @@ export class ProjectListViewComponent implements OnInit {
     this.$loading.next(true);
     let plus: Observable<any>;
     let minus: Observable<any>;
-    let minussave: Issue[] | undefined = []
-    let plussave: Issue[] | undefined = []
+    let minussave: Issue[] | undefined = [];
+    let plussave: Issue[] | undefined = [];
 
     if (this.selectedDeltaPlus !== undefined && this.selectedDeltaPlus.length !== 0) {
       plus = this.backend.addRemoteIssuesToViewpoint(this.selectedDeltaPlus);
-      plussave = this.selectedDeltaMinus
+      plussave = this.selectedDeltaMinus;
     } else plus = of({});
 
     if (this.selectedDeltaMinus !== undefined && this.selectedDeltaMinus.length !== 0) {
       minus = this.backend.removeRemoteIssuesToViewpoint(this.selectedDeltaMinus);
-      minussave = this.selectedDeltaMinus
+      minussave = this.selectedDeltaMinus;
     } else minus = of({});
 
     this.selectedDeltaMinus = [];
@@ -352,8 +358,6 @@ export class ProjectListViewComponent implements OnInit {
     };
   }
 
-
-
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
     const dialogConfig = new MatDialogConfig();
 
@@ -367,14 +371,12 @@ export class ProjectListViewComponent implements OnInit {
           title: data,
         };
 
-        this.data.addViewpoint(projectId, newViewpoint, viewpoints)
-
+        this.data.addViewpoint(projectId, newViewpoint, viewpoints);
       }
     });
   }
 
   chooseViewpoint(viewpoint: Viewpoint) {
-    console.log(viewpoint)
-    this.router.navigate(['viewpoint', viewpoint.viewpointId], {relativeTo: this.route})
+    if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
   }
 }

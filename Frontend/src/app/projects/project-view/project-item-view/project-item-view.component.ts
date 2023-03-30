@@ -13,7 +13,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   templateUrl: './project-item-view.component.html',
   styleUrls: ['./project-item-view.component.scss'],
 })
-export class ProjectItemViewComponent implements OnInit, OnDestroy {
+export class ProjectItemViewComponent {
   route = inject(ActivatedRoute);
   data = inject(DataService);
   cd = inject(ChangeDetectorRef);
@@ -42,15 +42,4 @@ export class ProjectItemViewComponent implements OnInit, OnDestroy {
     this.aggregator = new GitLabAggregator();
   }
 
-  ngOnDestroy(): void {
-    this._routeSubscription?.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.route.params.subscribe({
-      next: value => {
-        this.data.setActiveViewpoint(Number(value['viewpointId']));
-      },
-    });
-  }
 }

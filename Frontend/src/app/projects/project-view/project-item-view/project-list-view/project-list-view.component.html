@@ -27,12 +27,12 @@
 
 
     <mat-card class="card">
-      <div class="card-internal-wrapper">
+      <div *ngIf="viewpoint$ | async  as viewpoint; else ElseBlock2" class="card-internal-wrapper">
         <div [formGroup]="filterGroup" class="filter-group">
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
             <mat-select formControlName="projectsControl">
-              <mat-option *ngFor="let project of ALMProjects" [value]="project.projectId">{{ project.title
+              <mat-option *ngFor="let project of almProjects$ | async" [value]="project.projectId">{{ project.title
                 }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -83,7 +83,7 @@
 
         </mat-spinner> -->
 
-        <div *ngIf="!(this._loading | async) && !this.init" class="button-row">
+        <div *ngIf=" activeRemoteProject$ | async" class="button-row">
           <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Select all items on current page"
             [matTooltipShowDelay]="2000" mat-raised-button color="accent" (click)="markAllItems(true)">
             <mat-icon>select_all</mat-icon> Select All on Page
@@ -114,7 +114,7 @@
         </div>
 
         <div class="list-wrapper">
-          <div *ngIf="this.init" class="info-title">
+          <div *ngIf="this.init && !(activeRemoteProject$ | async)" class="info-title">
             <h2>Select a Remote Project</h2>
           </div>
           <mat-spinner *ngIf="(this._loading | async) && !this.init" class="progress-spinner"> </mat-spinner>
@@ -142,6 +142,11 @@
           </div>
         </div>
       </div>
+      <ng-template #ElseBlock2>
+        <div class = "viewpoint-selection-text">
+          <h2>Please Select a Viewpoint</h2>
+      </div>
+      </ng-template>
     </mat-card>
   </div>
 </div>

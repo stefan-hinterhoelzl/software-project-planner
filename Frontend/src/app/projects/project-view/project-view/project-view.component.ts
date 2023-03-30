@@ -52,46 +52,12 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this._activeViewpointSubscription = this.data.activeViewpoint$.subscribe(value => {
-    //   this.currentViewpoint = value;
-    // });
     this._routeSubscription = this.route.params.subscribe(params => {
       this.projectID = params['projectId'];
       this.data.setActiveProject(this.projectID!)
       this.data.getViewpoints(this.projectID!)
-      //this.data.setActiveViewpoint(0);
+      this.data.setActiveViewpoint(0);
 
     });
   }
-  createViewpoint() {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.autoFocus = true;
-
-    const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe((data: string) => {
-      if (data !== undefined) {
-        const newViewpoint = <Viewpoint>{
-          title: data,
-        };
-
-        this.data.addViewpoint(this.projectID!, newViewpoint, this.viewpoints!)
-
-      }
-    });
-  }
-
-  // chooseViewpoint(viewpoint: Viewpoint) {
-  //   this.router.navigate(['viewpoint'], {relativeTo: this.route})
-  // }
-
-  // getViewpointsObservable() {
-  //   return this.backend.getViewpointsFromProject(this.projectID!).pipe(
-  //     catchError(err =>
-  //       of().pipe(tap(() => this.snackbar.openSnackBar('Server error while loading viewpoints for the project! Try again later.', 'red-snackbar')))
-  //     ),
-  //     share()
-  //   );
-  // }
 }

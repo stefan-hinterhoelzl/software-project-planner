@@ -21,7 +21,7 @@ export class DataService {
   private _projects = new ReplaySubject<Project[]>(1);
   private _activeProjectId = new ReplaySubject<string>(1);
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
-  private _activeRemoteProjectId = new ReplaySubject<string>(1);
+  private _activeRemoteProjectId = new ReplaySubject<number>(1);
   private _almprojects = new ReplaySubject<ALMProject[]>(1);
 
   //User
@@ -39,7 +39,7 @@ export class DataService {
   );
   readonly remoteProjects$ = this._remoteProjects.asObservable();
   readonly activeRemoteProject$ = this._activeRemoteProjectId.asObservable().pipe(
-    switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.projectId === id))))
+    switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id))))
   );
 
   readonly almProjects$ = this._almprojects.asObservable().pipe(tap(value => console.log(value)));
@@ -91,8 +91,10 @@ export class DataService {
   addViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     this.backend.addViewpointToProject(projectId, viewpoint).subscribe({
       next: (newViewpoint: Viewpoint) => {
-        this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`);
+        console.log(newViewpoint)
+        this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`, 'green-snackbar');
         this._viewpoints.next([...viewpoints, newViewpoint]);
+        this._activeViewpointId.next(newViewpoint.viewpointId!)
       },
       error: error => {
         console.error(error);
@@ -135,7 +137,7 @@ export class DataService {
     this._activeProjectId.next(value);
   }
 
-  setActiveRemoteproject(value: string) {
+  setActiveRemoteproject(value: number) {
     this._activeRemoteProjectId.next(value);
   }
 
