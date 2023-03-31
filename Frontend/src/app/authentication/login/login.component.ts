@@ -23,10 +23,6 @@ export class LoginComponent {
     this.matIconRegistry.addSvgIcon("google_logo", this.domSanitizer.bypassSecurityTrustResourceUrl(googleLogoURL));
   }
 
-
-
-
-
   login() {
     this.auth.socialLogin();
   }

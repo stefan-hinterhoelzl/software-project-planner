@@ -39,7 +39,7 @@
           <mat-form-field color="accent">
             <mat-label>Labels</mat-label>
             <mat-select (keyup.enter)="reloadIssues()" formControlName="labelsControl" multiple>
-              <mat-option *ngFor="let label of _labels | async" [value]="label"> {{ label }}</mat-option>
+              <mat-option *ngFor="let label of labels$ | async" [value]="label"> {{ label }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field color="accent">
@@ -66,7 +66,7 @@
 
           <div class="action-button">
             <button [disabled]="this.init" [matTooltipPosition]="'below'" matTooltip="Clear Filters"
-              [matTooltipShowDelay]="2000" mat-mini-fab color="accent" (click)="clearFilters()">
+              [matTooltipShowDelay]="2000" mat-mini-fab color="accent" (click)="clearFilters(true)">
               <mat-icon>highlight_off</mat-icon>
             </button>
             <p class="button-text">Clear</p>
@@ -108,7 +108,7 @@
           </button>
           <button [disabled]="this.init || !this.showFirstLastButtons" [matTooltipPosition]="'below'"
             matTooltip="Save all currently filtered issues" [matTooltipShowDelay]="2000" mat-raised-button
-            color="primary" (click)="saveSelection()">
+            color="primary" (click)="selectAllAndSave()">
             <mat-icon>done_outline</mat-icon> Select All & Save
           </button>
         </div>

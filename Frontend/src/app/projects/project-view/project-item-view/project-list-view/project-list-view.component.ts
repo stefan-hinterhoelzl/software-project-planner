@@ -4,10 +4,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest,  map,  Observable, of, share,  Subscription, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, forkJoin, lastValueFrom, map, Observable, of, share, Subscription, switchMap, tap } from 'rxjs';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
-import { ALMFilteroptions, ALMIssue, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
+import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
 import { Issue } from 'src/app/models/issue';
 import { Project, RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -107,7 +107,7 @@ export class ProjectListViewComponent implements OnInit {
         //reset everything
         this.init = true;
         this.$loading.next(true)
-        this.clearFilters();
+        this.clearFilters(false);
         this.filterGroup.get('projectsControl')?.setValue('');
       }
 
@@ -122,7 +122,8 @@ export class ProjectListViewComponent implements OnInit {
   view$ = combineLatest([this.project$, this.almProjects$, this.viewpoints$]).pipe(share());
 
 
-  labels$ = this.activeRemoteProject$.pipe(
+  labels$ = this.data.activeRemoteProject$.pipe(
+    filter(project => project !== undefined),
     switchMap(project => this.aggregator.getLabels(project!)),
     share()
   );
@@ -140,7 +141,7 @@ export class ProjectListViewComponent implements OnInit {
       ?.valueChanges.pipe(
         tap(projectId => {
           if (projectId !== '')
-          this.data.setActiveRemoteproject(projectId as number);
+            this.data.setActiveRemoteproject(projectId as number);
         })
       )
       .subscribe();
@@ -148,7 +149,7 @@ export class ProjectListViewComponent implements OnInit {
 
   initializeData() {
     this.labels = [];
-    this.clearFilters();
+    this.clearFilters(false);
     this.nextPage = '';
     this.prevPage = '';
     this.firstPage = '';
@@ -184,9 +185,8 @@ export class ProjectListViewComponent implements OnInit {
           this.showFirstLastButtons = false;
           this.length = 10000;
         } else {
-         this.length = value.totalitems;
-         this.totalPagesWith100 = Math.ceil(this.length/100)
-         this.clearFilters();
+          this.length = value.totalitems;
+          this.totalPagesWith100 = Math.ceil(this.length / 100)
         }
       }),
       map(value => value.issues),
@@ -326,45 +326,66 @@ export class ProjectListViewComponent implements OnInit {
   }
 
   selectAllAndSave() {
-    // let filterstring: string = this.createFilterOptions();
-    // let currentPage: number = 2;
-    // let requests: string[] = [];
-    // while (currentPage < this.totalPagesGitlab) {
-    //   currentPage++;
-    // }
-
-
+    this.$loading.next(true)
     let filter = this.createFilterOptions()
-    let pagination = <ALMPaginationoptions> {
-      perPage: 100
-    }
-
     let index: number = 0;
-    let issues: ALMIssue[] = [];
+    let reqs: ALMPaginationoptions[] = [];
+
     while (index <= this.totalPagesWith100) {
-      pagination.page = index
-      this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination).subscribe({
-        next: value => {
-          issues.push(...value.issues)
-        },
-        error: error => {
-          console.error(error)
-          this.snackbar.openSnackBar("Error saving Items, try again!", "red-snackbar")
-          this.reloadIssues();
-        }
-      })
-
-
+      reqs.push(<ALMPaginationoptions>{
+        perPage: 100,
+        page: index
+      }
+      )
+      index++;
     }
+
+    console.log(filter)
+
+    const o_issues = reqs.map((value, index, array) => {
+      return this.IssueAggregator(filter, value);
+    });
+
+    forkJoin(o_issues).pipe(
+      map(IssueWrappers =>
+        IssueWrappers
+          .flat()
+          .map(IssueWrapper => IssueWrapper.issues)
+      ),
+      map(issues => issues.flat())
+    ).subscribe({
+      next: issues => {
+        console.log(issues)
+        issues.forEach(issue => {
+          if (this.SelectedIssues?.find(value => issue.issueId === value.remoteIssueId) === undefined) {
+            this.setSelected(true,issue)
+          }
+        })
+        this.saveSelection()
+      }
+    })
 
   }
 
-  clearFilters() {
+  IssueAggregator(filter: ALMFilteroptions, pagination: ALMPaginationoptions): Observable<ALMIssueResWrapper> {
+    return this.aggregator.getIssues(this.selectedRemoteProject!, filter, pagination)
+  }
+
+  clearFilters(reload: boolean) {
     this.filterGroup.get('labelsControl')?.setValue([]);
     this.filterGroup.get('stateControl')?.setValue('');
     this.filterGroup.get('searchControl')?.setValue('');
     this.filterGroup.get('startDateControl')?.setValue('');
     this.filterGroup.get('endDateControl')?.setValue('');
+
+    if (reload) {
+      //Reset to default values on clear
+      this.pageIndex = 0;
+      this.pageSize = 20;
+      this.reloadIssues();
+
+    } 
+
   }
 
   private createFilterOptions(): ALMFilteroptions {

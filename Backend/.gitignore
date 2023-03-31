@@ -1,3 +1,4 @@
 /node_modules
 .env
 firebase_access_key.json
+/build
