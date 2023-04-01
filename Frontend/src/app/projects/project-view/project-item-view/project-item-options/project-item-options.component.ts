@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, share } from 'rxjs';
+import { combineLatest, share, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Viewpoint } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
@@ -9,31 +9,25 @@ import { DataService } from 'src/app/services/data.service';
 @Component({
   selector: 'app-project-item-options',
   templateUrl: './project-item-options.component.html',
-  styleUrls: ['./project-item-options.component.scss']
+  styleUrls: ['./project-item-options.component.scss'],
 })
 export class ProjectItemOptionsComponent {
-
-  data = inject(DataService)
-  dialog = inject(MatDialog)
-  fb = inject(FormBuilder)
-
+  data = inject(DataService);
+  dialog = inject(MatDialog);
+  fb = inject(FormBuilder);
 
   viewpointDetails = this.fb.group({
-    nameCtrl: ['', Validators.required]
+    nameCtrl: ['', Validators.required],
   });
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
-  viewpoint$ = this.data.activeViewpoint$.pipe();
-  project$ = this.data.activeProject$.pipe();
+  viewpoint$ = this.data.activeViewpoint$.pipe(
+    tap(viewpoint => {
+      if (viewpoint !== undefined) this.viewpointDetails.get('nameCtrl')?.setValue(viewpoint?.title);
+    })
+  );
+  project$ = this.data.activeProject$;
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
-
-
-
-
-
-
-
-
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
     const dialogConfig = new MatDialogConfig();
@@ -56,7 +50,4 @@ export class ProjectItemOptionsComponent {
   chooseViewpoint(viewpoint: Viewpoint) {
     if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
   }
-
 }
-
-

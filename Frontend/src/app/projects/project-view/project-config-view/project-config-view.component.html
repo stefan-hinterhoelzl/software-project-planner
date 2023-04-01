@@ -1,6 +1,6 @@
 <div *ngIf="project$ | async as project; else elseBlock" class="main-wrapper">
   <h1>{{project.title}}</h1>
-  <mat-card>
+  <mat-card style = "margin-top: 0">
     <h1 matCardTitle>Project Details</h1>
     <mat-divider></mat-divider>
     <form [formGroup]="projectDetails">

@@ -1,5 +1,4 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
-    <div class="wrapper">
         <div class="viewpoint-selection">
             <div class="viewpoint-button">
                 <h3>Viewpoint:</h3>
@@ -25,7 +24,7 @@
                     <span>Create new Viewpoint</span>
                 </button>
             </mat-menu>
-        </div>
+
         <div *ngIf="viewpoint$ | async as view; else viewpointsettingselse">
             <mat-card style="margin-top: 0">
                 <h1 matCardTitle>Viewpoint Details</h1>
@@ -47,19 +46,23 @@
                     <button class="margin-top" mat-raised-button color="primary">Save</button>
                 </div>
             </mat-card>
+            <mat-card style = "margin-bottom: 50px">
+              <h1 matCardTitle>Danger Zone</h1>
+              <mat-divider></mat-divider>
+              <div>
+                <button class = "margin-top" mat-raised-button color="warn">Delete Viewpoint</button>
+              </div>
+            </mat-card>
         </div>
         <ng-template #viewpointsettingselse>
             <div class="viewpoint-selection-text">
-                <mat-card style="margin-top: 0">
-                    <h3>Select a viewpoint</h3>
+                <mat-card style="margin-top: 0; justify-content: center; align-items: center; display: flex;">
+                    <h3>Please select a viewpoint</h3>
                 </mat-card>
             </div>
         </ng-template>
-    </div>
+      </div>
 </div>
-
-
-
 
 
 <button mat-raised-button color="warn" style="margin: auto auto">Delete Viewpoint</button>

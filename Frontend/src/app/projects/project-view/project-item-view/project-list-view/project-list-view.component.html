@@ -115,7 +115,7 @@
 
         <div class="list-wrapper">
           <div *ngIf="this.init && !(activeRemoteProject$ | async)" class="info-title">
-            <h2>Select a Remote Project</h2>
+            <h2>Please select a remote project</h2>
           </div>
           <mat-spinner *ngIf="(this._loading | async) && !this.init" class="progress-spinner"> </mat-spinner>
           <div *ngIf="!(this._loading | async) && !this.init" class="inner-list-wrapper">
@@ -144,7 +144,7 @@
       </div>
       <ng-template #ElseBlock2>
         <div class = "viewpoint-selection-text">
-          <h2>Please Select a Viewpoint</h2>
+          <h2>Please select a viewpoint</h2>
       </div>
       </ng-template>
     </mat-card>
