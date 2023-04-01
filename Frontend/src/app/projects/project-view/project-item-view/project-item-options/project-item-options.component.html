@@ -1,1 +1,65 @@
-<button mat-raised-button color="warn" style = "margin: auto auto">Delete Viewpoint</button>
+<div class="main-wrapper" *ngIf="this.view$ | async as view">
+    <div class="wrapper">
+        <div class="viewpoint-selection">
+            <div class="viewpoint-button">
+                <h3>Viewpoint:</h3>
+                <button *ngIf="viewpoint$ | async  as viewpoint; else ElseBlock" mat-stroked-button
+                    class="second-line-button" [matMenuTriggerFor]="menu">
+                    {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
+                </button>
+                <ng-template #ElseBlock>
+                    <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint
+                        <mat-icon>view_carousel</mat-icon></button>
+                </ng-template>
+            </div>
+
+
+            <mat-menu #menu="matMenu">
+                <button (click)="chooseViewpoint(viewpoint)" mat-menu-item
+                    *ngFor="let viewpoint of view[1]; first as isFirst">
+                    <span>{{ viewpoint.title }}</span>
+                </button>
+                <mat-divider *ngIf="view[1].length! > 0"></mat-divider>
+                <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[1])">
+                    <mat-icon>add</mat-icon>
+                    <span>Create new Viewpoint</span>
+                </button>
+            </mat-menu>
+        </div>
+        <div *ngIf="viewpoint$ | async as view; else viewpointsettingselse">
+            <mat-card style="margin-top: 0">
+                <h1 matCardTitle>Viewpoint Details</h1>
+                <mat-divider></mat-divider>
+                <form [formGroup]="viewpointDetails">
+                    <div>
+                        <mat-form-field color="accent" hintLabel="Max 25 Characters " appearance="outline">
+                            <mat-label>Title</mat-label>
+                            <input #title matInput placeholder="Name of the viewpoint" formControlName="nameCtrl"
+                                maxlength="25" required />
+                            <mat-error *ngIf="viewpointDetails.controls['nameCtrl'].hasError('required')"> Title is
+                                mandatory
+                            </mat-error>
+                            <mat-hint align="end">{{ title.value.length }}/25</mat-hint>
+                        </mat-form-field>
+                    </div>
+                </form>
+                <div>
+                    <button class="margin-top" mat-raised-button color="primary">Save</button>
+                </div>
+            </mat-card>
+        </div>
+        <ng-template #viewpointsettingselse>
+            <div class="viewpoint-selection-text">
+                <mat-card style="margin-top: 0">
+                    <h3>Select a viewpoint</h3>
+                </mat-card>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+
+
+
+
+<button mat-raised-button color="warn" style="margin: auto auto">Delete Viewpoint</button>

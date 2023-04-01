@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { combineLatest, share } from 'rxjs';
+import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
+import { Viewpoint } from 'src/app/models/project';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-project-item-options',
@@ -7,4 +13,50 @@ import { Component } from '@angular/core';
 })
 export class ProjectItemOptionsComponent {
 
+  data = inject(DataService)
+  dialog = inject(MatDialog)
+  fb = inject(FormBuilder)
+
+
+  viewpointDetails = this.fb.group({
+    nameCtrl: ['', Validators.required]
+  });
+
+  viewpoints$ = this.data.viewpoints$.pipe(share());
+  viewpoint$ = this.data.activeViewpoint$.pipe();
+  project$ = this.data.activeProject$.pipe();
+  view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
+
+
+
+
+
+
+
+
+
+  createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((data: string) => {
+      if (data !== undefined) {
+        const newViewpoint = <Viewpoint>{
+          title: data,
+        };
+
+        this.data.addViewpoint(projectId, newViewpoint, viewpoints);
+      }
+    });
+  }
+
+  chooseViewpoint(viewpoint: Viewpoint) {
+    if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
+  }
+
 }
+
+
