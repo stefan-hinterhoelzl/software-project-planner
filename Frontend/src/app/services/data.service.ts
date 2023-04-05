@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, of, ReplaySubject, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, from, map, of, ReplaySubject, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
@@ -91,7 +91,6 @@ export class DataService {
   addViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     this.backend.addViewpointToProject(projectId, viewpoint).subscribe({
       next: (newViewpoint: Viewpoint) => {
-        console.log(newViewpoint)
         this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`, 'green-snackbar');
         this._viewpoints.next([...viewpoints, newViewpoint]);
         this._activeViewpointId.next(newViewpoint.viewpointId!)
@@ -101,6 +100,22 @@ export class DataService {
         this.snackbar.openSnackBar('Error saving Viewpoint! Try again later.', 'red-snackbar');
       },
     });
+  }
+
+  updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
+    return this.backend.updateViewpointByID(viewpoint.viewpointId!, projectId, viewpoint).subscribe({
+      next: (changedViewpoint: Viewpoint) => {
+        let index: number = viewpoints.findIndex(value => value.viewpointId === viewpoint.viewpointId)
+        viewpoints[index] = changedViewpoint
+        this._viewpoints.next(viewpoints)
+        this._activeViewpointId.next(changedViewpoint.viewpointId!)
+        this.snackbar.openSnackBar(`Viewpoint ${changedViewpoint.title} changed!`, 'green-snackbar');
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error changing Viewpoint! Try again later.', 'red-snackbar');
+      }
+    })
   }
 
   getRemoteProjects(projectId: string, aggreagtor: ALMDataAggregator) {

@@ -32,9 +32,6 @@ export class GitlabALMService {
   }
 
   getLabelsPerProject(remoteProjectID: number, accesstoken: string, paginationstring: string) {
-
-    console.log(accesstoken)
-
     return this.http.get<any[]>(this.BASE_URL+'projects/'+remoteProjectID+'/labels'+paginationstring,
     {headers: this.createHeader(accesstoken), observe: 'response', responseType: 'json'})
   }

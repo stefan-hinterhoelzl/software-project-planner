@@ -50,4 +50,12 @@ export class ProjectItemOptionsComponent {
   chooseViewpoint(viewpoint: Viewpoint) {
     if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
   }
+
+
+   updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
+    viewpoint.title = this.viewpointDetails.get('nameCtrl')?.value as string
+    this.data.updateViewpoint(projectId, viewpoint, viewpoints);
+   }
+
+
 }

@@ -82,6 +82,10 @@ export class BackendService {
     return this.http.get<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId)
   }
 
+  updateViewpointByID(viewpointId: number, projectId: string, viewpoint: Viewpoint) {
+    return this.http.put<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId, viewpoint, {observe: 'body', responseType: 'json'});
+  }
+
   //Selected Remote Issues
   getSelectedRemoteIssuesForViewpoint(projectId: string, viewpointId: number, remoteProjectId: number) {
     return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues', {params: {'remoteProjectId':remoteProjectId}})
