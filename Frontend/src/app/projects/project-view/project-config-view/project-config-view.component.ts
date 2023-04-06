@@ -1,8 +1,7 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { noop, switchMap, tap } from 'rxjs';
-import { RemoteProject } from 'src/app/models/project';
-import { BackendService } from 'src/app/services/backend.service';
+import { tap } from 'rxjs';
+import { Project } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -47,6 +46,11 @@ export class ProjectConfigViewComponent {
 
   removeFromALMMap(remoteProjectId: number) {
 
+  }
+
+
+  updateProject(project: Project) {
+    
   }
 
 }
