@@ -76,9 +76,6 @@ export class DataService {
     //     this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar');
     //   },
     // });
-
-    this.projects$.subscribe()
-
     this.backend
       .addProject(newProject)
       .pipe(
