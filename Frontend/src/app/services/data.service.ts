@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, from, map, of, ReplaySubject, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { map, ReplaySubject, switchMap, tap } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
