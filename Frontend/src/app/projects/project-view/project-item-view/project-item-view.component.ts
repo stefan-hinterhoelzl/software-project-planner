@@ -18,7 +18,6 @@ export class ProjectItemViewComponent {
   data = inject(DataService);
   cd = inject(ChangeDetectorRef);
   snackbar = inject(SnackbarComponent);
-  backend = inject(BackendService);
 
   _routeSubscription?: Subscription;
   _ALMProjectsSubscription?: Subscription;

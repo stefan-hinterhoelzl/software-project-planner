@@ -13,7 +13,6 @@ import { DataService } from 'src/app/services/data.service';
 export class ProjectConfigViewComponent {
 
   data = inject(DataService)
-  backend = inject(BackendService)
   fb = inject(FormBuilder)
 
 

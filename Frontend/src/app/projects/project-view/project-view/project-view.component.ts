@@ -22,7 +22,6 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 export class ProjectViewComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
   data = inject(DataService);
-  backend = inject(BackendService);
   cd = inject(ChangeDetectorRef);
   dialog = inject(MatDialog);
   snackbar = inject(SnackbarComponent);

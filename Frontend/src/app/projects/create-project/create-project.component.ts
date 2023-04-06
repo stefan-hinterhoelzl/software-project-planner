@@ -19,7 +19,6 @@ export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
   data = inject(DataService);
   alm = inject(GitlabALMService);
-  backend = inject(BackendService);
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
@@ -76,29 +75,8 @@ export class CreateProjectComponent implements OnInit {
     newProject.favourite = false;
     newProject.owner = auth.currentUser?.uid!;
 
-   // this.data.addProject(newProject, )
-
-    this.backend
-      .addProject(newProject)
-      .pipe(
-        switchMap((project: Project) => {
-          return this.backend
-            .addRemoteProjectsToProject(project.projectId, this.ALMInstances)
-            .pipe(map(remoteProjects => ({ project, remoteProjects })));
-        })
-      )
-      .subscribe({
-        next: value => {
-          this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-          this.backend.getProjects();
-          this.router.navigate(['/project/view/' + value.project.projectId]);
-        },
-        error: error => {
-          this.snackbar.openSnackBar('Error adding Project. Try again', 'red-snackbar');
-          console.error(error.error);
-        },
-      });
-  }
+    this.data.addProject(newProject, this.ALMInstances)
+   }
 
   addToALMMap() {
     console.log(this.remoteID)

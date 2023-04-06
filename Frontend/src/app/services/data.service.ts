@@ -52,7 +52,7 @@ export class DataService {
     switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id))))
   );
 
-  constructor() {}
+  constructor() { }
 
   getProjects() {
     this.backend.getProjects().subscribe({
@@ -66,16 +66,7 @@ export class DataService {
     });
   }
 
-  addProject(newProject: Project, projects: Project[], remoteProjects: RemoteProject[]) {
-    // this.backend.addProject(newProject).subscribe({
-    //   next: () => {
-    //     this._projects.next([...projects, newProject]);
-    //   },
-    //   error: error => {
-    //     console.error(error);
-    //     this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar');
-    //   },
-    // });
+  addProject(newProject: Project, remoteProjects: RemoteProject[]) {
     this.backend
       .addProject(newProject)
       .pipe(
@@ -83,12 +74,11 @@ export class DataService {
           return this.backend
             .addRemoteProjectsToProject(project.projectId, remoteProjects)
             .pipe(map(remoteProjects => ({ project, remoteProjects })));
-        })
-      )
+        }),
+        tap(() => this.getProjects()))
       .subscribe({
         next: value => {
           this.snackbar.openSnackBar('Project added!', 'green-snackbar');
-          this._projects.next([...projects, newProject])
           this.router.navigate(['/project/view/' + value.project.projectId]);
         },
         error: error => {
@@ -96,7 +86,6 @@ export class DataService {
           console.error(error.error);
         },
       });
-
   }
 
   getViewpoints(projectId: string) {
