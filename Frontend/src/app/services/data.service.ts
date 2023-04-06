@@ -7,6 +7,7 @@ import { ALMProject } from '../models/alm.models';
 import { BackendService } from './backend.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 export class DataService {
   backend = inject(BackendService);
   snackbar = inject(SnackbarComponent);
-  //reactive trys here
+  router = inject(Router)
+
 
   //**Subjects**
   //Projects
@@ -32,7 +34,7 @@ export class DataService {
   private _viewpoints = new ReplaySubject<Viewpoint[]>(1);
   private _activeViewpointId = new ReplaySubject<number>(1);
 
-  //Observables
+  //**Observables**
   readonly projects$ = this._projects.asObservable();
   readonly activeProject$ = this._activeProjectId.asObservable().pipe(
     switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id))))
@@ -64,16 +66,40 @@ export class DataService {
     });
   }
 
-  addProject(newProject: Project, projects: Project[]) {
-    this.backend.addProject(newProject).subscribe({
-      next: () => {
-        this._projects.next([...projects, newProject]);
-      },
-      error: error => {
-        console.error(error);
-        this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar');
-      },
-    });
+  addProject(newProject: Project, projects: Project[], remoteProjects: RemoteProject[]) {
+    // this.backend.addProject(newProject).subscribe({
+    //   next: () => {
+    //     this._projects.next([...projects, newProject]);
+    //   },
+    //   error: error => {
+    //     console.error(error);
+    //     this.snackbar.openSnackBar('Error saving project! Try again later', 'red-snackbar');
+    //   },
+    // });
+
+    this.projects$.subscribe()
+
+    this.backend
+      .addProject(newProject)
+      .pipe(
+        switchMap((project: Project) => {
+          return this.backend
+            .addRemoteProjectsToProject(project.projectId, remoteProjects)
+            .pipe(map(remoteProjects => ({ project, remoteProjects })));
+        })
+      )
+      .subscribe({
+        next: value => {
+          this.snackbar.openSnackBar('Project added!', 'green-snackbar');
+          this._projects.next([...projects, newProject])
+          this.router.navigate(['/project/view/' + value.project.projectId]);
+        },
+        error: error => {
+          this.snackbar.openSnackBar('Error adding Project. Try again', 'red-snackbar');
+          console.error(error.error);
+        },
+      });
+
   }
 
   getViewpoints(projectId: string) {

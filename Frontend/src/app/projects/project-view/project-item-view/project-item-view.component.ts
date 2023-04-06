@@ -20,7 +20,6 @@ export class ProjectItemViewComponent {
   snackbar = inject(SnackbarComponent);
   backend = inject(BackendService);
 
-  aggregator: ALMDataAggregator;
   _routeSubscription?: Subscription;
   _ALMProjectsSubscription?: Subscription;
   _remoteProjectsSubscription?: Subscription;
@@ -28,18 +27,9 @@ export class ProjectItemViewComponent {
   _viewPointSubscription?: Subscription;
   viewpoint?: Viewpoint;
 
-  project$ = this.data.activeProject$.pipe(tap(project => {
-    if (project !== undefined)
-    this.data.getRemoteProjects(project.projectId, this.aggregator)
-  }));
+  project$ = this.data.activeProject$;
   viewpoint$ = this.data.activeViewpoint$;
-  remoteProjects$ = this.data.remoteProjects$.pipe(share(), tap(value => console.log(value)));
-  view$ = combineLatest([this.project$, this.viewpoint$]).pipe(share(), tap(value => console.log(value)))
-
-
-  constructor() {
-    //move to onInit with possible logic determining the type of aggregator
-    this.aggregator = new GitLabAggregator();
-  }
+  remoteProjects$ = this.data.remoteProjects$;
+  view$ = combineLatest([this.project$, this.viewpoint$]);
 
 }

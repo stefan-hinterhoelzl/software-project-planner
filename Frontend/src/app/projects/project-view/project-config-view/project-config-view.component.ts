@@ -36,7 +36,8 @@ export class ProjectConfigViewComponent {
     })
   );
 
-  remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project!.projectId)));
+  //remoteProjects$ = this.project$.pipe(switchMap(project => this.backend.getRemoteProjectsForProject(project!.projectId)));
+  remoteProjects$ = this.data.remoteProjects$;
 
   hide: boolean = true;
 

@@ -76,6 +76,8 @@ export class CreateProjectComponent implements OnInit {
     newProject.favourite = false;
     newProject.owner = auth.currentUser?.uid!;
 
+   // this.data.addProject(newProject, )
+
     this.backend
       .addProject(newProject)
       .pipe(

@@ -9,6 +9,7 @@ import {
   delay,
 } from 'rxjs';
 import { Project, Viewpoint } from 'src/app/models/project';
+import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
@@ -33,10 +34,20 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   viewpoints?: Viewpoint[];
   _activeViewpointSubscription?: Subscription;
   _activeViewpointTitle?: Observable<string>;
+  aggregator: ALMDataAggregator;
 
   viewpoints$ = this.data.viewpoints$.pipe(share(), tap(viewpoints => this.viewpoints = viewpoints))
   activeViewpoint$ = this.data.activeViewpoint$.pipe(delay(0),share())
-  project$ = this.data.activeProject$.pipe(share(), tap(value => console.log(value)))
+  project$ = this.data.activeProject$.pipe(share(), tap(project => {
+    if (project !== undefined) 
+    this.data.getRemoteProjects(project.projectId, this.aggregator)
+  }))
+
+
+  constructor() {
+    //move to onInit with possible logic determining the type of aggregator
+    this.aggregator = new GitLabAggregator();
+  }
 
 
   ngOnDestroy(): void {
