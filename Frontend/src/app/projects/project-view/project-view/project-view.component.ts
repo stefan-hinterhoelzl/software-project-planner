@@ -1,21 +1,14 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-
-  map,
   Observable,
-
   Subscription,
-
   tap,
-  of,
   share,
-  catchError,
   delay,
 } from 'rxjs';
-import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
-import { Project, ProjectWrapper, Viewpoint } from 'src/app/models/project';
+import { Project, Viewpoint } from 'src/app/models/project';
 import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
