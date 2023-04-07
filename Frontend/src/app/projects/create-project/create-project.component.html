@@ -53,6 +53,7 @@
             access token in case where access to the project is not public. Upon adding a value, the system will check access to the project and in
             case of error not add the remote connection.
           </p>
+          <p *ngIf="ALMInstances.length === 0">There has to be at least one remote project connected to this local project!</p>
           <form [formGroup]="thirdFormGroup">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>ALM Remote Project ID</mat-label>
@@ -63,7 +64,7 @@
               <input #accessToken matInput [type]="hide ? 'password' : 'text'" placeholder="Access Token" formControlName="accessToken" />
             </mat-form-field>
           </form>
-          <button mat-stroked-button (click)="addToALMMap()">Add Remote Project</button>
+          <button [disabled]="!thirdFormGroup.valid" mat-stroked-button (click)="addToALMMap()">Add Remote Project</button>
           <mat-slide-toggle class="slide-toggle" color="primary" [(ngModel)]="hide">Hide Access Tokens</mat-slide-toggle>
         </div>
 
@@ -80,7 +81,7 @@
         </div>
         <br />
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" (click)="saveProject()" class="right-button">Save</button>
+        <button [disabled]="ALMInstances.length === 0" mat-raised-button color="primary" (click)="saveProject()" class="right-button">Save</button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>

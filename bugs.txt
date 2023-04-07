@@ -1,0 +1,2 @@
+infinte loading screen bei viewpoints auf project ohne remoteprojects
+-- maybe eines zwingend angeben müssen?

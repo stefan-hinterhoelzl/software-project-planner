@@ -131,6 +131,7 @@ export class DataService {
   }
 
   getRemoteProjects(projectId: string, aggreagtor: ALMDataAggregator) {
+    console.log(projectId)
     this.backend.getRemoteProjectsForProject(projectId).subscribe({
       next: value => {
         console.log(value);

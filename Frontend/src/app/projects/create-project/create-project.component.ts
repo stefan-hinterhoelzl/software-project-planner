@@ -1,6 +1,6 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { map, Subscription, switchMap, take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
@@ -25,6 +25,8 @@ export class CreateProjectComponent implements OnInit {
   route = inject(ActivatedRoute);
 
   @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
+  @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
+
   loggedUser: User | undefined;
 
   firstFormGroup = this.fb.group({
@@ -36,8 +38,8 @@ export class CreateProjectComponent implements OnInit {
   });
 
   thirdFormGroup = this.fb.group({
-    remoteID: [''],
-    accessToken: [''],
+    remoteID: ['', Validators.required],
+    accessToken: ['',Validators.required],
   });
   hide = true;
 
@@ -79,7 +81,6 @@ export class CreateProjectComponent implements OnInit {
    }
 
   addToALMMap() {
-    console.log(this.remoteID)
     if (this.remoteID === undefined || this.remoteID === 0) {
       this.remoteIDHasError = true;
     } else {
@@ -109,8 +110,7 @@ export class CreateProjectComponent implements OnInit {
             } else {
               this.snackbar.openSnackBar('Project already added!', 'red-snackbar');
             }
-            this.thirdFormGroup.get('remoteID')?.setValue('');
-            this.thirdFormGroup.get('accessToken')?.setValue('');
+            this.thirdFormGroup.reset();
           },
           error: error => {
             console.log(error);
