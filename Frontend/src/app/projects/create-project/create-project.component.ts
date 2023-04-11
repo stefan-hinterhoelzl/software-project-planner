@@ -95,7 +95,6 @@ export class CreateProjectComponent implements OnInit {
         .pipe(take(1))
         .subscribe({
           next: response => {
-            console.log(response);
             if (
               this.ALMInstances.findIndex(value => {
                 return value.remoteProjectId === this.remoteID;
@@ -113,7 +112,6 @@ export class CreateProjectComponent implements OnInit {
             this.thirdFormGroup.reset();
           },
           error: error => {
-            console.log(error);
             if (error.status === 401) {
               this.snackbar.openSnackBar('Access token is invalid!', 'red-snackbar');
             } else if (error.status === 404) {

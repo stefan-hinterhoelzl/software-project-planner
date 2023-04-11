@@ -44,7 +44,7 @@ export class DataService {
     switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id))))
   );
 
-  readonly almProjects$ = this._almprojects.asObservable().pipe(tap(value => console.log(value)));
+  readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
   readonly userSettings$ = this._userSettings.asObservable();
   readonly viewpoints$ = this._viewpoints.asObservable();
@@ -87,6 +87,27 @@ export class DataService {
         },
       });
   }
+
+  updateProjectDetails(project: Project, projectTitle: string, projectdescr: string) {
+    let updateProject: Project = JSON.parse(JSON.stringify(project))
+    updateProject.title = projectTitle
+    updateProject.description = projectdescr
+
+    return this.backend.updateProjectById(updateProject).subscribe({
+      next: value => {
+        project.title = projectTitle
+        project.description = projectdescr
+        this.snackbar.openSnackBar('Changes saved to the server.', 'green-snackbar');
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error saving changes! Try again later.', 'red-snackbar');
+      }
+    })
+
+  }
+
+
 
   getViewpoints(projectId: string) {
     this.backend.getViewpointsFromProject(projectId).subscribe({

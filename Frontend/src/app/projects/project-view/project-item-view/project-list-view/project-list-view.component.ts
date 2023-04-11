@@ -340,8 +340,6 @@ export class ProjectListViewComponent implements OnInit {
       index++;
     }
 
-    console.log(filter)
-
     const o_issues = reqs.map((value, index, array) => {
       return this.IssueAggregator(filter, value);
     });

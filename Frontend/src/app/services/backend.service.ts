@@ -50,14 +50,12 @@ export class BackendService {
     return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid);
   }
 
-
-  // getProjects() {
-  //   const auth = getAuth();
-  //   return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid)
-  // }
-
   getProjectById(projectId: string): Observable<Project> {
     return this.http.get<Project>(this.BASE_URL + 'project/' + projectId)
+  }
+
+  updateProjectById(project: Project): Observable<Project> {
+    return this.http.put<Project>(this.BASE_URL + 'project/' + project.projectId, project, {observe: 'body', responseType: 'json'});
   }
 
   //Remoteprojects
