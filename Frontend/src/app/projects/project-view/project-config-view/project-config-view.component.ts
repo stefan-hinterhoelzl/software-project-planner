@@ -1,7 +1,7 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { take, tap } from 'rxjs';
+import { combineLatest, take, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { Project, RemoteProject, RemoteProjectDeleteObject } from 'src/app/models/project';
 import { GitlabALMService } from 'src/app/services/ALM/Adapater Services/gitLab.service';
@@ -25,9 +25,6 @@ export class ProjectConfigViewComponent {
     this.projectsLoading = false;
     this.remoteIDHasError = false;
     this.hide = true;
-
-    this.remoteProjects = []
-    this.remoteProjectsPlus = []
     this.remoteProjectsMinus = []
   }
 
@@ -47,33 +44,28 @@ export class ProjectConfigViewComponent {
   project$ = this.data.activeProject$.pipe(
     tap(project => {
       if (project !== undefined) {
+        console.log(project)
         this.projectDetails.get("nameCtrl")!.setValue(project.title);
         this.projectDetails.get("descrCtrl")!.setValue(project.description);
       }
     })
   );
 
-  remoteProjects$ = this.data.remoteProjects$.pipe(tap(remoteProjects => {
-    this.ALMInstancesSave = JSON.parse(JSON.stringify(remoteProjects)) //Use the JSON library to deep copy the array
-    this.remoteProjects = remoteProjects
-  }));
+  remoteProjects$ = this.data.remoteProjects$
+
+  view$ = combineLatest([this.project$, this.remoteProjects$])
 
   //State Booleans
   hide: boolean;
   projectsLoading: boolean;
   remoteIDHasError: boolean;
 
-
-  //Remoteprojects State Variable
-  remoteProjects: RemoteProject[]
-
-  //Delta Objects
-  remoteProjectsPlus: RemoteProject[];
+  //Delta Object
   remoteProjectsMinus: RemoteProjectDeleteObject[];
 
 
 
-  addToALMMap() {
+  addToALMMap(remoteProjects: RemoteProject[]) {
     let remoteID: number  = Number(this.ALMInstanceForm.get("remoteID")!.value)
     let accessToken: string = this.ALMInstanceForm.get("accessToken")!.value!
 
@@ -92,11 +84,11 @@ export class ProjectConfigViewComponent {
         .subscribe({
           next: response => {
             if (
-              this.remoteProjects.findIndex(value => {
+              remoteProjects.findIndex(value => {
                 return value.remoteProjectId === remoteID;
               }) === -1
             ) {
-              this.remoteProjects.push({
+              remoteProjects.push({
                 accessToken: token,
                 remoteProjectId: remoteID!,
               });
@@ -123,7 +115,7 @@ export class ProjectConfigViewComponent {
 
   }
 
-  removeFromALMMap(remoteProject: RemoteProject) {
+  removeFromALMMap(remoteProject: RemoteProject, remoteProjects: RemoteProject[]) {
     const dialogConfigKeep = new MatDialogConfig();
 
     dialogConfigKeep.data = {
@@ -144,19 +136,21 @@ export class ProjectConfigViewComponent {
 
       this.remoteProjectsMinus.push(object)
 
-      this.remoteProjects = this.remoteProjects.filter(val => {
-        return val.remoteProjectId !== remoteProject.remoteProjectId;
+      let index: number = remoteProjects.findIndex(val => {
+        return val.remoteProjectId === remoteProject.remoteProjectId;
       });
+
+     if (index !== undefined) remoteProjects.splice(index, 1)
 
     });
   }
 
+   updateProjectDetails(project: Project) {
+     this.data.updateProjectDetails(project, this.projectDetails.get('nameCtrl')?.value!, this.projectDetails.get('descrCtrl')?.value!)
+   }
 
-  updateProjectDetails(project: Project) {
-    this.data.updateProjectDetails(project, this.projectDetails.get('nameCtrl')?.value!, this.projectDetails.get('descrCtrl')?.value!)
-  }
   updateRemoteProjects(remoteProjects: RemoteProject[]) {
-    remoteProjects = [];
+
   }
 
   resetDetails(project: Project) {
@@ -164,10 +158,9 @@ export class ProjectConfigViewComponent {
     this.projectDetails.get("descrCtrl")!.setValue(project.description);
   }
 
-  resetRemoteProjects() {
+  resetRemoteProjects(remoteProjects: RemoteProject[]) {
+    remoteProjects.push(...this.remoteProjectsMinus.map(value => value.remoteProject))
     this.remoteProjectsMinus = [];
-    this.remoteProjectsPlus = [];
-    this.remoteProjects = JSON.parse(JSON.stringify(this.ALMInstancesSave)) //Use JSON library to deep copy
   }
 
 }

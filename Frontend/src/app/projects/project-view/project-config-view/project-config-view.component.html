@@ -1,5 +1,5 @@
-<div *ngIf="(project$ | async as project) && (remoteProjects$ | async as rProjects); else elseBlock" class="main-wrapper">
-  <h1>{{project.title}}</h1>
+<div *ngIf="view$ | async as view; else elseBlock" class="main-wrapper">
+  <h1>{{view[0]!.title}}</h1>
   <mat-card style="margin-top: 0">
     <h1 matCardTitle>Project Details</h1>
     <mat-divider></mat-divider>
@@ -26,8 +26,8 @@
       </div>
     </form>
     <div class="margin-top">
-      <button mat-raised-button color="primary" (click)="updateProjectDetails(project)">Save</button>
-      <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetDetails(project)">Reset</button>
+      <button mat-raised-button color="primary" (click)="updateProjectDetails(view[0]!)">Save</button>
+      <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetDetails(view[0]!)">Reset</button>
     </div>
   </mat-card>
 
@@ -47,17 +47,17 @@
       </mat-form-field>
     </form>
     <div class="alm-action-row">
-      <button [disabled]="!ALMInstanceForm.valid" mat-stroked-button (click)="addToALMMap()">Add Remote Project</button>
+      <button [disabled]="!ALMInstanceForm.valid" mat-stroked-button (click)="addToALMMap(view[1])">Add Remote Project</button>
       <mat-slide-toggle class="slide-toggle" color="primary" [(ngModel)]="hide">Hide Access Tokens</mat-slide-toggle>
     </div>
     <div *ngIf="!projectsLoading; else projectSettingsElse">
-      <div class="disabled-list" *ngFor="let entry of rProjects">
+      <div class="disabled-list" *ngFor="let entry of view[1]">
         <mat-divider></mat-divider>
         <mat-form-field appearance="outline">
           <mat-label>Remote Project ID</mat-label>
           <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
-          <mat-icon *ngIf="remoteProjects.length > 1" matSuffix style="cursor: pointer" color="warn"
-            (click)="removeFromALMMap(entry)">delete</mat-icon>
+          <mat-icon *ngIf="view[1].length > 1" matSuffix style="cursor: pointer" color="warn"
+            (click)="removeFromALMMap(entry, view[1])">delete</mat-icon>
         </mat-form-field>
         <mat-form-field *ngIf="entry.accessToken !== ''" appearance="outline">
           <mat-label>Access Token</mat-label>
@@ -72,8 +72,8 @@
       </div>
     </ng-template>
     <div class="margin-top">
-      <button mat-raised-button color="primary" (click)="updateRemoteProjects(rProjects)">Save</button>
-      <button style="margin-left: 10px" mat-raised-button color="accent" (click) = "resetRemoteProjects()">Reset</button>
+      <button mat-raised-button color="primary" (click)="updateRemoteProjects(view[1])">Save</button>
+      <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetRemoteProjects(view[1])">Reset</button>
     </div>
   </mat-card>
 

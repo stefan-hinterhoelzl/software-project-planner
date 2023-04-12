@@ -1,2 +1,8 @@
 infinte loading screen bei viewpoints auf project ohne remoteprojects
--- maybe eines zwingend angeben müssen?
+-- maybe eines zwingend angeben müssen? -- done
+
+
+Project Settings emission direkt mutated -- eventuell noch umstellen funktioniert aber aktuell
+
+
+Eventuell auf Maps umstellen mit Key
