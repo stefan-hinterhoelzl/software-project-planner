@@ -74,7 +74,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
 
         let changesInProjects: boolean = false;
 
-        if (value.length !== this.ALMInstancesSave.length) changesInProjects = true;
+        if (value[1].length !== this.ALMInstancesSave.length) changesInProjects = true;
 
         if (!changesInProjects) {
           value[1].forEach(value => {
