@@ -24,10 +24,10 @@ export async function removeRemoteIssuesFromProjectViewpoint(req: Request, res: 
           value.viewpointId,
           value.remoteProjectId,
           value.remoteIssueId,
-          value.projectId
-        ])
+          value.projectId,
+        ]);
       }),
-      res.json(issues)
+      res.json(issues),
     ]);
   } catch (err: any) {
     handleError(res, err);
@@ -42,11 +42,30 @@ export async function getRemoteIssuesFromProjectViewpoint(req: Request, res: Res
   try {
     const conn = await connect();
     const result: RemoteIssues[] = (
-      await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ? AND remoteProjectId = ?', [projectId, viewpointId, remoteProjectId])
+      await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ? AND remoteProjectId = ?', [
+        projectId,
+        viewpointId,
+        remoteProjectId,
+      ])
     )[0];
     if (result === undefined) {
       res.status(404).json({ message: `Viewpoint with ID ${viewpointId} does not exist in project with ID ${projectId}` });
     } else return res.json(result);
+  } catch (err: any) {
+    handleError(res, err);
+  }
+}
+
+export async function removeAllIssuesByRemoteProject(req: Request, res: Response) {
+  var projectId: string = req.params.projectId;
+  var remoteProjectId: number = Number(req.params.remoteProjectId);
+
+  try {
+    const conn = await connect();
+
+    conn.query('DELETE FROM RemoteIssues WHERE projectId = ? AND remoteProjectId = ?', [projectId, remoteProjectId]);
+
+    res.json({ 'response:': 'success' });
   } catch (err: any) {
     handleError(res, err);
   }

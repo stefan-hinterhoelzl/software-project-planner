@@ -1,14 +1,15 @@
 <div *ngIf="view$ | async as view; else elseBlock" class="main-wrapper">
-  <h1>{{view[0]!.title}}</h1>
+  <h1>{{ view[0]!.title }}</h1>
   <mat-card style="margin-top: 0">
-    <h1 matCardTitle>Project Details</h1>
-    <mat-divider></mat-divider>
     <form [formGroup]="projectDetails">
+      <div class = "header-line">
+        <h1 matCardTitle>Project Details</h1>
+      </div>
+      <mat-divider></mat-divider>
       <div>
         <mat-form-field color="accent" hintLabel="Max 100 Characters " appearance="outline">
           <mat-label>Title</mat-label>
-          <input #title matInput placeholder="Name of the project" formControlName="nameCtrl" maxlength="100"
-            required />
+          <input #title matInput placeholder="Name of the project" formControlName="nameCtrl" maxlength="100" required />
           <mat-error *ngIf="projectDetails.controls['nameCtrl'].hasError('required')"> Title is mandatory </mat-error>
           <mat-hint align="end">{{ title.value.length }}/100</mat-hint>
         </mat-form-field>
@@ -16,11 +17,18 @@
       <div>
         <mat-form-field color="accent" appearance="outline" hintLabel="Max 2000 Characters">
           <mat-label>Description</mat-label>
-          <textarea #descr placeholder="Describe the project" matInput cdkTextareaAutosize formControlName="descrCtrl"
-            #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="7" maxlength="2000"
+          <textarea
+            #descr
+            placeholder="Describe the project"
+            matInput
+            cdkTextareaAutosize
+            formControlName="descrCtrl"
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="3"
+            cdkAutosizeMaxRows="7"
+            maxlength="2000"
             required></textarea>
-          <mat-error *ngIf="projectDetails.controls['descrCtrl'].hasError('required')"> Description is mandatory
-          </mat-error>
+          <mat-error *ngIf="projectDetails.controls['descrCtrl'].hasError('required')"> Description is mandatory </mat-error>
           <mat-hint align="end">{{ descr.value.length }}/2000</mat-hint>
         </mat-form-field>
       </div>
@@ -42,12 +50,11 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Access Token</mat-label>
-        <input #accessToken matInput [type]="hide ? 'password' : 'text'" placeholder="Access Token"
-          formControlName="accessToken" />
+        <input #accessToken matInput [type]="hide ? 'password' : 'text'" placeholder="Access Token" formControlName="accessToken" />
       </mat-form-field>
     </form>
     <div class="alm-action-row">
-      <button [disabled]="!ALMInstanceForm.valid" mat-stroked-button (click)="addToALMMap(view[1])">Add Remote Project</button>
+      <button [disabled]="!ALMInstanceForm.valid" mat-stroked-button (click)="addToALMMap(view[1], view[0]!)">Add Remote Project</button>
       <mat-slide-toggle class="slide-toggle" color="primary" [(ngModel)]="hide">Hide Access Tokens</mat-slide-toggle>
     </div>
     <div *ngIf="!projectsLoading; else projectSettingsElse">
@@ -56,23 +63,23 @@
         <mat-form-field appearance="outline">
           <mat-label>Remote Project ID</mat-label>
           <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
-          <mat-icon *ngIf="view[1].length > 1" matSuffix style="cursor: pointer" color="warn"
-            (click)="removeFromALMMap(entry, view[1])">delete</mat-icon>
+          <mat-icon *ngIf="view[1].length > 1" matSuffix style="cursor: pointer" color="warn" (click)="removeFromALMMap(entry, view[1])"
+            >delete</mat-icon
+          >
         </mat-form-field>
         <mat-form-field *ngIf="entry.accessToken !== ''" appearance="outline">
           <mat-label>Access Token</mat-label>
-          <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true"
-            value="{{ entry.accessToken }}" />
+          <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true" value="{{ entry.accessToken }}" />
         </mat-form-field>
       </div>
     </div>
     <ng-template #projectSettingsElse>
-      <div class="progress-spinner" style ="margin-top: 20px">
+      <div class="progress-spinner" style="margin-top: 20px">
         <mat-spinner> </mat-spinner>
       </div>
     </ng-template>
     <div class="margin-top">
-      <button mat-raised-button color="primary" (click)="updateRemoteProjects(view[1])">Save</button>
+      <button mat-raised-button color="primary" (click)="updateRemoteProjects(view[0]!, view[1])">Save</button>
       <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetRemoteProjects(view[1])">Reset</button>
     </div>
   </mat-card>

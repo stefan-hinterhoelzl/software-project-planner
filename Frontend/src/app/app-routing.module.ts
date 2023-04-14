@@ -6,6 +6,7 @@ import { AuthguardService } from './services/authguard.service';
 import { PreloadAllModules } from '@angular/router';
 import { NotFoundComponent } from './error/not-found/not-found.component';
 import { ServerErrorComponent } from './error/server-error/server-error.component';
+import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },

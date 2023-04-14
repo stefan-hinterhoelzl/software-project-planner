@@ -50,3 +50,21 @@ export async function deleteRemoteProjectById(req: Request, res: Response) {
     handleError(res, err);
   }
 }
+
+export async function updateRemoteProjects(req: Request, res: Response) {
+  var id: string = req.params.projectId;
+
+  try {
+    const conn = await connect();
+    await conn.query('DELETE FROM RemoteProjects Where projectId = ?', [id]);
+
+    const newProjects: RemoteProject[] = req.body;
+    await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteProjects SET ?', [value]))]);
+
+    res.json(newProjects)
+    
+  } catch (err: any) {
+    handleError(res, err);
+  }
+
+}

@@ -32,6 +32,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { ProjectItemViewComponent } from './project-view/project-item-view/project-item-view.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ProjectItemOptionsComponent } from './project-view/project-item-view/project-item-options/project-item-options.component';
+import { CanDeactivateGuard } from '../services/can-deactivate-guard.service';
 
 
 
@@ -83,6 +84,6 @@ import { ProjectItemOptionsComponent } from './project-view/project-item-view/pr
   ],
   exports: [
   ],
-  providers: [SnackbarComponent],
+  providers: [SnackbarComponent, CanDeactivateGuard],
 })
 export class ProjectsModule { }

@@ -67,6 +67,10 @@ export class BackendService {
     return this.http.get<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', {observe: 'body', responseType: 'json'});
   }
 
+  updateRemoteProjectFromProject(project: Project, remoteProjects: RemoteProject[]) {
+    return this.http.put(this.BASE_URL + 'project/' + project.projectId + '/RemoteProjects', remoteProjects, {observe: 'body', responseType: 'json'})
+  }
+
   //Viewpoints
   addViewpointToProject(projectId: string, viewPoint: Viewpoint): Observable<Viewpoint> {
     return this.http.post<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoints', viewPoint, {observe: 'body', responseType: 'json'});
@@ -95,6 +99,11 @@ export class BackendService {
 
   removeRemoteIssuesToViewpoint(rIssues: Issue[]) {
     return this.http.put<Issue[]>(this.BASE_URL + 'project/' + rIssues[0].projectId + '/Viewpoint/' + rIssues[0].viewpointId + '/RemoteIssues', rIssues)
+  }
+
+  removeRemoteIssuesByRemoteProject(remoteProject: RemoteProject) {
+    console.log(remoteProject.remoteProjectId, "remoteprojectid")
+    return this.http.delete(this.BASE_URL + 'project/' + remoteProject.projectId + '/RemoteProject/' + remoteProject.remoteProjectId + "/RemoteIssues")
   }
 
 
