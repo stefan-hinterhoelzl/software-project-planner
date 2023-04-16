@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, share, tap } from 'rxjs';
+import { Observable, combineLatest, share, switchMap, tap } from 'rxjs';
+import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Viewpoint } from 'src/app/models/project';
+import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -11,7 +13,8 @@ import { DataService } from 'src/app/services/data.service';
   templateUrl: './project-item-options.component.html',
   styleUrls: ['./project-item-options.component.scss'],
 })
-export class ProjectItemOptionsComponent {
+export class ProjectItemOptionsComponent implements CanComponentDeactivate {
+
   data = inject(DataService);
   dialog = inject(MatDialog);
   fb = inject(FormBuilder);
@@ -28,6 +31,24 @@ export class ProjectItemOptionsComponent {
   );
   project$ = this.data.activeProject$;
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
+
+
+  canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+    const dialogConfigKeep = new MatDialogConfig();
+
+    dialogConfigKeep.data = {
+      title: 'Unsaved Changes!',
+      content: 'You have unsaved changes. They are lost when you leave the page!',
+      button1: 'Discard Changes',
+      button2: 'Save Changes',
+    };
+
+    dialogConfigKeep.disableClose = true;
+
+    const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+    return dialogRef.afterClosed();
+
+  }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
     const dialogConfig = new MatDialogConfig();

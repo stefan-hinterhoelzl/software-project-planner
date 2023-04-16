@@ -29,11 +29,12 @@ const routes: Routes = [
             { path: 'overview', component: ProjectDashboardComponent },
             { path: 'viewpoint',
              component: ProjectItemViewComponent,
+             canDeactivate: [CanDeactivateGuard],
              children: [
               {path: '', redirectTo: 'list', pathMatch: 'full'},
               { path: 'list', component: ProjectListViewComponent },
               { path: 'tree', component: ProjectTreeViewComponent },
-              { path: 'options', component: ProjectItemOptionsComponent}]
+              { path: 'options', component: ProjectItemOptionsComponent, canDeactivate: [CanDeactivateGuard]}]
             },
             { path: 'config', component: ProjectConfigViewComponent, canDeactivate: [CanDeactivateGuard]},
         ],

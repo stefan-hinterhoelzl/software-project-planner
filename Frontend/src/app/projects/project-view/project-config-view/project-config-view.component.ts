@@ -93,7 +93,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
             title: 'Unsaved Changes!',
             content: 'You have unsaved changes. They are lost when you leave the page!',
             button1: 'Discard Changes',
-            button2: 'Go Back',
+            button2: 'Save Changes',
           };
 
           dialogConfigKeep.disableClose = true;
@@ -101,7 +101,13 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
           const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
           return dialogRef.afterClosed().pipe(
             switchMap(res => {
-              return of(res)
+
+              if (!res) {
+                if (this.projectDetails.dirty) this.updateProjectDetails(value[0]!)
+                if (changesInProjects) this.updateRemoteProjects(value[0]!, value[1])
+              }
+
+              return of(true)
             })
           );
         } else return of(true);
@@ -170,7 +176,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
     dialogConfigKeep.data = {
       title: 'Keep selected items from this project?',
       content: 'Selected whether you want to keep items from this remote project.',
-      button1: 'No, delete issues',
+      button1: 'No, delete items',
       button2: 'Yes, keep items',
     };
 
@@ -202,7 +208,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
         project.title = this.projectDetails.get('nameCtrl')?.value!;
         project.description = this.projectDetails.get('descrCtrl')?.value!;
         this.projectDetails.markAsPristine();
-        this.snackbar.openSnackBar('Changes saved to the server.', 'green-snackbar');
+        this.snackbar.openSnackBar('Project details saved to the server.', 'green-snackbar');
       },
       error: error => {
         console.error(error);
@@ -214,7 +220,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
   updateRemoteProjects(project: Project, remoteProjects: RemoteProject[]) {
     this.data.updateRemoteProjects(project, remoteProjects, this.remoteProjectsMinus).subscribe({
       next: value => {
-        this.snackbar.openSnackBar('Changes saved to the server.', 'green-snackbar');
+        this.snackbar.openSnackBar('Remote projects saved to the server.', 'green-snackbar');
         this.ALMInstancesSave = JSON.parse(JSON.stringify(remoteProjects));
         this.remoteProjectsMinus = [];
       },
