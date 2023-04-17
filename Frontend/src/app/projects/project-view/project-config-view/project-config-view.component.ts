@@ -247,10 +247,10 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
     const dialogConfigKeep = new MatDialogConfig();
 
     dialogConfigKeep.data = {
-      title: 'Keep selected items from this project?',
-      content: 'Selected whether you want to keep items from this remote project.',
-      button1: 'No, delete items',
-      button2: 'Yes, keep items',
+      title: 'Are you sure?',
+      content: 'The project can not be restored after it was deleted. All related remote projects and viewpoints are deleted too.',
+      button1: 'Delete',
+      button2: 'Cancel',
     };
 
     dialogConfigKeep.disableClose = true;

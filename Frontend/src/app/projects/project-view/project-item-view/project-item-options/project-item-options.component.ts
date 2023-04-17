@@ -75,6 +75,22 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   }
 
   deleteViewpoint(viewpoint: Viewpoint) {
+    const dialogConfigKeep = new MatDialogConfig();
 
+    dialogConfigKeep.data = {
+      title: 'Are you sure?',
+      content: 'The viewpoint can not be restored after it was deleted. All items selected for this viewpoint are deleted too.',
+      button1: 'Delete',
+      button2: 'Cancel',
+    };
+
+    dialogConfigKeep.disableClose = true;
+
+    const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.data.deleteViewpoint(viewpoint)
+      }
+    })
   }
 }
