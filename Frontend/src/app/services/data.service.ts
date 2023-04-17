@@ -90,6 +90,19 @@ export class DataService {
       });
   }
 
+  deleteProject(project: Project) {
+    this.backend.deleteProjectById(project).subscribe({
+      next: res => {
+        this.snackbar.openSnackBar('Project ' + project.title + ' deleted.', 'green-snackbar')
+        this.router.navigate(["dashboard"])
+      },
+      error: err => {
+        this.snackbar.openSnackBar('Error deleting project. Try again', 'red-snackbar');
+        console.error(err.error)
+      }
+    })
+  }
+
   updateProjectDetails(project: Project, projectTitle: string, projectdescr: string) {
     let updateProject: Project = JSON.parse(JSON.stringify(project));
     updateProject.title = projectTitle;
@@ -165,6 +178,19 @@ export class DataService {
         this.snackbar.openSnackBar('Error changing Viewpoint! Try again later.', 'red-snackbar');
       },
     });
+  }
+
+  deleteViewpoint(viewpoint: Viewpoint) {
+    this.backend.deleteViewpointById(viewpoint).subscribe({
+      next: res => {
+        this.snackbar.openSnackBar(`Viewpoint No. ${viewpoint.viewpointId} from project ${viewpoint.projectId} was deleted.`, 'green-snackbar')
+        this.setActiveViewpoint(0);
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error deleting viewpoint. Try again.', 'red-snackbar')
+      }
+    })
   }
 
   getRemoteProjects(projectId: string, aggreagtor: ALMDataAggregator) {

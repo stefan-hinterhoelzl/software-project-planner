@@ -58,6 +58,10 @@ export class BackendService {
     return this.http.put<Project>(this.BASE_URL + 'project/' + project.projectId, project, {observe: 'body', responseType: 'json'});
   }
 
+  deleteProjectById(project: Project) {
+    return this.http.delete(this.BASE_URL + 'project/'+ project.projectId)
+  }
+
   //Remoteprojects
   addRemoteProjectsToProject(projectId: string, remoteProjects: RemoteProject[]): Observable<RemoteProject[]> {
     return this.http.post<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', remoteProjects);
@@ -86,6 +90,10 @@ export class BackendService {
 
   updateViewpointByID(viewpointId: number, projectId: string, viewpoint: Viewpoint) {
     return this.http.put<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId, viewpoint, {observe: 'body', responseType: 'json'});
+  }
+
+  deleteViewpointById(viewpoint: Viewpoint) {
+    return this.http.delete(this.BASE_URL + 'project/' + viewpoint.projectId + '/Viewpoints/'+viewpoint.viewpointId)
   }
 
   //Selected Remote Issues

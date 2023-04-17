@@ -241,4 +241,25 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
     remoteProjects.push(...this.ALMInstancesSave);
     this.remoteProjectsMinus = [];
   }
+
+
+  deleteProject(project: Project) {
+    const dialogConfigKeep = new MatDialogConfig();
+
+    dialogConfigKeep.data = {
+      title: 'Keep selected items from this project?',
+      content: 'Selected whether you want to keep items from this remote project.',
+      button1: 'No, delete items',
+      button2: 'Yes, keep items',
+    };
+
+    dialogConfigKeep.disableClose = true;
+
+    const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        this.data.deleteProject(project)
+      }
+    })
+  }
 }

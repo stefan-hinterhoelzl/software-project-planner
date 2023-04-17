@@ -14,7 +14,6 @@ import { DataService } from 'src/app/services/data.service';
   styleUrls: ['./project-item-options.component.scss'],
 })
 export class ProjectItemOptionsComponent implements CanComponentDeactivate {
-
   data = inject(DataService);
   dialog = inject(MatDialog);
   fb = inject(FormBuilder);
@@ -32,7 +31,6 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   project$ = this.data.activeProject$;
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
-
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     const dialogConfigKeep = new MatDialogConfig();
 
@@ -47,7 +45,6 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
 
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
     return dialogRef.afterClosed();
-
   }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
@@ -72,11 +69,12 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
   }
 
-
-   updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
-    viewpoint.title = this.viewpointDetails.get('nameCtrl')?.value as string
+  updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
+    viewpoint.title = this.viewpointDetails.get('nameCtrl')?.value as string;
     this.data.updateViewpoint(projectId, viewpoint, viewpoints);
-   }
+  }
 
+  deleteViewpoint(viewpoint: Viewpoint) {
 
+  }
 }
