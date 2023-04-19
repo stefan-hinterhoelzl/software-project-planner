@@ -50,14 +50,16 @@ export class BackendService {
     return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid);
   }
 
-
-  // getProjects() {
-  //   const auth = getAuth();
-  //   return this.http.get<Project[]>(this.BASE_URL + 'projects/' + auth.currentUser?.uid)
-  // }
-
   getProjectById(projectId: string): Observable<Project> {
     return this.http.get<Project>(this.BASE_URL + 'project/' + projectId)
+  }
+
+  updateProjectById(project: Project): Observable<Project> {
+    return this.http.put<Project>(this.BASE_URL + 'project/' + project.projectId, project, {observe: 'body', responseType: 'json'});
+  }
+
+  deleteProjectById(project: Project) {
+    return this.http.delete(this.BASE_URL + 'project/'+ project.projectId)
   }
 
   //Remoteprojects
@@ -67,6 +69,10 @@ export class BackendService {
 
   getRemoteProjectsForProject(projectId: string): Observable<RemoteProject[]> {
     return this.http.get<RemoteProject[]>(this.BASE_URL + 'project/' + projectId + '/RemoteProjects', {observe: 'body', responseType: 'json'});
+  }
+
+  updateRemoteProjectFromProject(project: Project, remoteProjects: RemoteProject[]) {
+    return this.http.put(this.BASE_URL + 'project/' + project.projectId + '/RemoteProjects', remoteProjects, {observe: 'body', responseType: 'json'})
   }
 
   //Viewpoints
@@ -86,6 +92,10 @@ export class BackendService {
     return this.http.put<Viewpoint>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId, viewpoint, {observe: 'body', responseType: 'json'});
   }
 
+  deleteViewpointById(viewpoint: Viewpoint) {
+    return this.http.delete(this.BASE_URL + 'project/' + viewpoint.projectId + '/Viewpoints/'+viewpoint.viewpointId)
+  }
+
   //Selected Remote Issues
   getSelectedRemoteIssuesForViewpoint(projectId: string, viewpointId: number, remoteProjectId: number) {
     return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues', {params: {'remoteProjectId':remoteProjectId}})
@@ -97,6 +107,11 @@ export class BackendService {
 
   removeRemoteIssuesToViewpoint(rIssues: Issue[]) {
     return this.http.put<Issue[]>(this.BASE_URL + 'project/' + rIssues[0].projectId + '/Viewpoint/' + rIssues[0].viewpointId + '/RemoteIssues', rIssues)
+  }
+
+  removeRemoteIssuesByRemoteProject(remoteProject: RemoteProject) {
+    console.log(remoteProject.remoteProjectId, "remoteprojectid")
+    return this.http.delete(this.BASE_URL + 'project/' + remoteProject.projectId + '/RemoteProject/' + remoteProject.remoteProjectId + "/RemoteIssues")
   }
 
 

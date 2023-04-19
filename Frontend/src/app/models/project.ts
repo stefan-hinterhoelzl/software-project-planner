@@ -17,6 +17,11 @@ export interface RemoteProject {
     accessToken: string,
 }
 
+export interface RemoteProjectDeleteObject {
+    remoteProject: RemoteProject,
+    keepIssues: boolean,
+}
+
 export interface Viewpoint {
     viewpointId?: number,
     projectId?: string,

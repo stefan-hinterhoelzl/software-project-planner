@@ -28,6 +28,7 @@ import { NotFoundComponent } from './error/not-found/not-found.component';
 import { ServerErrorComponent } from './error/server-error/server-error.component';
 import { ErrorInterceptor } from './interceptors/error-interceptor';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
+import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 
 
 
@@ -67,7 +68,8 @@ const app = initializeApp(environment.firebase)
 
   ],
   providers: [SnackbarComponent, DataService, {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-                                              {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+                                              {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+                                               CanDeactivateGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

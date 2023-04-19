@@ -58,14 +58,14 @@ export async function updateViewpointById(req: Request, res: Response) {
 }
 
 export async function deleteViewpointById(req: Request, res: Response) {
-    var projectId: number = Number(req.params.projectId);
+    var projectId: string = req.params.projectId;
     var viewpointId: number = Number(req.params.viewpointId);
 
     try {
         const conn = await connect()
         const result: Viewpoint = (await conn.query<Viewpoint[]>('SELECT * FROM Viewpoints Where projectId = ? AND viewpointId = ?' , [projectId, viewpointId]))[0][0]
         if (result !== undefined) {
-            await conn.query('DELETE FROM Viewpoints WHERE projectId = ? AND viewpointId = ', [projectId, viewpointId]);
+            await conn.query('DELETE FROM Viewpoints WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
             res.json({"message": `Viewpoint with ID ${viewpointId} in Project with ID ${projectId} was deleted!`})
         } else {
             res.status(404).json({"message": `Viewpoint does not exist in project with ID ${projectId}`})

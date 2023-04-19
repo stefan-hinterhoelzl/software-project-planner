@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { map, ReplaySubject, switchMap, tap } from 'rxjs';
+import { combineLatest, concatMap, EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap } from 'rxjs';
 import { User } from '@firebase/auth';
-import { Project, RemoteProject, Viewpoint } from '../models/project';
+import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
 import { BackendService } from './backend.service';
@@ -15,12 +15,11 @@ import { Router } from '@angular/router';
 export class DataService {
   backend = inject(BackendService);
   snackbar = inject(SnackbarComponent);
-  router = inject(Router)
-
+  router = inject(Router);
 
   //**Subjects**
   //Projects
-  private _projects = new ReplaySubject<Project[]>(1);
+  private _projects = new BehaviorSubject<Project[]>([]);
   private _activeProjectId = new ReplaySubject<string>(1);
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
   private _activeRemoteProjectId = new ReplaySubject<number>(1);
@@ -36,23 +35,25 @@ export class DataService {
 
   //**Observables**
   readonly projects$ = this._projects.asObservable();
-  readonly activeProject$ = this._activeProjectId.asObservable().pipe(
-    switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id))))
-  );
+  readonly activeProject$ = this._activeProjectId
+    .asObservable()
+    .pipe(switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id)))));
   readonly remoteProjects$ = this._remoteProjects.asObservable();
-  readonly activeRemoteProject$ = this._activeRemoteProjectId.asObservable().pipe(
-    switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id))))
-  );
+  readonly activeRemoteProject$ = this._activeRemoteProjectId
+    .asObservable()
+    .pipe(switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id)))));
 
-  readonly almProjects$ = this._almprojects.asObservable().pipe(tap(value => console.log(value)));
+  readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
   readonly userSettings$ = this._userSettings.asObservable();
   readonly viewpoints$ = this._viewpoints.asObservable();
-  readonly activeViewpoint$ = this._activeViewpointId.asObservable().pipe(
-    switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id))))
-  );
+  readonly activeViewpoint$ = this._activeViewpointId
+    .asObservable()
+    .pipe(switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id)))));
 
-  constructor() { }
+  private _aggregator!: ALMDataAggregator;
+
+  constructor() {}
 
   getProjects() {
     this.backend.getProjects().subscribe({
@@ -75,7 +76,8 @@ export class DataService {
             .addRemoteProjectsToProject(project.projectId, remoteProjects)
             .pipe(map(remoteProjects => ({ project, remoteProjects })));
         }),
-        tap(() => this.getProjects()))
+        tap(() => this.getProjects())
+      )
       .subscribe({
         next: value => {
           this.snackbar.openSnackBar('Project added!', 'green-snackbar');
@@ -86,6 +88,56 @@ export class DataService {
           console.error(error.error);
         },
       });
+  }
+
+  deleteProject(project: Project) {
+    this.backend.deleteProjectById(project).subscribe({
+      next: res => {
+        this.snackbar.openSnackBar('Project ' + project.title + ' deleted.', 'green-snackbar')
+        let projects: Project[] = this._projects.value.filter(p => p.projectId !== project.projectId)
+        this._projects.next(projects)
+        this.router.navigate(["dashboard"])
+      },
+      error: err => {
+        this.snackbar.openSnackBar('Error deleting project. Try again', 'red-snackbar');
+        console.error(err.error)
+      }
+    })
+  }
+
+  updateProjectDetails(project: Project, projectTitle: string, projectdescr: string) {
+    let updateProject: Project = JSON.parse(JSON.stringify(project));
+    updateProject.title = projectTitle;
+    updateProject.description = projectdescr;
+
+    return this.backend.updateProjectById(updateProject)
+  }
+
+  updateRemoteProjects(project: Project, remoteProjects: RemoteProject[], remoteProjectsDeltaMinus: RemoteProjectDeleteObject[]) {
+    return this.backend.updateRemoteProjectFromProject(project, remoteProjects).pipe(
+      switchMap(() => {
+        let elements: RemoteProjectDeleteObject[] = remoteProjectsDeltaMinus.filter(value => value.keepIssues === false);
+        const o_deletion = elements.map(value => {
+          return this.backend.removeRemoteIssuesByRemoteProject(value.remoteProject);
+        });
+
+        if (o_deletion.length !== 0) return forkJoin(o_deletion);
+        else return of(EMPTY);
+      }),
+      tap(() => {
+        this._remoteProjects.next(remoteProjects);
+        this._aggregator.getProjects(remoteProjects).subscribe({
+          next: ALMvalue => {
+            this._almprojects.next(ALMvalue);
+          },
+          error: err => {
+            console.error(err);
+            this.snackbar.openSnackBar(`Error loading projects from the ALM provider. (Code: ${err.code}.`, 'red-snackbar');
+          },
+        });
+
+      })
+    );
   }
 
   getViewpoints(projectId: string) {
@@ -105,7 +157,7 @@ export class DataService {
       next: (newViewpoint: Viewpoint) => {
         this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`, 'green-snackbar');
         this._viewpoints.next([...viewpoints, newViewpoint]);
-        this._activeViewpointId.next(newViewpoint.viewpointId!)
+        this._activeViewpointId.next(newViewpoint.viewpointId!);
       },
       error: error => {
         console.error(error);
@@ -117,28 +169,41 @@ export class DataService {
   updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     return this.backend.updateViewpointByID(viewpoint.viewpointId!, projectId, viewpoint).subscribe({
       next: (changedViewpoint: Viewpoint) => {
-        let index: number = viewpoints.findIndex(value => value.viewpointId === viewpoint.viewpointId)
-        viewpoints[index] = changedViewpoint
-        this._viewpoints.next(viewpoints)
-        this._activeViewpointId.next(changedViewpoint.viewpointId!)
+        let index: number = viewpoints.findIndex(value => value.viewpointId === viewpoint.viewpointId);
+        viewpoints[index] = changedViewpoint;
+        this._viewpoints.next(viewpoints);
+        this._activeViewpointId.next(changedViewpoint.viewpointId!);
         this.snackbar.openSnackBar(`Viewpoint ${changedViewpoint.title} changed!`, 'green-snackbar');
       },
       error: error => {
         console.error(error);
         this.snackbar.openSnackBar('Error changing Viewpoint! Try again later.', 'red-snackbar');
+      },
+    });
+  }
+
+  deleteViewpoint(viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
+    this.backend.deleteViewpointById(viewpoint).subscribe({
+      next: res => {
+        this.snackbar.openSnackBar(`Viewpoint No. ${viewpoint.viewpointId} was deleted from this project.`, 'green-snackbar')
+        this._viewpoints.next([...viewpoints.filter(viewp => viewp.viewpointId !== viewpoint.viewpointId)])
+        this.setActiveViewpoint(0);
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error deleting viewpoint. Try again.', 'red-snackbar')
       }
     })
   }
 
   getRemoteProjects(projectId: string, aggreagtor: ALMDataAggregator) {
+    if (this._aggregator === undefined) this._aggregator = aggreagtor;
     this.backend.getRemoteProjectsForProject(projectId).subscribe({
       next: value => {
-        console.log(value);
         if (value !== undefined) {
           this._remoteProjects.next(value);
           aggreagtor.getProjects(value).subscribe({
             next: ALMvalue => {
-              console.log(ALMvalue);
               this._almprojects.next(ALMvalue);
             },
             error: err => {

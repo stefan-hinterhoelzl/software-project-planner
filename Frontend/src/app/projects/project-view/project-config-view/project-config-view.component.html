@@ -1,9 +1,11 @@
-<div *ngIf="project$ | async as project; else elseBlock" class="main-wrapper">
-  <h1>{{project.title}}</h1>
-  <mat-card style = "margin-top: 0">
-    <h1 matCardTitle>Project Details</h1>
-    <mat-divider></mat-divider>
+<div *ngIf="view$ | async as view; else elseBlock" class="main-wrapper">
+  <h1>{{ view[0]!.title }}</h1>
+  <mat-card style="margin-top: 0">
     <form [formGroup]="projectDetails">
+      <div class = "header-line">
+        <h1 matCardTitle>Project Details</h1>
+      </div>
+      <mat-divider></mat-divider>
       <div>
         <mat-form-field color="accent" hintLabel="Max 100 Characters " appearance="outline">
           <mat-label>Title</mat-label>
@@ -31,15 +33,17 @@
         </mat-form-field>
       </div>
     </form>
-    <div>
-      <button class = "margin-top" mat-raised-button color="primary">Save</button>
+    <div class="margin-top">
+      <button mat-raised-button color="primary" (click)="updateProjectDetails(view[0]!)">Save</button>
+      <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetDetails(view[0]!)">Reset</button>
     </div>
   </mat-card>
 
   <mat-card>
     <h1 matCardTitle>ALM Instances</h1>
     <mat-divider></mat-divider>
-    <form [formGroup]="ALMInstances">
+    <p>The project must contain at least one remote project.</p>
+    <form [formGroup]="ALMInstanceForm">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>ALM Remote Project ID</mat-label>
         <input #remoteID matInput type="number" placeholder="ALM Project Remote ID" formControlName="remoteID" />
@@ -49,30 +53,42 @@
         <input #accessToken matInput [type]="hide ? 'password' : 'text'" placeholder="Access Token" formControlName="accessToken" />
       </mat-form-field>
     </form>
-    <div class = "alm-action-row">
-      <button mat-stroked-button (click)="addToALMMap()">Add Remote Project</button>
+    <div class="alm-action-row">
+      <button [disabled]="!ALMInstanceForm.valid" mat-stroked-button (click)="addToALMMap(view[1], view[0]!)">Add Remote Project</button>
       <mat-slide-toggle class="slide-toggle" color="primary" [(ngModel)]="hide">Hide Access Tokens</mat-slide-toggle>
     </div>
-
-    <div class="disabled-list" *ngFor="let entry of remoteProjects$ | async">
-      <mat-divider></mat-divider>
-      <mat-form-field appearance="outline">
-        <mat-label>Remote Project ID</mat-label>
-        <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
-        <mat-icon matSuffix style="cursor: pointer" color="warn" (click)="removeFromALMMap(entry.remoteProjectId)">delete</mat-icon>
-      </mat-form-field>
-      <mat-form-field *ngIf="entry.accessToken !== ''" appearance="outline">
-        <mat-label>Access Token</mat-label>
-        <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true" value="{{ entry.accessToken }}" />
-      </mat-form-field>
+    <div *ngIf="!projectsLoading; else projectSettingsElse">
+      <div class="disabled-list" *ngFor="let entry of view[1]">
+        <mat-divider></mat-divider>
+        <mat-form-field appearance="outline">
+          <mat-label>Remote Project ID</mat-label>
+          <input matInput disabled="true" value="{{ entry.remoteProjectId }}" />
+          <mat-icon *ngIf="view[1].length > 1" matSuffix style="cursor: pointer" color="warn" (click)="removeFromALMMap(entry, view[1])"
+            >delete</mat-icon
+          >
+        </mat-form-field>
+        <mat-form-field *ngIf="entry.accessToken !== ''" appearance="outline">
+          <mat-label>Access Token</mat-label>
+          <input #accessToken matInput [type]="hide ? 'password' : 'text'" disabled="true" value="{{ entry.accessToken }}" />
+        </mat-form-field>
+      </div>
+    </div>
+    <ng-template #projectSettingsElse>
+      <div class="progress-spinner" style="margin-top: 20px">
+        <mat-spinner> </mat-spinner>
+      </div>
+    </ng-template>
+    <div class="margin-top">
+      <button mat-raised-button color="primary" (click)="updateRemoteProjects(view[0]!, view[1])">Save</button>
+      <button style="margin-left: 10px" mat-raised-button color="accent" (click)="resetRemoteProjects(view[1])">Reset</button>
     </div>
   </mat-card>
 
-  <mat-card style = "margin-bottom: 50px">
+  <mat-card style="margin-bottom: 50px">
     <h1 matCardTitle>Danger Zone</h1>
     <mat-divider></mat-divider>
     <div>
-      <button class = "margin-top" mat-raised-button color="warn">Delete Project</button>
+      <button class="margin-top" mat-raised-button color="warn" (click)="deleteProject(view[0]!)">Delete Project</button>
     </div>
   </mat-card>
 </div>

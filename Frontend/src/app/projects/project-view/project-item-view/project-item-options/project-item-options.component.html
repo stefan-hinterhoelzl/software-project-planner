@@ -50,7 +50,7 @@
               <h1 matCardTitle>Danger Zone</h1>
               <mat-divider></mat-divider>
               <div>
-                <button class = "margin-top" mat-raised-button color="warn">Delete Viewpoint</button>
+                <button class = "margin-top" mat-raised-button color="warn" (click)="deleteViewpoint(viewpoint, view[1])">Delete Viewpoint</button>
               </div>
             </mat-card>
         </div>
@@ -63,6 +63,3 @@
         </ng-template>
       </div>
 </div>
-
-
-<button mat-raised-button color="warn" style="margin: auto auto">Delete Viewpoint</button>

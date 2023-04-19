@@ -6,8 +6,8 @@ import { createLogger, transports, format } from 'winston';
 import * as morgan from 'morgan';
 import { createProject, getProjectsByOwner, getProjectById, updateProjectById, deleteProjectById } from './controllers/project.controller';
 import { createUser, getUserById } from './controllers/user.controller';
-import { addRemoteProjects, deleteRemoteProjectById, getRomoteProjects } from './controllers/remoteproject.controller';
-import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint, getRemoteIssuesFromProjectViewpoint } from './controllers/issue.controller';
+import { addRemoteProjects, deleteRemoteProjectById, getRomoteProjects, updateRemoteProjects } from './controllers/remoteproject.controller';
+import { addRemoteIssuesToProjectViewpoint, removeRemoteIssuesFromProjectViewpoint, getRemoteIssuesFromProjectViewpoint, removeAllIssuesByRemoteProject } from './controllers/issue.controller';
 import { createViewpoint, getViewpointsByProject, updateViewpointById, deleteViewpointById, getViewpointById } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
 
@@ -87,6 +87,10 @@ express_app.get('/project/:projectId/RemoteProjects', authenticateJWT, (req, res
   getRomoteProjects(req, res);
 });
 
+express_app.put('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
+  updateRemoteProjects(req, res);
+});
+
 express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
   deleteRemoteProjectById(req, res);
 });
@@ -125,6 +129,10 @@ express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authe
 express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
   getRemoteIssuesFromProjectViewpoint(req, res);
 });
+
+express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId/RemoteIssues', authenticateJWT, (req, res) => {
+  removeAllIssuesByRemoteProject(req, res);
+})
 
 
 
