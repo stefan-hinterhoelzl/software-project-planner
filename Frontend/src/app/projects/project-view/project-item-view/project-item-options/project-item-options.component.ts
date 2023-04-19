@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable, combineLatest, share, switchMap, tap } from 'rxjs';
+import { Observable, combineLatest, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Viewpoint } from 'src/app/models/project';
@@ -32,19 +32,24 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
-    const dialogConfigKeep = new MatDialogConfig();
 
-    dialogConfigKeep.data = {
-      title: 'Unsaved Changes!',
-      content: 'You have unsaved changes. They are lost when you leave the page!',
-      button1: 'Discard Changes',
-      button2: 'Save Changes',
-    };
+    if (this.viewpointDetails.dirty) {
 
-    dialogConfigKeep.disableClose = true;
+      const dialogConfigKeep = new MatDialogConfig();
 
-    const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
-    return dialogRef.afterClosed();
+      dialogConfigKeep.data = {
+        title: 'Unsaved Changes!',
+        content: 'You have unsaved changes. They are lost when you leave the page!',
+        button1: 'Discard Changes',
+        button2: 'Save Changes',
+      };
+
+      dialogConfigKeep.disableClose = true;
+
+      const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+      return dialogRef.afterClosed();
+    } else return of(true)
+
   }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
@@ -74,7 +79,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     this.data.updateViewpoint(projectId, viewpoint, viewpoints);
   }
 
-  deleteViewpoint(viewpoint: Viewpoint) {
+  deleteViewpoint(viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     const dialogConfigKeep = new MatDialogConfig();
 
     dialogConfigKeep.data = {
@@ -89,7 +94,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.data.deleteViewpoint(viewpoint)
+        this.data.deleteViewpoint(viewpoint, viewpoints)
       }
     })
   }

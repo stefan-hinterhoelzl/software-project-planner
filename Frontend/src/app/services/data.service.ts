@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { EMPTY, forkJoin, map, of, ReplaySubject, switchMap, tap } from 'rxjs';
+import { combineLatest, concatMap, EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
@@ -19,7 +19,7 @@ export class DataService {
 
   //**Subjects**
   //Projects
-  private _projects = new ReplaySubject<Project[]>(1);
+  private _projects = new BehaviorSubject<Project[]>([]);
   private _activeProjectId = new ReplaySubject<string>(1);
   private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
   private _activeRemoteProjectId = new ReplaySubject<number>(1);
@@ -94,6 +94,8 @@ export class DataService {
     this.backend.deleteProjectById(project).subscribe({
       next: res => {
         this.snackbar.openSnackBar('Project ' + project.title + ' deleted.', 'green-snackbar')
+        let projects: Project[] = this._projects.value.filter(p => p.projectId !== project.projectId)
+        this._projects.next(projects)
         this.router.navigate(["dashboard"])
       },
       error: err => {
@@ -180,10 +182,11 @@ export class DataService {
     });
   }
 
-  deleteViewpoint(viewpoint: Viewpoint) {
+  deleteViewpoint(viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     this.backend.deleteViewpointById(viewpoint).subscribe({
       next: res => {
-        this.snackbar.openSnackBar(`Viewpoint No. ${viewpoint.viewpointId} from project ${viewpoint.projectId} was deleted.`, 'green-snackbar')
+        this.snackbar.openSnackBar(`Viewpoint No. ${viewpoint.viewpointId} was deleted from this project.`, 'green-snackbar')
+        this._viewpoints.next([...viewpoints.filter(viewp => viewp.viewpointId !== viewpoint.viewpointId)])
         this.setActiveViewpoint(0);
       },
       error: error => {

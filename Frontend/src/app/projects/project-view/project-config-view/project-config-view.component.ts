@@ -257,7 +257,7 @@ export class ProjectConfigViewComponent implements CanComponentDeactivate {
 
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
     dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
+      if (result) {
         this.data.deleteProject(project)
       }
     })
