@@ -1,18 +1,14 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
-
   <div class="card-wrapper">
     <div class="viewpoint-button">
       <h3>Viewpoint:</h3>
-      <button *ngIf="viewpoint$ | async  as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button"
-        [matMenuTriggerFor]="menu">
+      <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button" [matMenuTriggerFor]="menu">
         {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
       </button>
       <ng-template #ElseBlock>
-        <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint
-          <mat-icon>view_carousel</mat-icon></button>
+        <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
       </ng-template>
     </div>
-
 
     <mat-menu #menu="matMenu">
       <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[1]; first as isFirst">
@@ -24,11 +20,20 @@
         <span>Create new Viewpoint</span>
       </button>
     </mat-menu>
+
+    <div class="backlog">
+      <div *ngIf="issuesLoading" class ="issue-wrapper">
+        <mat-spinner class="no-items"></mat-spinner>
+      </div>
+      <div *ngIf="!issuesLoading && (issuesBacklog$ | async)" class="issue-wrapper">
+        <h2>Backlog</h2>
+        <mat-card class="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class = "no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
+          <div cdkDrag *ngFor="let issue of backlog" class="issue-list-item">
+            <p>{{ issue.title }}</p>
+          </div>
+        </mat-card>
+      </div>
+    </div>
   </div>
 </div>
-
-
-
-
-
-

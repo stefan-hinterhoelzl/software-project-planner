@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { combineLatest, concatMap, EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap } from 'rxjs';
+import { EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap, filter, share, shareReplay } from 'rxjs';
 import { User } from '@firebase/auth';
 import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint } from '../models/project';
 import { UserSettings } from '../models/user';
@@ -20,9 +20,9 @@ export class DataService {
   //**Subjects**
   //Projects
   private _projects = new BehaviorSubject<Project[]>([]);
-  private _activeProjectId = new ReplaySubject<string>(1);
-  private _remoteProjects = new ReplaySubject<RemoteProject[]>(1);
-  private _activeRemoteProjectId = new ReplaySubject<number>(1);
+  private _activeProjectId = new BehaviorSubject<string>("");
+  private _remoteProjects = new BehaviorSubject<RemoteProject[]>([]);
+  private _activeRemoteProjectId = new BehaviorSubject<number>(-1);
   private _almprojects = new ReplaySubject<ALMProject[]>(1);
 
   //User
@@ -37,11 +37,15 @@ export class DataService {
   readonly projects$ = this._projects.asObservable();
   readonly activeProject$ = this._activeProjectId
     .asObservable()
-    .pipe(switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id)))));
+    .pipe(switchMap(id => this.projects$.pipe(map(projects => projects.find(value => value.projectId === id)),
+    filter(project => project !== undefined)
+    )));
   readonly remoteProjects$ = this._remoteProjects.asObservable();
   readonly activeRemoteProject$ = this._activeRemoteProjectId
     .asObservable()
-    .pipe(switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id)))));
+    .pipe(switchMap(id => this.remoteProjects$.pipe(map(remoteProjects => remoteProjects.find(value => value.remoteProjectId === id)),
+    filter(remoteProject => remoteProject !== undefined)
+    )));
 
   readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
@@ -49,9 +53,12 @@ export class DataService {
   readonly viewpoints$ = this._viewpoints.asObservable();
   readonly activeViewpoint$ = this._activeViewpointId
     .asObservable()
-    .pipe(switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id)))));
+    .pipe(switchMap(id => this.viewpoints$.pipe(map(viewpoints => viewpoints.find(value => value.viewpointId === id)),
+    filter(viewpoint => viewpoint !== undefined)
+    )));
 
   private _aggregator!: ALMDataAggregator;
+
 
   constructor() {}
 
@@ -201,6 +208,7 @@ export class DataService {
     this.backend.getRemoteProjectsForProject(projectId).subscribe({
       next: value => {
         if (value !== undefined) {
+          console.log("New Remote Projects: ", value)
           this._remoteProjects.next(value);
           aggreagtor.getProjects(value).subscribe({
             next: ALMvalue => {
@@ -218,6 +226,12 @@ export class DataService {
         this.snackbar.openSnackBar('Error loading remote projects! Try again later.', 'red-snackbar');
       },
     });
+  }
+
+  getSelectedIssuesForViewpoint(viewpointId: number) {
+    let projectId: string = this._activeProjectId.value
+    console.log(projectId)
+    return this.backend.getSelectedRemoteIssuesForViewpointAndRemoteProject(projectId, viewpointId)
   }
 
   // Setters
@@ -246,10 +260,18 @@ export class DataService {
   }
 
   setRemoteProjects(value: RemoteProject[]) {
+    console.log("New Remoteprojects: ",value)
     this._remoteProjects.next(value);
   }
 
   setActiveViewpoint(value: number) {
     this._activeViewpointId.next(value);
+  }
+
+
+  //Static getter
+  get staticRemoteProjects() {
+    console.log(this._remoteProjects.value)
+    return this._remoteProjects.value
   }
 }

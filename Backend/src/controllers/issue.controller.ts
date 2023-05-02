@@ -41,13 +41,24 @@ export async function getRemoteIssuesFromProjectViewpoint(req: Request, res: Res
 
   try {
     const conn = await connect();
-    const result: RemoteIssues[] = (
+    let result: RemoteIssues[];
+    if (remoteProjectId !== -1) {
+    result = (
       await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ? AND remoteProjectId = ?', [
         projectId,
         viewpointId,
         remoteProjectId,
       ])
     )[0];
+    } else {
+      result = (
+        await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ?', [
+          projectId,
+          viewpointId,
+        ])
+      )[0];
+    }
+
     if (result === undefined) {
       res.status(404).json({ message: `Viewpoint with ID ${viewpointId} does not exist in project with ID ${projectId}` });
     } else return res.json(result);

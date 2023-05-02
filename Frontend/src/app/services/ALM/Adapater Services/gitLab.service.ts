@@ -36,6 +36,11 @@ export class GitlabALMService {
     {headers: this.createHeader(accesstoken), observe: 'response', responseType: 'json'})
   }
 
+  getIssueById(remoteProjectID: number, accesstoken: string, issueid: number) {
+    return this.http.get<any>(this.BASE_URL+'projects/'+remoteProjectID+'/issues/'+issueid,
+    {headers: this.createHeader(accesstoken), observe: 'body', responseType: 'json'})
+  }
+
 
   private createHeader(accesstoken: string) {
     let headers = new HttpHeaders()

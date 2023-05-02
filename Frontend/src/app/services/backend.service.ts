@@ -97,7 +97,7 @@ export class BackendService {
   }
 
   //Selected Remote Issues
-  getSelectedRemoteIssuesForViewpoint(projectId: string, viewpointId: number, remoteProjectId: number) {
+  getSelectedRemoteIssuesForViewpointAndRemoteProject(projectId: string, viewpointId: number, remoteProjectId: number = -1) {
     return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues', {params: {'remoteProjectId':remoteProjectId}})
   }
 
@@ -110,7 +110,6 @@ export class BackendService {
   }
 
   removeRemoteIssuesByRemoteProject(remoteProject: RemoteProject) {
-    console.log(remoteProject.remoteProjectId, "remoteprojectid")
     return this.http.delete(this.BASE_URL + 'project/' + remoteProject.projectId + '/RemoteProject/' + remoteProject.remoteProjectId + "/RemoteIssues")
   }
 

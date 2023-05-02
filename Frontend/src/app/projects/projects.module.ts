@@ -33,6 +33,8 @@ import { ProjectItemViewComponent } from './project-view/project-item-view/proje
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ProjectItemOptionsComponent } from './project-view/project-item-view/project-item-options/project-item-options.component';
 import { CanDeactivateGuard } from '../services/can-deactivate-guard.service';
+import {MatTreeModule} from '@angular/material/tree';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 
 
@@ -79,6 +81,8 @@ import { CanDeactivateGuard } from '../services/can-deactivate-guard.service';
     MatNativeDateModule,
     MatMenuModule,
     MatSidenavModule,
+    MatTreeModule,
+    DragDropModule,
 
 
   ],

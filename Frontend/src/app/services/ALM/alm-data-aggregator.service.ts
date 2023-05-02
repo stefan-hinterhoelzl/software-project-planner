@@ -11,6 +11,8 @@ export abstract class ALMDataAggregator {
 
   abstract getIssues(project: RemoteProject, filteroptions?: ALMFilteroptions, paginationoptions?: ALMPaginationoptions): Observable<ALMIssueResWrapper>;
 
+  abstract getSingleIssue(remoteProject: RemoteProject, issueId: number): Observable<ALMIssue>;
+
   abstract getLabels(project: RemoteProject): Observable<string[]>;
 }
 
@@ -63,7 +65,7 @@ export class GitLabAggregator implements ALMDataAggregator {
           issues: res.body?.map(issue => {
             return <ALMIssue>{
               projectId: issue.project_id,
-              issueId: issue.id,
+              issueId: issue.iid,
               title: issue.title,
               description: issue.description,
               labels: issue.labels,
@@ -80,6 +82,31 @@ export class GitLabAggregator implements ALMDataAggregator {
             };
           }),
         };
+      })
+    )
+  }
+
+  getSingleIssue(project: RemoteProject, issueId: number) {
+    return this.alm.getIssueById(project.remoteProjectId, project.accessToken, issueId).pipe(
+      map(issue => {
+
+          return <ALMIssue> {
+            projectId: issue.project_id,
+            issueId: issue.iid,
+            title: issue.title,
+            description: issue.description,
+            labels: issue.labels,
+            createdAt: issue.created_at,
+            updatedAt: issue.updated_at,
+            state: issue.state,
+            type: issue.type,
+            webURL: issue.web_url,
+            timeStats: <ALMTimeStats>{
+              estimateHours: issue.time_stats.time_estimate,
+              spentHours: issue.time_stats.total_time_spent,
+            },
+            selected: true,
+          };
       })
     )
   }

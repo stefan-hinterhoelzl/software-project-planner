@@ -6,3 +6,14 @@ Project Settings emission direkt mutated -- eventuell noch umstellen funktionier
 
 
 Eventuell auf Maps umstellen mit Key
+
+
+Wrong ID closes creation
+
+Select all and save leaves (possibly selected) out
+
+
+
+
+Style Changes:
+My Projects weiß mit blauer Schrift

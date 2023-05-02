@@ -1,5 +1,5 @@
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
@@ -20,7 +20,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   templateUrl: './project-list-view.component.html',
   styleUrls: ['./project-list-view.component.scss'],
 })
-export class ProjectListViewComponent implements OnInit {
+export class ProjectListViewComponent implements OnInit, OnDestroy {
   //Providers
   data = inject(DataService);
   snackbar = inject(SnackbarComponent);
@@ -90,27 +90,25 @@ export class ProjectListViewComponent implements OnInit {
   project$ = this.data.activeProject$.pipe(tap(project => (this.project = project)));
   viewpoint$ = this.data.activeViewpoint$.pipe(tap(viewpoint => {
     this.viewpoint = viewpoint
-    this.data.setActiveRemoteproject(0)
+    this.data.setActiveRemoteproject(-1)
+    this.init = true;
+    this.$loading.next(true)
+    this.clearFilters(false);
+    this.filterGroup.get('projectsControl')?.setValue('');
   }));
 
 
   almProjects$ = this.data.almProjects$;
 
 
-  activeRemoteProject$ = this.data.activeRemoteProject$.pipe(
+  activeRemoteProject$ = this.data.activeRemoteProject$.pipe(share())
+
+
+  remoteProject$ = this.activeRemoteProject$.pipe(
     tap(remoteProject => {
-      if (remoteProject !== undefined) {
         this.selectedRemoteProject = remoteProject;
         this.init = false;
         this.initializeData();
-      } else {
-        //reset everything
-        this.init = true;
-        this.$loading.next(true)
-        this.clearFilters(false);
-        this.filterGroup.get('projectsControl')?.setValue('');
-      }
-
     }),
     share()
   );
@@ -122,7 +120,7 @@ export class ProjectListViewComponent implements OnInit {
   view$ = combineLatest([this.project$, this.almProjects$, this.viewpoints$]).pipe(share());
 
 
-  labels$ = this.data.activeRemoteProject$.pipe(
+  labels$ = this.activeRemoteProject$.pipe(
     filter(project => project !== undefined),
     switchMap(project => this.aggregator.getLabels(project!)),
     share()
@@ -135,7 +133,12 @@ export class ProjectListViewComponent implements OnInit {
     this.init = true;
   }
 
+  ngOnDestroy(): void {
+    this.data.setActiveRemoteproject(-1)
+  }
+
   ngOnInit(): void {
+    console.log(this.data.staticRemoteProjects)
     this.filterGroup
       .get('projectsControl')
       ?.valueChanges.pipe(
@@ -208,7 +211,7 @@ export class ProjectListViewComponent implements OnInit {
 
   getSelectedIssues() {
     return this.backend
-      .getSelectedRemoteIssuesForViewpoint(this.project?.projectId!, this.viewpoint?.viewpointId!, this.selectedRemoteProject?.remoteProjectId!)
+      .getSelectedRemoteIssuesForViewpointAndRemoteProject(this.project?.projectId!, this.viewpoint?.viewpointId!, this.selectedRemoteProject?.remoteProjectId!)
       .pipe(
         share(),
         tap(value => (this.SelectedIssues = value))
@@ -382,7 +385,7 @@ export class ProjectListViewComponent implements OnInit {
       this.pageSize = 20;
       this.reloadIssues();
 
-    } 
+    }
 
   }
 

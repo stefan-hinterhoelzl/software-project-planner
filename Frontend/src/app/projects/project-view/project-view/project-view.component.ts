@@ -38,8 +38,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   viewpoints$ = this.data.viewpoints$.pipe(share(), tap(viewpoints => this.viewpoints = viewpoints))
   activeViewpoint$ = this.data.activeViewpoint$.pipe(delay(0),share())
   project$ = this.data.activeProject$.pipe(share(), tap(project => {
-    console.log("Projekt: ", project)
-    if (project !== undefined) 
+    if (project !== undefined)
     this.data.getRemoteProjects(project.projectId, this.aggregator)
   }))
 
