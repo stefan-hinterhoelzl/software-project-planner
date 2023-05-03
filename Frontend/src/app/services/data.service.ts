@@ -180,7 +180,7 @@ export class DataService {
         viewpoints[index] = changedViewpoint;
         this._viewpoints.next(viewpoints);
         this._activeViewpointId.next(changedViewpoint.viewpointId!);
-        this.snackbar.openSnackBar(`Viewpoint ${changedViewpoint.title} changed!`, 'green-snackbar');
+        this.snackbar.openSnackBar(`Viewpoint changes saved to the server!`, 'green-snackbar');
       },
       error: error => {
         console.error(error);

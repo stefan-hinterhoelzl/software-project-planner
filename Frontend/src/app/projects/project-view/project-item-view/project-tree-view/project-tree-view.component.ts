@@ -33,7 +33,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   viewpoint$ = this.data.activeViewpoint$.pipe(
     shareReplay(1),
     tap(viewpoint => {
-      console.log("Helloo")
       this.issuesLoading = true;
     })
   );
