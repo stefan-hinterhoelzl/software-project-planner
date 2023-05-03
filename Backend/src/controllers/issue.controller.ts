@@ -43,13 +43,13 @@ export async function getRemoteIssuesFromProjectViewpoint(req: Request, res: Res
     const conn = await connect();
     let result: RemoteIssues[];
     if (remoteProjectId !== -1) {
-    result = (
-      await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ? AND remoteProjectId = ?', [
-        projectId,
-        viewpointId,
-        remoteProjectId,
-      ])
-    )[0];
+      result = (
+        await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ? AND remoteProjectId = ?', [
+          projectId,
+          viewpointId,
+          remoteProjectId,
+        ])
+      )[0];
     } else {
       result = (
         await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ?', [
@@ -77,6 +77,24 @@ export async function removeAllIssuesByRemoteProject(req: Request, res: Response
     conn.query('DELETE FROM RemoteIssues WHERE projectId = ? AND remoteProjectId = ?', [projectId, remoteProjectId]);
 
     res.json({ 'response:': 'success' });
+  } catch (err: any) {
+    handleError(res, err);
+  }
+}
+
+export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request, res: Response) {
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
+
+  try {
+    const conn = await connect();
+
+    const result = (
+      await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ?', [
+        projectId,
+        viewpointId,
+      ])
+    )[0];
   } catch (err: any) {
     handleError(res, err);
   }

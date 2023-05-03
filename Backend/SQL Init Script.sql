@@ -51,6 +51,15 @@ Create Table RemoteIssues (
     Foreign KEY (projectId, viewpointId) References Viewpoints (projectId, viewpointId) ON DELETE CASCADE
 );
 
+Create Table RemoteIssuesRelation (
+    parentIssueId           int NOT NULL,
+    parentRemoteProjecId    int NOT NULL,
+    childIssueId            int NOT NULL,
+    childRemoteProjectId    int NOT NULL,
+    projectId               varchar(100) NOT NULL,
+
+);
+
 
 
 
