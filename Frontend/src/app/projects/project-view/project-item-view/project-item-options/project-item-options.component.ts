@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable, combineLatest, of, share, switchMap, tap } from 'rxjs';
+import { Observable, combineLatest, of, share, shareReplay, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Viewpoint } from 'src/app/models/project';
@@ -22,34 +22,50 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     nameCtrl: ['', Validators.required],
   });
 
+  local_viewpoint!: Viewpoint;
+
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(
     tap(viewpoint => {
-      if (viewpoint !== undefined) this.viewpointDetails.get('nameCtrl')?.setValue(viewpoint?.title);
+      if (viewpoint !== undefined) {
+        this.viewpointDetails.get('nameCtrl')?.setValue(viewpoint?.title);
+        this.local_viewpoint = viewpoint
+      }
     })
   );
   project$ = this.data.activeProject$;
-  view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
+  view$ = combineLatest([this.project$, this.viewpoints$]).pipe(shareReplay(1));
 
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+    return this.view$.pipe(
+      switchMap(value => {
+        if (this.viewpointDetails.dirty) {
 
-    if (this.viewpointDetails.dirty) {
+          const dialogConfigKeep = new MatDialogConfig();
 
-      const dialogConfigKeep = new MatDialogConfig();
+          dialogConfigKeep.data = {
+            title: 'Unsaved Changes!',
+            content: 'You have unsaved changes. They are lost when you leave the page!',
+            button1: 'Discard Changes',
+            button2: 'Save Changes',
+          };
 
-      dialogConfigKeep.data = {
-        title: 'Unsaved Changes!',
-        content: 'You have unsaved changes. They are lost when you leave the page!',
-        button1: 'Discard Changes',
-        button2: 'Save Changes',
-      };
+          dialogConfigKeep.disableClose = true;
 
-      dialogConfigKeep.disableClose = true;
+          const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+          return dialogRef.afterClosed().pipe(switchMap(result => {
 
-      const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
-      return dialogRef.afterClosed();
-    } else return of(true)
+            if (!result) {
+              this.updateViewpoint(value[0]!.projectId, this.local_viewpoint, value[1]);
+            }
+            return of(true)
+          })
+          );
+        }
+        else return of(true)
+      })
 
+    )
   }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
@@ -77,6 +93,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     viewpoint.title = this.viewpointDetails.get('nameCtrl')?.value as string;
     this.data.updateViewpoint(projectId, viewpoint, viewpoints);
+    this.viewpointDetails.markAsPristine()
   }
 
   deleteViewpoint(viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
