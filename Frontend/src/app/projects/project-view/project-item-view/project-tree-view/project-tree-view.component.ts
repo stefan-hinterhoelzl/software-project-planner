@@ -30,12 +30,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
-  viewpoint$ = this.data.activeViewpoint$.pipe(
-    shareReplay(1),
-    tap(viewpoint => {
-      this.issuesLoading = true;
-    })
-  );
+  viewpoint$ = this.data.activeViewpoint$;
 
   project$ = this.data.activeProject$;
 

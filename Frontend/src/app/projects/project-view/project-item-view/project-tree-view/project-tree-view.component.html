@@ -22,10 +22,10 @@
     </mat-menu>
 
     <div class="backlog">
-      <div *ngIf="issuesLoading" class ="issue-wrapper">
+      <!-- <div *ngIf="issuesLoading" class ="issue-wrapper">
         <mat-spinner class="no-items"></mat-spinner>
-      </div>
-      <div *ngIf="!issuesLoading && (issuesBacklog$ | async)" class="issue-wrapper">
+      </div> -->
+      <div *ngIf="(issuesBacklog$ | async)" class="issue-wrapper">
         <h2>Backlog</h2>
         <mat-card class="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
           <div class = "no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>

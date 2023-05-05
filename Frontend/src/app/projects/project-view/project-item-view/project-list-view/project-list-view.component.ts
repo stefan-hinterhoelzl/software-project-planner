@@ -20,7 +20,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   templateUrl: './project-list-view.component.html',
   styleUrls: ['./project-list-view.component.scss'],
 })
-export class ProjectListViewComponent implements OnInit, OnDestroy {
+export class ProjectListViewComponent implements OnInit {
   //Providers
   data = inject(DataService);
   snackbar = inject(SnackbarComponent);
@@ -89,8 +89,8 @@ export class ProjectListViewComponent implements OnInit, OnDestroy {
   //Data Observables
   project$ = this.data.activeProject$.pipe(tap(project => (this.project = project)));
   viewpoint$ = this.data.activeViewpoint$.pipe(tap(viewpoint => {
-    this.viewpoint = viewpoint
     this.data.setActiveRemoteproject(-1)
+    this.viewpoint = viewpoint
     this.init = true;
     this.$loading.next(true)
     this.clearFilters(false);
@@ -133,9 +133,9 @@ export class ProjectListViewComponent implements OnInit, OnDestroy {
     this.init = true;
   }
 
-  ngOnDestroy(): void {
-    this.data.setActiveRemoteproject(-1)
-  }
+  // ngOnDestroy(): void {
+  //   this.data.setActiveRemoteproject(-1)
+  // }
 
   ngOnInit(): void {
     console.log(this.data.staticRemoteProjects)

@@ -30,8 +30,8 @@ export class DataService {
   private _userSettings = new ReplaySubject<UserSettings>(1);
 
   //Viewpoints
-  private _viewpoints = new ReplaySubject<Viewpoint[]>(1);
-  private _activeViewpointId = new ReplaySubject<number>(1);
+  private _viewpoints = new BehaviorSubject<Viewpoint[]>([]);
+  private _activeViewpointId = new BehaviorSubject<number>(-1);
 
   //**Observables**
   readonly projects$ = this._projects.asObservable();

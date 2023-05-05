@@ -57,7 +57,6 @@ Create Table RemoteIssuesRelation (
     childIssueId            int NOT NULL,
     childRemoteProjectId    int NOT NULL,
     projectId               varchar(100) NOT NULL,
-
 );
 
 
