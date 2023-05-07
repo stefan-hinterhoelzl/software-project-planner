@@ -279,7 +279,7 @@ export class ProjectListViewComponent implements OnInit {
       .subscribe({
         next: () => {
           this.$loading.next(false);
-          this.snackbar.openSnackBar('Saved!', 'green-snackbar');
+          this.snackbar.openSnackBar('Changes saved to server!', 'green-snackbar');
         },
         error: () => {
           if (minussave !== undefined) this.selectedDeltaMinus = minussave;

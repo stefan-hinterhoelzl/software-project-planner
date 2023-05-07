@@ -90,11 +90,19 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
     const conn = await connect();
 
     const result = (
-      await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues Where projectId = ? AND viewpointId = ?', [
-        projectId,
+      await conn.query<RemoteIssues[]>(`SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId
+      FROM remoteissues ri LEFT JOIN remoteissuesrelation rir 
+      ON ri.viewpointId = rir.viewpointId AND ri.projectId = rir.projectId
+      AND ((ri.remoteIssueId = rir.parentIssueId AND ri.remoteProjectId = rir.parentRemoteProjectId) 
+           OR (ri.remoteIssueId = rir.childIssueId AND ri.remoteProjectId = rir.childRemoteProjectId))
+      WHERE rir.projectId IS NULL AND ri.viewpointId = ? AND ri.projectId = ?`, [
         viewpointId,
+        projectId
       ])
     )[0];
+
+    res.json(result)
+
   } catch (err: any) {
     handleError(res, err);
   }

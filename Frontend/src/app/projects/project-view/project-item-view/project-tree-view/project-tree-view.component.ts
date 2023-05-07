@@ -1,9 +1,10 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, concat, EMPTY, forkJoin, merge, mergeMap, of, share, shareReplay, switchMap, tap } from 'rxjs';
+import { combineLatest, concat, EMPTY, forkJoin, map, merge, mergeMap, Observable, of, share, shareReplay, switchMap, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
+import { Issue } from 'src/app/models/issue';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
@@ -20,58 +21,83 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   dialog = inject(MatDialog);
   aggregator: ALMDataAggregator;
 
-  backlog: ALMIssue[] = [];
-
-   //State Booleans
-   issuesLoading: boolean = false;
+  //State Booleans
+  backlogLoading: boolean = false;
 
   constructor() {
     this.aggregator = new GitLabAggregator();
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
-  viewpoint$ = this.data.activeViewpoint$;
+  viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => this.backlogLoading = true));
+
+  backlog!: ALMIssue[];
 
   project$ = this.data.activeProject$;
 
   issuesBacklog$ = this.viewpoint$.pipe(
-    tap(viewpoint => console.log(viewpoint)),
     switchMap(viewpoint => {
-      console.log(viewpoint)
-      return this.data.getSelectedIssuesForViewpoint(viewpoint!.viewpointId!);
+      return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
     switchMap(issues => {
-      let remoteProjects: RemoteProject[] = this.data.staticRemoteProjects;
-      let projectsCopy: RemoteProject[] = JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
-      const o_issues = issues.map(issue => {
-        let project = projectsCopy.find(value => (value.remoteProjectId = issue.remoteProjectId));
-        return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
-      });
-
-      if (o_issues.length === 0) {
-        return of([]);
-      } else {
-        return forkJoin(o_issues);
-      }
+      console.log(issues)
+      return this.getALMIssues(issues)
     }),
     tap(issues => {
-      console.log(issues)
+      this.backlogLoading = false;
       this.backlog = issues
-      this.backlog.sort((a, b) => a.updatedAt > b.updatedAt?-1:1)
-      this.issuesLoading = false;
     })
   );
 
+  // issuesBacklog$ = this.viewpoint$.pipe(
+  //   tap(viewpoint => console.log(viewpoint)),
+  //   switchMap(viewpoint => {
+  //     console.log(viewpoint)
+  //     return this.data.getSelectedIssuesForViewpoint(viewpoint!.viewpointId!);
+  //   }),
+  //   switchMap(issues => {
+  //     let remoteProjects: RemoteProject[] = this.data.staticRemoteProjects;
+  //     let projectsCopy: RemoteProject[] = JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
+  //     const o_issues = issues.map(issue => {
+  //       let project = projectsCopy.find(value => (value.remoteProjectId = issue.remoteProjectId));
+  //       return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
+  //     });
+
+  //     if (o_issues.length === 0) {
+  //       return of([]);
+  //     } else {
+  //       return forkJoin(o_issues);
+  //     }
+  //   }),
+  //   tap(issues => {
+  //     console.log(issues)
+  //     this.backlog = issues
+  //     this.backlog.sort((a, b) => a.updatedAt > b.updatedAt?-1:1)
+  //     this.issuesLoading = false;
+  //   })
+  // );
+
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
+  ngOnDestroy(): void {}
 
-  ngOnDestroy(): void {
+  ngOnInit(): void {}
 
-  }
+  getALMIssues(issues: Issue[]):Observable<ALMIssue[]> {
+    let remoteProjects: RemoteProject[] = this.data.staticRemoteProjects;
+    let projectsCopy: RemoteProject[] = JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
+    const o_issues = issues.map(issue => {
+      let project = projectsCopy.find(value => (value.remoteProjectId = issue.remoteProjectId));
+      return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
+    });
 
-
-  ngOnInit(): void {
-
+    if (o_issues.length === 0) {
+      return of([]);
+    } else {
+      return forkJoin(o_issues).pipe(map(ALMIssues => {
+        return ALMIssues.sort((a, b) => a.updatedAt > b.updatedAt?-1:1)
+      }));
+    }
   }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
@@ -93,11 +119,13 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   chooseViewpoint(viewpoint: Viewpoint) {
-    if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
+    if (viewpoint.viewpointId !== undefined) {
+      this.backlogLoading = true;
+      this.data.setActiveViewpoint(viewpoint.viewpointId);
+    }
   }
 
   drop(event: CdkDragDrop<ALMIssue[]>) {
-    moveItemInArray(this.backlog, event.previousIndex, event.currentIndex)
+    moveItemInArray(this.backlog, event.previousIndex, event.currentIndex);
   }
-
 }

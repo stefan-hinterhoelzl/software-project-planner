@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, take } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { DataService } from './data.service';
 import { getAuth, User } from '@firebase/auth';
@@ -99,6 +99,12 @@ export class BackendService {
   //Selected Remote Issues
   getSelectedRemoteIssuesForViewpointAndRemoteProject(projectId: string, viewpointId: number, remoteProjectId: number = -1) {
     return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues', {params: {'remoteProjectId':remoteProjectId}})
+  }
+
+  getSelectedRemoteIssuesWithoutRelations(projectId: string, viewpointId: number) {
+    return this.http.get<any[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssuesWithoutRelation' , {responseType: 'json'}).pipe(tap(issues => {
+      console.log(issues)
+    }))
   }
 
   addRemoteIssuesToViewpoint(rIssues: Issue[]) {
