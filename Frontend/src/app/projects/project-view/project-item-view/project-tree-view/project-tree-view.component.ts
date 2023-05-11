@@ -198,7 +198,17 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<ALMIssue[]>) {
-    console.log("Hello")
-    moveItemInArray(this.backlog, event.previousIndex, event.currentIndex);
+    console.log(event)
+    if (event.container.id === "top-level") {
+      let item: ALMIssue = this.backlog[event.previousIndex]
+      console.log(item)
+      let newNode: IssueNode = <IssueNode> {
+        issue: item,
+        children: []
+      }
+      console.log(newNode)
+      this.treeData.push(newNode)
+      this.dataSource.data = this.treeData
+    }
   }
 }

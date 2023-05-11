@@ -21,7 +21,7 @@
       </button>
     </mat-menu>
 
-    <div class="row-wrapper">
+    <div cdkDropListGroup class="row-wrapper">
       <div class="backlog">
         <div *ngIf="backlogLoading" class="issue-wrapper">
           <mat-spinner class="no-items"></mat-spinner>
@@ -42,34 +42,36 @@
         </div>
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
-          <mat-card class="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
+          <mat-card class="issue-list">
+            <div class = "adding-box-wrapper">
+              <div cdkDropList id="top-level" (cdkDropListDropped)="drop($event)" class="adding-box">
+                <h3>Drop Top Level Items Here</h3>
+              </div>
+            </div>
             <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
               <!-- This is the tree node template for leaf nodes -->
               <!-- There is inline padding applied to this node using styles.
                 This padding value depends on the mat-icon-button width. -->
               <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                  {{node.issue.title}}
+                {{ node.issue.title }}
               </mat-tree-node>
               <!-- This is the tree node template for expandable nodes -->
               <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-                  <div class="mat-tree-node">
-                    <button mat-icon-button matTreeNodeToggle
-                            [attr.aria-label]="'Toggle ' + node">
-                      <mat-icon class="mat-icon-rtl-mirror">
-                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                      </mat-icon>
-                    </button>
-                    {{node.issue.title}}
-                  </div>
-                  <!-- There is inline padding applied to this div using styles.
+                <div class="mat-tree-node">
+                  <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                      {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                    </mat-icon>
+                  </button>
+                  {{ node.issue.title }}
+                </div>
+                <!-- There is inline padding applied to this div using styles.
                       This padding value depends on the mat-icon-button width.  -->
-                  <div [class.example-tree-invisible]="!treeControl.isExpanded(node)"
-                      role="group">
-                    <ng-container matTreeNodeOutlet></ng-container>
+                <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                  <ng-container matTreeNodeOutlet></ng-container>
                 </div>
               </mat-nested-tree-node>
             </mat-tree>
-
           </mat-card>
         </div>
       </div>
