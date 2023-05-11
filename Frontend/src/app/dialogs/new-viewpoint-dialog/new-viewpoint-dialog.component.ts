@@ -35,5 +35,9 @@ export class NewViewpointDialogComponent {
     this.dialogRef.close()
   }
 
+  onKeydownEvent(event: any) {
+    if (event.keyCode === 27) this.close();
+  }
+
 
 }

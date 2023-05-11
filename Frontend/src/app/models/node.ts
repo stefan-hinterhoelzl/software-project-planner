@@ -1,6 +1,6 @@
 import { ALMIssue } from "./alm.models";
 
-interface IssueNode {
+export interface IssueNode {
   issue: ALMIssue;
   children?: IssueNode[];
 }

@@ -115,4 +115,8 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
       }
     })
   }
+
+  onKeydownEvent(event: Event) {
+    console.log(event)
+  }
 }

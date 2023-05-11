@@ -4,6 +4,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-button mat-raised-button color = "primary" (click) = "close()">{{button2}}</button>
-    <button mat-button mat-raised-button color = "warn" (click) = "save()">{{button1}}</button>
+    <button mat-button mat-raised-button color = "primary" (keydown)="onKeydownEvent($event)" (click) = "close()">{{button2}}</button>
+    <button mat-button mat-raised-button color = "warn" (keydown)="onKeydownEvent($event)" (click) = "save()">{{button1}}</button>
 </mat-dialog-actions>

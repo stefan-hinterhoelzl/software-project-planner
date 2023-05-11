@@ -1,10 +1,13 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, concat, EMPTY, forkJoin, map, merge, mergeMap, Observable, of, share, shareReplay, switchMap, tap } from 'rxjs';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { combineLatest, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
 import { Issue } from 'src/app/models/issue';
+import { IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
@@ -26,12 +29,21 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.aggregator = new GitLabAggregator();
+    this.backlog = []
+    this.treeData = []
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => this.backlogLoading = true));
 
-  backlog!: ALMIssue[];
+  backlog: ALMIssue[];
+  treeData: IssueNode[];
+
+  dataSource = new MatTreeNestedDataSource<IssueNode>();
+
+  treeControl = new NestedTreeControl<IssueNode>(node => node.children);
+
+  hasChild = (_: number, node: IssueNode) => !!node.children && node.children.length > 0;
 
   project$ = this.data.activeProject$;
 
@@ -44,8 +56,68 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return this.getALMIssues(issues)
     }),
     tap(issues => {
+      //reset on reload
+      this.treeData.length = 0
+      this.backlog.length = 0
+
       this.backlogLoading = false;
-      this.backlog = issues
+      this.backlog.push(...issues)
+
+      //Just testing here
+      let node3 = <IssueNode> {
+        issue: issues[2],
+        children: [],
+      }
+
+      let node1 = <IssueNode> {
+        issue: issues[0],
+        children: [node3],
+      }
+
+      let node2 = <IssueNode> {
+        issue: issues[1],
+        children: [node1],
+      }
+
+      let node32 = <IssueNode> {
+        issue: issues[5],
+        children: [],
+      }
+
+      let node12 = <IssueNode> {
+        issue: issues[6],
+        children: [node32],
+      }
+
+      let node22 = <IssueNode> {
+        issue: issues[7],
+        children: [node12],
+      }
+
+      let node33 = <IssueNode> {
+        issue: issues[10],
+        children: [],
+      }
+
+      let node13 = <IssueNode> {
+        issue: issues[11],
+        children: [node33],
+      }
+
+      let node23 = <IssueNode> {
+        issue: issues[12],
+        children: [node13],
+      }
+
+
+
+
+      this.treeData.push(...[node2, node22, node23])
+
+      this.dataSource.data = this.treeData
+
+      console.log(this.treeData)
+
     })
   );
 
@@ -126,6 +198,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<ALMIssue[]>) {
+    console.log("Hello")
     moveItemInArray(this.backlog, event.previousIndex, event.currentIndex);
   }
 }

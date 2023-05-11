@@ -21,6 +21,10 @@ export class IssueDetailDialogComponent {
     this.dialogRef.close(bool);
   }
 
+  onKeydownEvent(event: any) {
+    if (event.keyCode === 27) this.close(false);
+  }
+
 }
 
 

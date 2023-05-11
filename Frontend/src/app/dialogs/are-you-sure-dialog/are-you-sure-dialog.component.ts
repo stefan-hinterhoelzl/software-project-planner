@@ -28,4 +28,8 @@ export class AreYouSureDialogComponent {
   save() {
     this.dialogRef.close(true);
   }
+
+  onKeydownEvent(event: any) {
+    if (event.keyCode === 27) this.close();
+  }
 }
