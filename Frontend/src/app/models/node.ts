@@ -1,7 +1,13 @@
-import { ALMIssue } from "./alm.models";
+import { ALMIssue } from './alm.models';
 
 export interface IssueNode {
   issue: ALMIssue;
-  children?: IssueNode[];
+  id: string;
+  children: IssueNode[];
   isExpanded?: boolean;
+}
+
+export interface DropInfo {
+  targetId: string;
+  action?: string;
 }

@@ -21,7 +21,7 @@
   </mat-menu>
 
   <div class="card-wrapper">
-    <div cdkDropListGroup class="row-wrapper">
+    <div class="row-wrapper" cdkDropListGroup>
       <div class="backlog">
         <div *ngIf="backlogLoading" class="issue-wrapper">
           <mat-spinner class="no-items"></mat-spinner>
@@ -30,7 +30,7 @@
           <h2>Backlog</h2>
           <mat-card class="issue-list" id="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
-            <div cdkDrag *ngFor="let issue of backlog" class="issue-list-item">
+            <div cdkDrag *ngFor="let issue of backlog" cdkDrag [cdkDragData]="issue.projectId+issue.issueId" (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
               <p>{{ issue.title }}</p>
             </div>
           </mat-card>
@@ -43,36 +43,46 @@
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
-            <div class="adding-box-wrapper">
-              <div cdkDropList id="top-level" (cdkDropListDropped)="drop($event)" class="adding-box">
-                <h3>Drop Top Level Items Here</h3>
-              </div>
-            </div>
-            <div class="tree-wrapper">
-              <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-                <!-- This is the tree node template for leaf nodes -->
-                <!-- There is inline padding applied to this node using styles.
-                This padding value depends on the mat-icon-button width. -->
-                <mat-tree-node cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="node" class="tree-node" *matTreeNodeDef="let node" matTreeNodeToggle>
-                  {{ node.issue.title }}
-                </mat-tree-node>
-                <!-- This is the tree node template for expandable nodes -->
-                <mat-nested-tree-node cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="node" class="tree-node" *matTreeNodeDef="let node; when: hasChild">
-                  <div class="mat-tree-node">
-                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node">
-                      <mat-icon class="mat-icon-rtl-mirror">
-                        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                      </mat-icon>
+            <!-- Repeating template for the tree -->
+            <ng-template #tmplNode let-node="node">
+              <div class="node-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
+                <div class="node-title" (click)="node.isExpanded = !node.isExpanded">
+                  <span *ngIf="node.children.length && !node.isExpanded">
+                    <button mat-icon-button>
+                      <mat-icon>chevron_right</mat-icon>
                     </button>
-                    {{ node.issue.title }}
+                  </span>
+                  <span *ngIf="node.children.length && node.isExpanded">
+                    <button mat-icon-button>
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                  </span>
+                  <span *ngIf="!node.children.length" style="margin-left: 48px"> </span>
+
+                  &nbsp;&nbsp;&nbsp; {{ node.issue.title }}
+                  <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested Items' }})</span>
+                </div>
+
+                <div
+                  *ngIf="node.isExpanded && node.children.length"
+                  class="node-children"
+                  cdkDropList
+                  [cdkDropListData]="node.children"
+                  [id]="node.id"
+                  (cdkDropListDropped)="drop($event)"
+                  [cdkDropListSortingDisabled]="true">
+                  <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">
+                    <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>
                   </div>
-                  <!-- There is inline padding applied to this div using styles.
-                      This padding value depends on the mat-icon-button width.  -->
-                  <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
-                    <ng-container matTreeNodeOutlet></ng-container>
-                  </div>
-                </mat-nested-tree-node>
-              </mat-tree>
+                </div>
+              </div>
+            </ng-template>
+
+            <!-- Rendering for the tree -->
+            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
+              <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
+                <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>
+              </div>
             </div>
           </mat-card>
         </div>
