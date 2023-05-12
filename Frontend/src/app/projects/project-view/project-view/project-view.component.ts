@@ -38,13 +38,11 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   viewpoints$ = this.data.viewpoints$.pipe(share(), tap(viewpoints => this.viewpoints = viewpoints))
   activeViewpoint$ = this.data.activeViewpoint$.pipe(delay(0),share())
   project$ = this.data.activeProject$.pipe(share(), tap(project => {
-    if (project !== undefined)
-    this.data.getRemoteProjects(project.projectId, this.aggregator)
+    this.data.getRemoteProjects(project!.projectId, this.aggregator)
   }))
 
 
   constructor() {
-    //move to onInit with possible logic determining the type of aggregator
     this.aggregator = new GitLabAggregator();
   }
 

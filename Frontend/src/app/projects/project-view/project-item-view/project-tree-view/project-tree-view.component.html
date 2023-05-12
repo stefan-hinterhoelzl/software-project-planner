@@ -1,26 +1,26 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
+  <div class="viewpoint-button">
+    <h3>Viewpoint:</h3>
+    <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button" [matMenuTriggerFor]="menu">
+      {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
+    </button>
+    <ng-template #ElseBlock>
+      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
+    </ng-template>
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[1]; first as isFirst">
+      <span>{{ viewpoint.title }}</span>
+    </button>
+    <mat-divider *ngIf="view[1].length! > 0"></mat-divider>
+    <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[1])">
+      <mat-icon>add</mat-icon>
+      <span>Create new Viewpoint</span>
+    </button>
+  </mat-menu>
+
   <div class="card-wrapper">
-    <div class="viewpoint-button">
-      <h3>Viewpoint:</h3>
-      <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button" [matMenuTriggerFor]="menu">
-        {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
-      </button>
-      <ng-template #ElseBlock>
-        <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
-      </ng-template>
-    </div>
-
-    <mat-menu #menu="matMenu">
-      <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[1]; first as isFirst">
-        <span>{{ viewpoint.title }}</span>
-      </button>
-      <mat-divider *ngIf="view[1].length! > 0"></mat-divider>
-      <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[1])">
-        <mat-icon>add</mat-icon>
-        <span>Create new Viewpoint</span>
-      </button>
-    </mat-menu>
-
     <div cdkDropListGroup class="row-wrapper">
       <div class="backlog">
         <div *ngIf="backlogLoading" class="issue-wrapper">
@@ -28,7 +28,7 @@
         </div>
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Backlog</h2>
-          <mat-card class="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
+          <mat-card class="issue-list" id="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
             <div cdkDrag *ngFor="let issue of backlog" class="issue-list-item">
               <p>{{ issue.title }}</p>
@@ -42,36 +42,38 @@
         </div>
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
-          <mat-card class="issue-list">
-            <div class = "adding-box-wrapper">
+          <mat-card class="issue-tree">
+            <div class="adding-box-wrapper">
               <div cdkDropList id="top-level" (cdkDropListDropped)="drop($event)" class="adding-box">
                 <h3>Drop Top Level Items Here</h3>
               </div>
             </div>
-            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-              <!-- This is the tree node template for leaf nodes -->
-              <!-- There is inline padding applied to this node using styles.
+            <div class="tree-wrapper">
+              <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+                <!-- This is the tree node template for leaf nodes -->
+                <!-- There is inline padding applied to this node using styles.
                 This padding value depends on the mat-icon-button width. -->
-              <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                {{ node.issue.title }}
-              </mat-tree-node>
-              <!-- This is the tree node template for expandable nodes -->
-              <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-                <div class="mat-tree-node">
-                  <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node">
-                    <mat-icon class="mat-icon-rtl-mirror">
-                      {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                    </mat-icon>
-                  </button>
+                <mat-tree-node cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="node" class="tree-node" *matTreeNodeDef="let node" matTreeNodeToggle>
                   {{ node.issue.title }}
-                </div>
-                <!-- There is inline padding applied to this div using styles.
+                </mat-tree-node>
+                <!-- This is the tree node template for expandable nodes -->
+                <mat-nested-tree-node cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="node" class="tree-node" *matTreeNodeDef="let node; when: hasChild">
+                  <div class="mat-tree-node">
+                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node">
+                      <mat-icon class="mat-icon-rtl-mirror">
+                        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                      </mat-icon>
+                    </button>
+                    {{ node.issue.title }}
+                  </div>
+                  <!-- There is inline padding applied to this div using styles.
                       This padding value depends on the mat-icon-button width.  -->
-                <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
-                  <ng-container matTreeNodeOutlet></ng-container>
-                </div>
-              </mat-nested-tree-node>
-            </mat-tree>
+                  <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                    <ng-container matTreeNodeOutlet></ng-container>
+                  </div>
+                </mat-nested-tree-node>
+              </mat-tree>
+            </div>
           </mat-card>
         </div>
       </div>

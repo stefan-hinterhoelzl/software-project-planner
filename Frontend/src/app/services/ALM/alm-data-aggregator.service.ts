@@ -199,4 +199,3 @@ export class GitLabAggregator implements ALMDataAggregator {
   }
 }
 
-//Add other aggregators
