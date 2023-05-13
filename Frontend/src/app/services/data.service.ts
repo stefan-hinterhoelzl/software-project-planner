@@ -208,7 +208,6 @@ export class DataService {
     this.backend.getRemoteProjectsForProject(projectId).subscribe({
       next: value => {
         if (value !== undefined) {
-          console.log("New Remote Projects: ", value)
           this._remoteProjects.next(value);
           aggreagtor.getProjects(value).subscribe({
             next: ALMvalue => {

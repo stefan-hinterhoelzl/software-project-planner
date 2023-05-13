@@ -8,7 +8,7 @@ import { combineLatest, forkJoin, map, Observable, of, share, switchMap, tap } f
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
 import { Issue } from 'src/app/models/issue';
-import { DropInfo, IssueNode} from 'src/app/models/node';
+import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
@@ -28,9 +28,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   //State Booleans
   backlogLoading: boolean = false;
 
-
-
-  dropTargetIds: string[] = [];
   nodeLookup = new Map<string, IssueNode>();
   dropActionTodo!: DropInfo;
 
@@ -43,10 +40,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => (this.backlogLoading = true)));
 
-  backlog: ALMIssue[];
+  backlog: IssueNode[];
   treeData: IssueNode[];
-
-  dataSource = new MatTreeNestedDataSource<IssueNode>();
 
   treeControl = new NestedTreeControl<IssueNode>(node => node.children);
 
@@ -59,95 +54,28 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
     switchMap(issues => {
-      console.log(issues);
       return this.getALMIssues(issues);
     }),
     tap(issues => {
       //reset on reload
       this.treeData.length = 0;
-      this.dropTargetIds.length = 0;
       this.backlog.length = 0;
       this.nodeLookup.clear();
 
+      //state boolean
       this.backlogLoading = false;
-      this.backlog.push(...issues);
 
-      //Just testing here
-      let node3 = <IssueNode>{
-        issue: issues[2],
-        id: `${issues[2].projectId}${issues[2].issueId}`,
-        children: [],
-        isExpanded: false,
-      };
+      let alternating = false
 
-      let node1 = <IssueNode>{
-        issue: issues[0],
-        id: `${issues[0].projectId}${issues[0].issueId}`,
-        children: [node3],
-        isExpanded: false,
-      };
-
-      let node2 = <IssueNode>{
-        issue: issues[1],
-        id: `${issues[1].projectId}${issues[1].issueId}`,
-        children: [node1],
-        isExpanded: false,
-      };
-
-      let node32 = <IssueNode>{
-        issue: issues[5],
-        id: `${issues[5].projectId}${issues[5].issueId}`,
-        children: [],
-        isExpanded: false,
-      };
-
-      let node12 = <IssueNode>{
-        issue: issues[6],
-        id: `${issues[6].projectId}${issues[6].issueId}`,
-        children: [node32],
-        isExpanded: false,
-      };
-
-      let node22 = <IssueNode>{
-        issue: issues[7],
-        id: `${issues[7].projectId}${issues[7].issueId}`,
-        children: [node12],
-        isExpanded: false,
-      };
-
-      let node33 = <IssueNode>{
-        issue: issues[10],
-        id: `${issues[10].projectId}${issues[10].issueId}`,
-        children: [],
-        isExpanded: false,
-      };
-
-      let node13 = <IssueNode>{
-        issue: issues[11],
-        id: `${issues[11].projectId}${issues[11].issueId}`,
-        children: [node33],
-        isExpanded: false,
-      };
-
-      let node23 = <IssueNode>{
-        issue: issues[12],
-        id: `${issues[12].projectId}${issues[12].issueId}`,
-        children: [node13],
-        isExpanded: false,
-      };
-
-      this.treeData.push(...[node2, node22, node23]);
-
-      this.treeData.forEach((node) => {
-        this.dropTargetIds.push(node.id);
+      issues.forEach(issue => {
+        let node: IssueNode = this.convertALMIssueToNode(issue);
+        if (alternating) this.treeData.push(node);
+        alternating = !alternating
+        this.backlog.push(node);
         this.nodeLookup.set(node.id, node);
       });
 
-      this.prepareDragAndDrop(this.treeData)
-
-      this.dataSource.data = this.treeData;
-
-      console.log(this.treeData, this.dropTargetIds, this.nodeLookup);
+      this.prepareDragAndDrop(this.treeData);
     })
   );
 
@@ -186,9 +114,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   prepareDragAndDrop(nodes: IssueNode[]) {
-    nodes.forEach((node) => {
-      console.log(node);
-      this.dropTargetIds.push(node.id);
+    nodes.forEach(node => {
       this.nodeLookup.set(node.id, node);
       this.prepareDragAndDrop(node.children);
     });
@@ -238,61 +164,56 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  // drop(event: CdkDragDrop<IssueNode[]>) {
-  //   console.log(event);
-  //   if (event.container.id === 'top-level') {
-  //     let item: ALMIssue = this.backlog[event.previousIndex];
-  //     console.log(item);
-  //     let newNode: IssueNode = <IssueNode>{
-  //       issue: item,
-  //       children: [],
-  //       isExpanded: false,
-  //     };
-  //     console.log(newNode);
-  //     this.treeData.push(newNode);
-  //     this.dataSource.data = this.treeData;
-  //   }
-  // }
-
   drop(event: any) {
+    const draggedItemId: string = event.item.data;
+    const draggedItem = this.nodeLookup.get(draggedItemId);
+
+    //handle empty droplist
+    if (this.treeData.length === 0 && draggedItem !== undefined) {
+      let index = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId)
+      this.backlog.splice(index, 1)
+      this.treeData.push(draggedItem)
+      return;
+    }
+
     if (!this.dropActionTodo) return;
 
-    const draggedItemId: string = event.item.data;
     const parentItemId = event.previousContainer.id;
     const targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
 
     console.log(
-        '\nmoving\n[' + draggedItemId + '] from list [' + parentItemId + ']',
-        '\n[' + this.dropActionTodo.action + ']\n[' + this.dropActionTodo.targetId + '] from list [' + targetListId + ']');
+      '\nmoving\n',
+      '[' + draggedItemId + '] from list [' + parentItemId + ']',
+      '\n[' + this.dropActionTodo.action + ']\n[' + this.dropActionTodo.targetId + '] from list [' + targetListId + ']'
+    );
 
-    const draggedItem = this.nodeLookup.get(draggedItemId);
+    const oldItemContainer =
+      parentItemId !== 'main' ? (parentItemId !== 'node-backlog' ? this.nodeLookup.get(parentItemId)!.children : this.backlog) : this.treeData;
+    const newContainer =
+      targetListId !== 'main' ? (targetListId !== 'node-backlog' ? this.nodeLookup.get(targetListId)!.children : this.backlog) : this.treeData;
 
-    console.log(this.nodeLookup)
-    const oldItemContainer = parentItemId != 'main' ? this.nodeLookup.get(parentItemId)!.children : this.treeData;
-    const newContainer = targetListId != 'main' ? this.nodeLookup.get(targetListId)!.children : this.treeData;
-
-    let i = oldItemContainer.findIndex((c: any) => c.id === draggedItemId);
+    let i = oldItemContainer.findIndex((c: IssueNode) => c.id === draggedItemId);
     oldItemContainer.splice(i, 1);
 
     switch (this.dropActionTodo.action) {
-        case 'before':
-        case 'after':
-            const targetIndex = newContainer.findIndex((c: any) => c.id === this.dropActionTodo.targetId);
-            if (this.dropActionTodo.action == 'before') {
-                newContainer.splice(targetIndex, 0, draggedItem!);
-            } else {
-                newContainer.splice(targetIndex + 1, 0, draggedItem!);
-            }
-            break;
+      case 'before':
+      case 'after':
+        const targetIndex = newContainer.findIndex((c: IssueNode) => c.id === this.dropActionTodo.targetId);
+        if (this.dropActionTodo.action == 'before') {
+          newContainer.splice(targetIndex, 0, draggedItem!);
+        } else {
+          newContainer.splice(targetIndex + 1, 0, draggedItem!);
+        }
+        break;
 
-        case 'inside':
-            this.nodeLookup.get(this.dropActionTodo.targetId)!.children.push(draggedItem!)
-            this.nodeLookup.get(this.dropActionTodo.targetId)!.isExpanded = true;
-            break;
+      case 'inside':
+        this.nodeLookup.get(this.dropActionTodo.targetId)!.children.push(draggedItem!);
+        this.nodeLookup.get(this.dropActionTodo.targetId)!.isExpanded = true;
+        break;
     }
 
-    this.clearDragInfo(true)
-}
+    this.clearDragInfo(true);
+  }
 
   dragMoved(event: any) {
     let e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
@@ -302,10 +223,12 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return;
     }
     let container = e.classList.contains('node-item') ? e : e.closest('.node-item');
+    console.log(container);
     if (!container) {
       this.clearDragInfo();
       return;
     }
+
     this.dropActionTodo = {
       targetId: container.getAttribute('data-id')!,
     };
@@ -322,17 +245,18 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       // inside
       this.dropActionTodo['action'] = 'inside';
     }
+    console.log(this.dropActionTodo);
     this.showDragInfo();
   }
 
   getParentNodeId(id: string, nodesToSearch: IssueNode[], parentId: string): string {
     for (let node of nodesToSearch) {
-        if (node.id == id) return parentId;
-        let ret = this.getParentNodeId(id, node.children, node.id);
-        if (ret) return ret;
+      if (node.id == id) return parentId;
+      let ret = this.getParentNodeId(id, node.children, node.id);
+      if (ret) return ret;
     }
-    return "";
-}
+    return '';
+  }
 
   showDragInfo() {
     this.clearDragInfo();
@@ -348,5 +272,14 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     this.document.querySelectorAll('.drop-before').forEach(element => element.classList.remove('drop-before'));
     this.document.querySelectorAll('.drop-after').forEach(element => element.classList.remove('drop-after'));
     this.document.querySelectorAll('.drop-inside').forEach(element => element.classList.remove('drop-inside'));
+  }
+
+  convertALMIssueToNode(issue: ALMIssue): IssueNode {
+    return <IssueNode>{
+      issue: issue,
+      children: [],
+      id: `${issue.projectId}${issue.issueId}`,
+      isExpanded: false,
+    };
   }
 }

@@ -28,10 +28,10 @@
         </div>
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Backlog</h2>
-          <mat-card class="issue-list" id="issue-list" cdkDropList (cdkDropListDropped)="drop($event)">
+          <mat-card class="issue-list node-item" [attr.data-id]="'backlog'" [id]="'node-backlog'" [cdkDropListData]="backlog" cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
-            <div cdkDrag *ngFor="let issue of backlog" cdkDrag [cdkDragData]="issue.projectId+issue.issueId" (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
-              <p>{{ issue.title }}</p>
+            <div cdkDrag *ngFor="let node of backlog" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
+              <p>{{ node.issue.title }}</p>
             </div>
           </mat-card>
         </div>
@@ -43,41 +43,9 @@
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
-            <!-- Repeating template for the tree -->
-            <ng-template #tmplNode let-node="node">
-              <div class="node-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
-                <div class="node-title" (click)="node.isExpanded = !node.isExpanded">
-                  <span *ngIf="node.children.length && !node.isExpanded">
-                    <button mat-icon-button>
-                      <mat-icon>chevron_right</mat-icon>
-                    </button>
-                  </span>
-                  <span *ngIf="node.children.length && node.isExpanded">
-                    <button mat-icon-button>
-                      <mat-icon>chevron_left</mat-icon>
-                    </button>
-                  </span>
-                  <span *ngIf="!node.children.length" style="margin-left: 48px"> </span>
-
-                  &nbsp;&nbsp;&nbsp; {{ node.issue.title }}
-                  <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested Items' }})</span>
-                </div>
-
-                <div
-                  *ngIf="node.isExpanded && node.children.length"
-                  class="node-children"
-                  cdkDropList
-                  [cdkDropListData]="node.children"
-                  [id]="node.id"
-                  (cdkDropListDropped)="drop($event)"
-                  [cdkDropListSortingDisabled]="true">
-                  <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">
-                    <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>
-                  </div>
-                </div>
-              </div>
-            </ng-template>
-
+            <div *ngIf="treeData.length === 0" class="adding-box">
+              <h3>Drop First Item</h3>
+            </div>
             <!-- Rendering for the tree -->
             <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
               <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
@@ -90,3 +58,39 @@
     </div>
   </div>
 </div>
+
+<!-- Repeating template for the tree -->
+<ng-template #tmplNode let-node="node">
+  <div class="node-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
+    <div class="node-title" (click)="node.isExpanded = !node.isExpanded">
+      <span *ngIf="node.children.length && !node.isExpanded">
+        <button mat-icon-button>
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </span>
+      <span *ngIf="node.children.length && node.isExpanded">
+        <button mat-icon-button>
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+      </span>
+      <span *ngIf="!node.children.length" style="margin-left: 48px"> </span>
+
+     {{ node.issue.title }}
+
+      <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested Items' }})</span>
+    </div>
+
+    <div
+      *ngIf="node.isExpanded && node.children.length"
+      class="node-children"
+      cdkDropList
+      [cdkDropListData]="node.children"
+      [id]="node.id"
+      (cdkDropListDropped)="drop($event)"
+      [cdkDropListSortingDisabled]="true">
+      <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">
+        <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
