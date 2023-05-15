@@ -1,14 +1,23 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
   <div class="viewpoint-button">
     <h3>Viewpoint:</h3>
-    <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button"
-      [matMenuTriggerFor]="menu">
+    <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button" [matMenuTriggerFor]="menu">
       {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
     </button>
     <ng-template #ElseBlock>
-      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint
-        <mat-icon>view_carousel</mat-icon></button>
+      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
     </ng-template>
+    <span class="spacer"></span>
+    <button
+      *ngIf="(issuesBacklog$ | async) && !backlogLoading"
+      style="margin-right: 10px"
+      [matTooltipPosition]="'below'"
+      matTooltip="Save hierarchy"
+      [matTooltipShowDelay]="2000"
+      mat-raised-button
+      color="primary">
+      <mat-icon>save</mat-icon> Save
+    </button>
   </div>
 
   <mat-menu #menu="matMenu">
@@ -32,10 +41,8 @@
           <h2>Backlog</h2>
           <mat-card class="issue-list">
             <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
-            <div cdkDropList [cdkDropListData]="backlog " [id]="'backlog'" (cdkDropListDropped)="drop($event)"
-              [cdkDropListSortingDisabled]="true">
-              <div cdkDrag *ngFor="let node of backlog" cdkDrag [cdkDragData]="node.id"
-                (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
+            <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
+              <div cdkDrag *ngFor="let node of backlog" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
                 <div class="node-item backlog-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
                   <p>{{ node.issue.title }}</p>
                 </div>
@@ -55,8 +62,7 @@
               <h3>Drop First Item</h3>
             </div>
             <!-- Rendering for the tree -->
-            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)"
-              [cdkDropListSortingDisabled]="true">
+            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
               <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
                 <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>
               </div>
@@ -86,12 +92,20 @@
 
       {{ node.issue.title }}
 
-      <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
-        Items' }})</span>
+      <span class="item-notes">
+        ({{ node.children.length }}
+        {{node.children.length === 1 ? 'Nested Item': 'Nested Items'
+        }})</span
+      >
     </div>
 
-    <div *ngIf="node.isExpanded && node.children.length" class="node-children" cdkDropList
-      [cdkDropListData]="node.children" [id]="node.id" (cdkDropListDropped)="drop($event)"
+    <div
+      *ngIf="node.isExpanded && node.children.length"
+      class="node-children"
+      cdkDropList
+      [cdkDropListData]="node.children"
+      [id]="node.id"
+      (cdkDropListDropped)="drop($event)"
       [cdkDropListSortingDisabled]="true">
       <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">
         <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>

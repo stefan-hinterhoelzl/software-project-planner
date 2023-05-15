@@ -7,7 +7,7 @@ import { getAuth, User } from '@firebase/auth';
 import { UserSettings } from '../models/user';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMIssue } from '../models/alm.models';
-import { Issue } from '../models/issue';
+import { Issue, IssueRelation } from '../models/issue';
 
 @Injectable({
   providedIn: 'root',
@@ -102,9 +102,19 @@ export class BackendService {
   }
 
   getSelectedRemoteIssuesWithoutRelations(projectId: string, viewpointId: number) {
-    return this.http.get<any[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssuesWithoutRelation' , {responseType: 'json'}).pipe(tap(issues => {
-      console.log(issues)
-    }))
+    return this.http.get<any[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssuesWithoutRelation' , {responseType: 'json'})
+  }
+
+  getSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
+    return this.http.get<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
+  }
+
+  deleteSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
+    return this.http.delete<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
+  }
+
+  addSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
+    return this.http.post<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
   }
 
   addRemoteIssuesToViewpoint(rIssues: Issue[]) {

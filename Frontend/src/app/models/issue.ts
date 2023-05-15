@@ -5,4 +5,18 @@ export interface Issue {
   remoteIssueId: number,
 }
 
+export interface IssueRelation {
+  projectId: string,
+  viewpointId: number,
+  parentRemoteProjectId: number,
+  parentIssueId: number,
+  childRemoteProjectId: number,
+  childIssueId: number,
+}
+
+export interface IssueRelationObjects {
+  parent: Issue,
+  child: Issue,
+}
+
 

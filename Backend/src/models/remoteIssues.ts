@@ -6,3 +6,12 @@ export interface RemoteIssues extends RowDataPacket {
     remoteIssueId: number;
     projectId: string
 }
+
+export interface IssueRelation extends RowDataPacket {
+    projectId: string,
+    viewpointId: number,
+    parentRemoteProjectId: number,
+    parentIssueId: number,
+    childRemoteProjectId: number,
+    childIssueId: number,
+  }

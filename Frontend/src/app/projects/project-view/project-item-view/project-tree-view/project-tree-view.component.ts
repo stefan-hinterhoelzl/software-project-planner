@@ -4,10 +4,10 @@ import { DOCUMENT } from '@angular/common';
 import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { combineLatest, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { combineLatest, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { Issue } from 'src/app/models/issue';
+import { Issue, IssueRelationObjects } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -29,6 +29,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   //State Booleans
   backlogLoading: boolean = false;
+  treeLoading: boolean = false;
 
   nodeLookup = new Map<string, IssueNode>();
   dropActionTodo!: DropInfo;
@@ -40,7 +41,10 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
-  viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => (this.backlogLoading = true)));
+  viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => {
+    this.backlogLoading = true;
+    this.treeLoading = true;
+  }));
 
   backlog: IssueNode[];
   treeData: IssueNode[];
@@ -60,9 +64,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.backlog.length = 0;
       this.nodeLookup.clear();
 
-      //state boolean
-      this.backlogLoading = false;
-
       let alternating = false
 
       issues.forEach(issue => {
@@ -74,8 +75,50 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       });
 
       this.prepareDragAndDrop(this.treeData);
+
+      //state boolean
+      this.backlogLoading = false;
     })
   );
+
+  // issuesRelation$ = this.viewpoint$.pipe(
+  //   switchMap(viewpoint => {
+  //     return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+  //   }),
+  //   filter(relations => relations.length === 0 || relations === undefined),
+  //   switchMap(relations => {
+  //     const arr: IssueRelationObjects[] = [];
+
+  //     relations.forEach(value => {
+  //       let viewpoint = value.viewpointId;
+  //       let projectid = value.projectId;
+
+  //       let parent: Issue = <Issue> {
+  //         viewpointId: viewpoint,
+  //         projectId: projectid,
+  //         remoteIssueId: value.parentIssueId,
+  //         remoteProjectId: value.parentRemoteProjectId,
+  //       }
+
+  //       let child: Issue = <Issue> {
+  //         viewpointId: viewpoint,
+  //         projectId: projectid,
+  //         remoteIssueId: value.childIssueId,
+  //         remoteProjectId: value.childRemoteProjectId,
+  //       }
+  //       arr.push({parent: parent, child: child})
+  //     })
+
+  //     const o_issues = arr.map(value => {
+  //       return this.backe
+  //     }
+  //   })
+  //   tap(relations => {
+  //     relations.forEach(value => {
+  //       this.
+  //     })
+  //   })
+  // )
 
   // issuesBacklog$ = this.viewpoint$.pipe(
   //   tap(viewpoint => console.log(viewpoint)),
@@ -178,7 +221,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.clearDragInfo(true);
       return;
 
-    } 
+    }
 
     //don't drag items with children back to the backlog
     if (event.container.id === 'backlog' && draggedItem.children.length !== 0) {
@@ -188,8 +231,9 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     }
 
     const parentItemId = event.previousContainer.id;
-    const targetListId = event.container.id === 'backlog' ? this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog') : this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
 
+    let targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog');
+    if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
 
     console.log(
       '\nmoving\n',
@@ -228,6 +272,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   dragMoved(event: any) {
     let e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
 
+
     if (!e) {
       this.clearDragInfo();
       return;
@@ -241,7 +286,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     this.dropActionTodo = {
       targetId: container.getAttribute('data-id')!,
     };
-
 
     const targetRect = container.getBoundingClientRect();
     const oneThird = targetRect.height / 3;
@@ -275,7 +319,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   getParentNodeId(id: string, nodesToSearch: IssueNode[], parentId: string): string {
     for (let node of nodesToSearch) {
-      if (node.id == id) return parentId;
+      if (node.id === id) return parentId;
       let ret = this.getParentNodeId(id, node.children, node.id);
       if (ret) return ret;
     }
