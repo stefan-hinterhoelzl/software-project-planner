@@ -14,7 +14,7 @@ export class SnackbarComponent {
 
   constructor() { }
 
-  openSnackBar(message: string, className: string = " ", action: string = " ") {
+  openSnackBar(message: string, className: string = "", action: string = "") {
     return this.snackBar.open(message, action, {
       duration: this.timeOut,
       verticalPosition: 'bottom',

@@ -168,6 +168,12 @@ p {
   min-height: 48px;
 }
 
+.backlog-item {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
 .node-item {
   cursor: pointer;
 }

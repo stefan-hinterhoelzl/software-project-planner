@@ -13,6 +13,7 @@ import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
+import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-project-tree-view',
@@ -23,6 +24,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   data = inject(DataService);
   backend = inject(BackendService);
   dialog = inject(MatDialog);
+  snackbar = inject(SnackbarComponent);
   aggregator: ALMDataAggregator;
 
   //State Booleans
@@ -42,10 +44,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   backlog: IssueNode[];
   treeData: IssueNode[];
-
-  treeControl = new NestedTreeControl<IssueNode>(node => node.children);
-
-  hasChild = (_: number, node: IssueNode) => !!node.children && node.children.length > 0;
 
   project$ = this.data.activeProject$;
 
@@ -70,8 +68,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       issues.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
         if (alternating) this.treeData.push(node);
+        else this.backlog.push(node)
         alternating = !alternating
-        this.backlog.push(node);
         this.nodeLookup.set(node.id, node);
       });
 
@@ -109,9 +107,9 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   prepareDragAndDrop(nodes: IssueNode[]) {
     nodes.forEach(node => {
@@ -176,10 +174,22 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.dropActionTodo) return;
+    if (!this.dropActionTodo || !draggedItem) {
+      this.clearDragInfo(true);
+      return;
+
+    } 
+
+    //don't drag items with children back to the backlog
+    if (event.container.id === 'backlog' && draggedItem.children.length !== 0) {
+      this.snackbar.openSnackBar('Items containing nested items cannot be moved back to the backlog!');
+      this.clearDragInfo(true);
+      return;
+    }
 
     const parentItemId = event.previousContainer.id;
-    const targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
+    const targetListId = event.container.id === 'backlog' ? this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog') : this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
+
 
     console.log(
       '\nmoving\n',
@@ -188,9 +198,9 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     );
 
     const oldItemContainer =
-      parentItemId !== 'main' ? (parentItemId !== 'node-backlog' ? this.nodeLookup.get(parentItemId)!.children : this.backlog) : this.treeData;
+      parentItemId !== 'main' ? (parentItemId !== 'backlog' ? this.nodeLookup.get(parentItemId)!.children : this.backlog) : this.treeData;
     const newContainer =
-      targetListId !== 'main' ? (targetListId !== 'node-backlog' ? this.nodeLookup.get(targetListId)!.children : this.backlog) : this.treeData;
+      targetListId !== 'main' ? (targetListId !== 'backlog' ? this.nodeLookup.get(targetListId)!.children : this.backlog) : this.treeData;
 
     let i = oldItemContainer.findIndex((c: IssueNode) => c.id === draggedItemId);
     oldItemContainer.splice(i, 1);
@@ -223,7 +233,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return;
     }
     let container = e.classList.contains('node-item') ? e : e.closest('.node-item');
-    console.log(container);
     if (!container) {
       this.clearDragInfo();
       return;
@@ -232,20 +241,35 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     this.dropActionTodo = {
       targetId: container.getAttribute('data-id')!,
     };
+
+
     const targetRect = container.getBoundingClientRect();
     const oneThird = targetRect.height / 3;
+    const half = targetRect.height / 2;
 
-    if (event.pointerPosition.y - targetRect.top < oneThird) {
-      // before
-      this.dropActionTodo['action'] = 'before';
-    } else if (event.pointerPosition.y - targetRect.top > 2 * oneThird) {
-      // after
-      this.dropActionTodo['action'] = 'after';
+    //target is in the backlog
+    if (this.backlog.findIndex(value => this.dropActionTodo.targetId === value.id) !== -1) {
+      if (event.pointerPosition.y - targetRect.top < half) {
+        // before
+        this.dropActionTodo['action'] = 'before';
+      } else {
+        // after
+        this.dropActionTodo['action'] = 'after';
+      }
     } else {
-      // inside
-      this.dropActionTodo['action'] = 'inside';
+
+      if (event.pointerPosition.y - targetRect.top < oneThird) {
+        // before
+        this.dropActionTodo['action'] = 'before';
+      } else if (event.pointerPosition.y - targetRect.top > 2 * oneThird) {
+        // after
+        this.dropActionTodo['action'] = 'after';
+      } else {
+        // inside
+        this.dropActionTodo['action'] = 'inside';
+      }
     }
-    console.log(this.dropActionTodo);
+
     this.showDragInfo();
   }
 
