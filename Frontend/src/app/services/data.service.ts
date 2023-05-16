@@ -270,7 +270,6 @@ export class DataService {
 
   //Static getter
   get staticRemoteProjects() {
-    console.log(this._remoteProjects.value)
     return this._remoteProjects.value
   }
 }

@@ -52,10 +52,10 @@
         </div>
       </div>
       <div class="hierarchy">
-        <div *ngIf="backlogLoading" class="issue-wrapper">
+        <div *ngIf="treeLoading" class="issue-wrapper">
           <mat-spinner class="no-items"></mat-spinner>
         </div>
-        <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
+        <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
             <div *ngIf="treeData.length === 0" class="adding-box">

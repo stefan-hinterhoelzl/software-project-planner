@@ -110,7 +110,7 @@ export async function getSelectedIssueRelations(req: Request, res: Response) {
     const conn = await connect();
 
     const result = (
-      await conn.query<IssueRelation[]>(`SELECT * FROM RemoteIssuesRelations WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId])
+      await conn.query<IssueRelation[]>(`SELECT * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId])
     )[0];
 
     res.json(result);
@@ -123,7 +123,7 @@ export async function postSelectedIssueRelations(req: Request, res: Response) {
   try {
     const newProjects: RemoteIssues[] = req.body;
     const conn = await connect();
-    await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteIssuesRelations SET ?', [value]))]);
+    await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteIssuesRelation SET ?', [value]))]);
     res.json(newProjects);
   } catch (err: any) {
     handleError(res, err);
@@ -137,7 +137,7 @@ export async function deleteSelectedIssueRelations(req: Request, res: Response) 
   try {
     const conn = await connect();
 
-    await conn.query(`DELETE * FROM RemoteIssuesRelations WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId]);
+    await conn.query(`DELETE * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId]);
 
     res.json({ response: 'success' });
   } catch (err: any) {

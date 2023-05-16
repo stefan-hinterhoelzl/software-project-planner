@@ -1,3 +1,6 @@
+import { ALMIssue } from "./alm.models";
+import { IssueNode } from "./node";
+
 export interface Issue {
   viewpointId: number,
   projectId: string,
@@ -15,8 +18,8 @@ export interface IssueRelation {
 }
 
 export interface IssueRelationObjects {
-  parent: Issue,
-  child: Issue,
+  parent: IssueNode,
+  child: IssueNode,
 }
 
 

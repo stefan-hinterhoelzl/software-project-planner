@@ -41,10 +41,15 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
-  viewpoint$ = this.data.activeViewpoint$.pipe(tap(() => {
-    this.backlogLoading = true;
-    this.treeLoading = true;
-  }));
+  viewpoint$ = this.data.activeViewpoint$.pipe(
+    tap(() => {
+      this.backlogLoading = true;
+      this.treeLoading = true;
+      this.treeData.length = 0;
+      this.backlog.length = 0;
+      this.nodeLookup.clear();
+    })
+  );
 
   backlog: IssueNode[];
   treeData: IssueNode[];
@@ -59,18 +64,9 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       return this.getALMIssues(issues);
     }),
     tap(issues => {
-      //reset on reload
-      this.treeData.length = 0;
-      this.backlog.length = 0;
-      this.nodeLookup.clear();
-
-      let alternating = false
-
       issues.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        if (alternating) this.treeData.push(node);
-        else this.backlog.push(node)
-        alternating = !alternating
+        this.backlog.push(node);
         this.nodeLookup.set(node.id, node);
       });
 
@@ -78,81 +74,69 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
       //state boolean
       this.backlogLoading = false;
-    })
+    }),
+    share()
   );
 
-  // issuesRelation$ = this.viewpoint$.pipe(
-  //   switchMap(viewpoint => {
-  //     return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
-  //   }),
-  //   filter(relations => relations.length === 0 || relations === undefined),
-  //   switchMap(relations => {
-  //     const arr: IssueRelationObjects[] = [];
+  issuesRelation$ = this.viewpoint$.pipe(
+    switchMap(viewpoint => {
+      return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+    }),
+    filter(relations => relations.length === 0 || relations === undefined),
+    switchMap(relations => {
+      const arr: Issue[] = [];
 
-  //     relations.forEach(value => {
-  //       let viewpoint = value.viewpointId;
-  //       let projectid = value.projectId;
+      relations.forEach(value => {
+        let viewpoint = value.viewpointId;
+        let projectid = value.projectId;
 
-  //       let parent: Issue = <Issue> {
-  //         viewpointId: viewpoint,
-  //         projectId: projectid,
-  //         remoteIssueId: value.parentIssueId,
-  //         remoteProjectId: value.parentRemoteProjectId,
-  //       }
+        let parent: Issue = <Issue>{
+          viewpointId: viewpoint,
+          projectId: projectid,
+          remoteIssueId: value.parentIssueId,
+          remoteProjectId: value.parentRemoteProjectId,
+        };
 
-  //       let child: Issue = <Issue> {
-  //         viewpointId: viewpoint,
-  //         projectId: projectid,
-  //         remoteIssueId: value.childIssueId,
-  //         remoteProjectId: value.childRemoteProjectId,
-  //       }
-  //       arr.push({parent: parent, child: child})
-  //     })
+        let child: Issue = <Issue>{
+          viewpointId: viewpoint,
+          projectId: projectid,
+          remoteIssueId: value.childIssueId,
+          remoteProjectId: value.childRemoteProjectId,
+        };
+        arr.push(...[child, parent]);
+      });
+      return this.getALMIssues(arr).pipe(map(values => ({ relations, values })));
+    }),
 
-  //     const o_issues = arr.map(value => {
-  //       return this.backe
-  //     }
-  //   })
-  //   tap(relations => {
-  //     relations.forEach(value => {
-  //       this.
-  //     })
-  //   })
-  // )
+    tap(data => {
+      data.values.forEach(issue => {
+        let node: IssueNode = this.convertALMIssueToNode(issue);
+        this.treeData.push(node);
+        this.nodeLookup.set(node.id, node);
+      });
 
-  // issuesBacklog$ = this.viewpoint$.pipe(
-  //   tap(viewpoint => console.log(viewpoint)),
-  //   switchMap(viewpoint => {
-  //     console.log(viewpoint)
-  //     return this.data.getSelectedIssuesForViewpoint(viewpoint!.viewpointId!);
-  //   }),
-  //   switchMap(issues => {
-  //     let remoteProjects: RemoteProject[] = this.data.staticRemoteProjects;
-  //     let projectsCopy: RemoteProject[] = JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
-  //     const o_issues = issues.map(issue => {
-  //       let project = projectsCopy.find(value => (value.remoteProjectId = issue.remoteProjectId));
-  //       return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
-  //     });
+      data.relations.forEach(value => {
+        let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`
+        let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`
 
-  //     if (o_issues.length === 0) {
-  //       return of([]);
-  //     } else {
-  //       return forkJoin(o_issues);
-  //     }
-  //   }),
-  //   tap(issues => {
-  //     console.log(issues)
-  //     this.backlog = issues
-  //     this.backlog.sort((a, b) => a.updatedAt > b.updatedAt?-1:1)
-  //     this.issuesLoading = false;
-  //   })
-  // );
+        const draggedItem = this.nodeLookup.get(childID)
+        if(draggedItem !== undefined)
+        this.nodeLookup.get(parentID)?.children.push(draggedItem)
+      });
+
+      this.prepareDragAndDrop(this.treeData);
+
+      //state boolean
+      this.treeLoading = false;
+    }),
+    share()
+  );
 
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   prepareDragAndDrop(nodes: IssueNode[]) {
     nodes.forEach(node => {
@@ -211,16 +195,15 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
     //handle empty droplist
     if (this.treeData.length === 0 && draggedItem !== undefined) {
-      let index = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId)
-      this.backlog.splice(index, 1)
-      this.treeData.push(draggedItem)
+      let index = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
+      this.backlog.splice(index, 1);
+      this.treeData.push(draggedItem);
       return;
     }
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
       return;
-
     }
 
     //don't drag items with children back to the backlog
@@ -271,8 +254,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   dragMoved(event: any) {
     let e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
-
-
     if (!e) {
       this.clearDragInfo();
       return;
@@ -282,6 +263,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.clearDragInfo();
       return;
     }
+
 
     this.dropActionTodo = {
       targetId: container.getAttribute('data-id')!,
@@ -301,7 +283,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         this.dropActionTodo['action'] = 'after';
       }
     } else {
-
       if (event.pointerPosition.y - targetRect.top < oneThird) {
         // before
         this.dropActionTodo['action'] = 'before';

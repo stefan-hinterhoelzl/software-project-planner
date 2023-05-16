@@ -106,15 +106,15 @@ export class BackendService {
   }
 
   getSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
-    return this.http.get<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
+    return this.http.get<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues/Relations', {responseType: 'json'})
   }
 
   deleteSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
-    return this.http.delete<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
+    return this.http.delete<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues/Relations', {responseType: 'json'})
   }
 
   addSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
-    return this.http.post<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + 'RemoteIssues/Relations', {responseType: 'json'})
+    return this.http.post<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues/Relations', {responseType: 'json'})
   }
 
   addRemoteIssuesToViewpoint(rIssues: Issue[]) {
