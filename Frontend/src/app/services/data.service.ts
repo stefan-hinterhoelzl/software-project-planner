@@ -272,4 +272,13 @@ export class DataService {
   get staticRemoteProjects() {
     return this._remoteProjects.value
   }
+
+  get staticActiveViewpoint() {
+    return this._activeViewpointId.value
+  }
+
+  get staticProject() {
+    return this._activeProjectId.value
+  }
+
 }

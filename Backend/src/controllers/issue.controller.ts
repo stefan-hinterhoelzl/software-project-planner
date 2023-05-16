@@ -137,7 +137,7 @@ export async function deleteSelectedIssueRelations(req: Request, res: Response) 
   try {
     const conn = await connect();
 
-    await conn.query(`DELETE * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId]);
+    await conn.query(`DELETE FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ?`, [projectId, viewpointId]);
 
     res.json({ response: 'success' });
   } catch (err: any) {

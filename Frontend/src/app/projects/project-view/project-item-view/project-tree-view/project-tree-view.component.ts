@@ -7,7 +7,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { combineLatest, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { Issue, IssueRelationObjects } from 'src/app/models/issue';
+import { Issue, IssueRelation, IssueRelationObjects } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -82,8 +82,10 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
-    filter(relations => relations.length === 0 || relations === undefined),
+    tap(relations => console.log(relations)),
+    filter(relations => relations !== undefined),
     switchMap(relations => {
+      console.log(relations);
       const arr: Issue[] = [];
 
       relations.forEach(value => {
@@ -103,12 +105,16 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
           remoteIssueId: value.childIssueId,
           remoteProjectId: value.childRemoteProjectId,
         };
-        arr.push(...[child, parent]);
+
+        arr.push(parent);
+        arr.push(child);
       });
+      console.log(arr);
       return this.getALMIssues(arr).pipe(map(values => ({ relations, values })));
     }),
 
     tap(data => {
+      console.log(data);
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
         this.treeData.push(node);
@@ -116,12 +122,11 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       });
 
       data.relations.forEach(value => {
-        let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`
-        let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`
+        let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
+        let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
-        const draggedItem = this.nodeLookup.get(childID)
-        if(draggedItem !== undefined)
-        this.nodeLookup.get(parentID)?.children.push(draggedItem)
+        const draggedItem = this.nodeLookup.get(childID);
+        if (draggedItem !== undefined) this.nodeLookup.get(parentID)?.children.push(draggedItem);
       });
 
       this.prepareDragAndDrop(this.treeData);
@@ -143,6 +148,40 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.nodeLookup.set(node.id, node);
       this.prepareDragAndDrop(node.children);
     });
+  }
+
+  saveRelations() {
+    let viewpoint: number = this.data.staticActiveViewpoint;
+    let projectId: string = this.data.staticProject;
+    this.backend
+      .deleteSelectedRemoteIssueRelations(projectId, viewpoint)
+      .pipe(
+        switchMap(res => {
+          let relations = this.buildRelationObjects(this.treeData, [], viewpoint, projectId);
+          return this.backend.addSelectedRemoteIssueRelations(projectId, viewpoint, relations);
+        })
+      )
+      .subscribe(() => {
+        this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
+      });
+  }
+
+  buildRelationObjects(nodes: IssueNode[], currentrelations: IssueRelation[], viewpoint: number, projectId: string): IssueRelation[] {
+    nodes.forEach(node => {
+      node.children.forEach(child => {
+        let relation = <IssueRelation>{
+          projectId: projectId,
+          viewpointId: viewpoint,
+          parentIssueId: node.issue.issueId,
+          parentRemoteProjectId: node.issue.projectId,
+          childIssueId: child.issue.issueId,
+          childRemoteProjectId: child.issue.projectId,
+        };
+        currentrelations.push(relation);
+        this.buildRelationObjects(child.children, currentrelations, viewpoint, projectId);
+      });
+    });
+    return currentrelations;
   }
 
   getALMIssues(issues: Issue[]): Observable<ALMIssue[]> {
@@ -263,7 +302,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.clearDragInfo();
       return;
     }
-
 
     this.dropActionTodo = {
       targetId: container.getAttribute('data-id')!,
