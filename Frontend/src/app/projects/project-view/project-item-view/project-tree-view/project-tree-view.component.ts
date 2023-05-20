@@ -115,18 +115,40 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
     tap(data => {
       console.log(data);
+
+      let addedAsParent = new Map<string, boolean>();
+
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        this.treeData.push(node);
         this.nodeLookup.set(node.id, node);
+        addedAsParent.set(node.id, false);
       });
 
       data.relations.forEach(value => {
         let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
         let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
-        const draggedItem = this.nodeLookup.get(childID);
-        if (draggedItem !== undefined) this.nodeLookup.get(parentID)?.children.push(draggedItem);
+        console.log(parentID, childID)
+
+        const child = this.nodeLookup.get(childID);
+        if (child !== undefined) this.nodeLookup.get(parentID)?.children.push(child);
+
+        console.log(addedAsParent.get(childID))
+        if(addedAsParent.get(childID)) {
+          let index = this.treeData.findIndex(value => value.id === childID)
+          console.log(index)
+          if (index !== -1) this.treeData.splice(index, 1)
+        }
+
+        if(addedAsParent.get(parentID)) {
+          let index = this.treeData.findIndex(value => value.id === parentID)
+          console.log(index)
+          if (index !== -1) this.treeData.splice(index, 1)
+        }
+
+        this.treeData.push(this.nodeLookup.get(parentID)!)
+        addedAsParent.set(parentID, true)
+        
       });
 
       this.prepareDragAndDrop(this.treeData);
@@ -178,7 +200,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
           childRemoteProjectId: child.issue.projectId,
         };
         currentrelations.push(relation);
-        this.buildRelationObjects(child.children, currentrelations, viewpoint, projectId);
+        this.buildRelationObjects([child], currentrelations, viewpoint, projectId);
       });
     });
     return currentrelations;
