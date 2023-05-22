@@ -116,27 +116,40 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
     tap(data => {
       console.log(data);
+
+      let addedAsParent = new Map<string, boolean>();
+
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        this.treeData.push(node);
         this.nodeLookup.set(node.id, node);
+        addedAsParent.set(node.id, false);
       });
 
       data.relations.forEach(value => {
         let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
         let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
-        const draggedItem = this.nodeLookup.get(childID);
-        if (draggedItem !== undefined) {
+        console.log(parentID, childID)
 
-          //delete from the main tree
-          let i = this.treeData.findIndex((c: IssueNode) => c.id === draggedItem.id);
-          this.treeData.splice(i, 1);
+        const child = this.nodeLookup.get(childID);
+        if (child !== undefined) this.nodeLookup.get(parentID)?.children.push(child);
 
-          //Push the item in the correct spot
-          this.nodeLookup.get(parentID)?.children.push(draggedItem);
-
+        console.log(addedAsParent.get(childID))
+        if(addedAsParent.get(childID)) {
+          let index = this.treeData.findIndex(value => value.id === childID)
+          console.log(index)
+          if (index !== -1) this.treeData.splice(index, 1)
         }
+
+        if(addedAsParent.get(parentID)) {
+          let index = this.treeData.findIndex(value => value.id === parentID)
+          console.log(index)
+          if (index !== -1) this.treeData.splice(index, 1)
+        }
+
+        this.treeData.push(this.nodeLookup.get(parentID)!)
+        addedAsParent.set(parentID, true)
+
       });
 
       this.prepareDragAndDrop(this.treeData);
