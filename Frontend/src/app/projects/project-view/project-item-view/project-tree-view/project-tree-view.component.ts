@@ -38,6 +38,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     this.aggregator = new GitLabAggregator();
     this.backlog = [];
     this.treeData = [];
+    this.relationsSave = [];
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
@@ -53,6 +54,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   backlog: IssueNode[];
   treeData: IssueNode[];
+
+  relationsSave: IssueRelation[];
 
   project$ = this.data.activeProject$;
 
@@ -82,10 +85,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
-    tap(relations => console.log(relations)),
     filter(relations => relations !== undefined),
     switchMap(relations => {
-      console.log(relations);
       const arr: Issue[] = [];
 
       relations.forEach(value => {
@@ -109,7 +110,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         arr.push(parent);
         arr.push(child);
       });
-      console.log(arr);
+
       return this.getALMIssues(arr).pipe(map(values => ({ relations, values })));
     }),
 
@@ -126,7 +127,16 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
         const draggedItem = this.nodeLookup.get(childID);
-        if (draggedItem !== undefined) this.nodeLookup.get(parentID)?.children.push(draggedItem);
+        if (draggedItem !== undefined) {
+
+          //delete from the main tree
+          let i = this.treeData.findIndex((c: IssueNode) => c.id === draggedItem.id);
+          this.treeData.splice(i, 1);
+
+          //Push the item in the correct spot
+          this.nodeLookup.get(parentID)?.children.push(draggedItem);
+
+        }
       });
 
       this.prepareDragAndDrop(this.treeData);
@@ -151,22 +161,24 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   saveRelations() {
+    this.relationsSave.length = 0;
     let viewpoint: number = this.data.staticActiveViewpoint;
     let projectId: string = this.data.staticProject;
     this.backend
       .deleteSelectedRemoteIssueRelations(projectId, viewpoint)
       .pipe(
         switchMap(res => {
-          let relations = this.buildRelationObjects(this.treeData, [], viewpoint, projectId);
-          return this.backend.addSelectedRemoteIssueRelations(projectId, viewpoint, relations);
+          this.buildRelationObjects(this.treeData, viewpoint, projectId);
+          return this.backend.addSelectedRemoteIssueRelations(projectId, viewpoint, this.relationsSave);
         })
       )
       .subscribe(() => {
         this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
+        this.relationsSave.length = 0; //Reset after saving
       });
   }
 
-  buildRelationObjects(nodes: IssueNode[], currentrelations: IssueRelation[], viewpoint: number, projectId: string): IssueRelation[] {
+  buildRelationObjects(nodes: IssueNode[], viewpoint: number, projectId: string): void {
     nodes.forEach(node => {
       node.children.forEach(child => {
         let relation = <IssueRelation>{
@@ -177,11 +189,10 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
           childIssueId: child.issue.issueId,
           childRemoteProjectId: child.issue.projectId,
         };
-        currentrelations.push(relation);
-        this.buildRelationObjects(child.children, currentrelations, viewpoint, projectId);
+        this.relationsSave.push(relation);
+        this.buildRelationObjects([child], viewpoint, projectId);
       });
     });
-    return currentrelations;
   }
 
   getALMIssues(issues: Issue[]): Observable<ALMIssue[]> {
