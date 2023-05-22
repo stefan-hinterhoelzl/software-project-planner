@@ -7,11 +7,13 @@ Project Settings emission direkt mutated -- eventuell noch umstellen funktionier
 
 Eventuell auf Maps umstellen mit Key
 
-
 Wrong ID closes creation
 
 Select all and save leaves (possibly selected) out
 
+Select and close weird behaviour with changes icon
+
+Going from List to Hierarchy no "unchanged Saves" pop up
 
 
 
