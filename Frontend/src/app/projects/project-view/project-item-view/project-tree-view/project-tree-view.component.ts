@@ -73,7 +73,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         this.nodeLookup.set(node.id, node);
       });
 
-      this.prepareDragAndDrop(this.treeData);
+      this.prepareDragAndDrop(this.backlog);
 
       //state boolean
       this.backlogLoading = false;
@@ -117,41 +117,43 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     tap(data => {
       console.log(data);
 
-      let addedAsParent = new Map<string, boolean>();
+      //let addedAsParent = new Map<string, boolean>();
 
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        this.nodeLookup.set(node.id, node);
-        addedAsParent.set(node.id, false);
+        this.treeData.push(node)
       });
 
-      data.relations.forEach(value => {
-        let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
-        let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
-        console.log(parentID, childID);
+      //prepare the nodes before!!!!
+      this.prepareDragAndDrop(this.treeData)
 
-        const child = this.nodeLookup.get(childID);
-        if (child !== undefined) this.nodeLookup.get(parentID)?.children.push(child);
 
-        console.log(addedAsParent.get(childID));
-        if (addedAsParent.get(childID)) {
-          let index = this.treeData.findIndex(value => value.id === childID);
-          console.log(index);
-          if (index !== -1) this.treeData.splice(index, 1);
-        }
+      // data.relations.forEach(value => {
+      //   let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
+      //   let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
 
-        if (addedAsParent.get(parentID)) {
-          let index = this.treeData.findIndex(value => value.id === parentID);
-          console.log(index);
-          if (index !== -1) this.treeData.splice(index, 1);
-        }
+      //   console.log(parentID, childID);
 
-        this.treeData.push(this.nodeLookup.get(parentID)!);
-        addedAsParent.set(parentID, true);
-      });
+      //   const child = this.nodeLookup.get(childID);
+      //   if (child !== undefined) this.nodeLookup.get(parentID)?.children.push(child);
 
-      this.prepareDragAndDrop(this.treeData);
+      //   console.log(addedAsParent.get(childID));
+      //   if (addedAsParent.get(childID)) {
+      //     let index = this.treeData.findIndex(value => value.id === childID);
+      //     console.log(index);
+      //     if (index !== -1) this.treeData.splice(index, 1);
+      //   }
+
+      //   if (addedAsParent.get(parentID)) {
+      //     let index = this.treeData.findIndex(value => value.id === parentID);
+      //     console.log(index);
+      //     if (index !== -1) this.treeData.splice(index, 1);
+      //   }
+
+      //   this.treeData.push(this.nodeLookup.get(parentID)!);
+      //   addedAsParent.set(parentID, true);
+      // });
 
       //state boolean
       this.treeLoading = false;
@@ -172,9 +174,28 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  buildHierarchy(nodes: IssueNode[]) {
+  placeChildreninTree(searchID: string, child: IssueNode, nodes: IssueNode[]) {
+    nodes.forEach(node => {
+      if (node.id === searchID) node.children.push(child)
+      else this.placeChildreninTree(searchID, child, node.children)
+    })
+  }
 
+  buildHierarchy(relations: IssueRelation[]) {
+    this.relationsSave.forEach(value => {
+      let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
+      let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
+      if (value.parentIssueId === -1 && value.parentRemoteProjectId === -1) {
+        this.treeData.push(this.nodeLookup.get(childID)!);
+      }
+      else {
+        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.treeData)
+        this.nodeLookup.get(parentID)?.children.push(this.nodeLookup.get(childID)!);
+      }
 
+      this.buildHierarchy(relations.filter(newvalue => newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId))
+
+    });
   }
 
   saveRelations() {
@@ -219,7 +240,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
           childIssueId: node.issue.issueId,
           childRemoteProjectId: node.issue.projectId,
         };
-        this.relationsSave.push(relation)
+        this.relationsSave.push(relation);
       }
     });
   }
