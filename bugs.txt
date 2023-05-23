@@ -15,6 +15,7 @@ Select and close weird behaviour with changes icon
 
 Going from List to Hierarchy no "unchanged Saves" pop up
 
+Keine Fehlermeldung bei IssueRelation Adding
 
 
 Style Changes:

@@ -118,10 +118,11 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       console.log(data);
 
       //let addedAsParent = new Map<string, boolean>();
+      let arr: IssueNode[] = [];
 
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        this.treeData.push(node)
+        arr.push(node);
       });
 
 
@@ -169,7 +170,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   prepareDragAndDrop(nodes: IssueNode[]) {
     nodes.forEach(node => {
-      this.nodeLookup.set(node.id, node);
+      if (!this.nodeLookup.get(node.id))this.nodeLookup.set(node.id, node);
       this.prepareDragAndDrop(node.children);
     });
   }
@@ -185,7 +186,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     this.relationsSave.forEach(value => {
       let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
       let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
-      if (value.parentIssueId === -1 && value.parentRemoteProjectId === -1) {
+      if (value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId) {
         this.treeData.push(this.nodeLookup.get(childID)!);
       }
       else {
@@ -235,8 +236,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         let relation = <IssueRelation>{
           projectId: projectId,
           viewpointId: viewpoint,
-          parentIssueId: -1,
-          parentRemoteProjectId: -1,
+          parentIssueId: node.issue.issueId,
+          parentRemoteProjectId: node.issue.projectId,
           childIssueId: node.issue.issueId,
           childRemoteProjectId: node.issue.projectId,
         };
