@@ -122,13 +122,21 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        arr.push(node);
+        console.log(node);
+        console.log(arr.findIndex(currNode => currNode.id === node.id));
+
+        if (arr.findIndex(currNode => currNode.id === node.id) === -1) arr.push(node);
       });
 
+      console.log(arr);
 
       //prepare the nodes before!!!!
-      this.prepareDragAndDrop(this.treeData)
+      this.prepareDragAndDrop(arr);
 
+      this.buildHierarchy(
+        data.relations.filter(value => value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId),
+        data.relations,
+      );
 
       // data.relations.forEach(value => {
       //   let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
@@ -170,32 +178,34 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   prepareDragAndDrop(nodes: IssueNode[]) {
     nodes.forEach(node => {
-      if (!this.nodeLookup.get(node.id))this.nodeLookup.set(node.id, node);
+      if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node); //avoid duplicate entries
       this.prepareDragAndDrop(node.children);
     });
   }
 
   placeChildreninTree(searchID: string, child: IssueNode, nodes: IssueNode[]) {
+    console.log(child)
     nodes.forEach(node => {
-      if (node.id === searchID) node.children.push(child)
-      else this.placeChildreninTree(searchID, child, node.children)
-    })
+      if (node.id === searchID) node.children.push(child);
+      else this.placeChildreninTree(searchID, child, node.children);
+    });
   }
 
-  buildHierarchy(relations: IssueRelation[]) {
-    this.relationsSave.forEach(value => {
+  buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[]) {
+    startRelations.forEach(value => {
       let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
       let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
       if (value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId) {
         this.treeData.push(this.nodeLookup.get(childID)!);
-      }
-      else {
-        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.treeData)
+      } else {
+        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.treeData);
         this.nodeLookup.get(parentID)?.children.push(this.nodeLookup.get(childID)!);
       }
-
-      this.buildHierarchy(relations.filter(newvalue => newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId))
-
+      let newRelations: IssueRelation[] = allRelations.filter(
+        newvalue => newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId && newvalue !== value
+      );
+      console.log(newRelations)
+      if (newRelations.length > 0) this.buildHierarchy(newRelations, allRelations);
     });
   }
 
