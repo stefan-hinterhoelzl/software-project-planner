@@ -1,13 +1,10 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { combineLatest, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { Issue, IssueRelation, IssueRelationObjects } from 'src/app/models/issue';
+import { Issue, IssueRelation } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -138,32 +135,6 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
         data.relations,
       );
 
-      // data.relations.forEach(value => {
-      //   let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
-      //   let childID: string = `${value.childRemoteProjectId}${value.childIssueId}`;
-
-      //   console.log(parentID, childID);
-
-      //   const child = this.nodeLookup.get(childID);
-      //   if (child !== undefined) this.nodeLookup.get(parentID)?.children.push(child);
-
-      //   console.log(addedAsParent.get(childID));
-      //   if (addedAsParent.get(childID)) {
-      //     let index = this.treeData.findIndex(value => value.id === childID);
-      //     console.log(index);
-      //     if (index !== -1) this.treeData.splice(index, 1);
-      //   }
-
-      //   if (addedAsParent.get(parentID)) {
-      //     let index = this.treeData.findIndex(value => value.id === parentID);
-      //     console.log(index);
-      //     if (index !== -1) this.treeData.splice(index, 1);
-      //   }
-
-      //   this.treeData.push(this.nodeLookup.get(parentID)!);
-      //   addedAsParent.set(parentID, true);
-      // });
-
       //state boolean
       this.treeLoading = false;
     }),
@@ -189,6 +160,10 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       if (node.id === searchID) node.children.push(child);
       else this.placeChildreninTree(searchID, child, node.children);
     });
+  }
+
+  sortNodes(nodes: IssueNode) {
+    
   }
 
   buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[]) {
@@ -251,6 +226,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
           childIssueId: node.issue.issueId,
           childRemoteProjectId: node.issue.projectId,
         };
+        
         this.relationsSave.push(relation);
       }
     });
