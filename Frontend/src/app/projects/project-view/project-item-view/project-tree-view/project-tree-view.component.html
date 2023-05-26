@@ -12,13 +12,13 @@
       *ngIf="(issuesBacklog$ | async) && !backlogLoading"
       style="margin-right: 10px"
       [matTooltipPosition]="'below'"
-      matTooltip="Save hierarchy"
+      matTooltip="Save the current hierachies to the server - be aware the order may not be saved in the exact way"
       [matTooltipShowDelay]="2000"
       mat-raised-button
       color="primary"
       (click)="saveRelations()">
 
-      <mat-icon>save</mat-icon> Save
+      <mat-icon>save</mat-icon> Save Hierarchy
     </button>
   </div>
 

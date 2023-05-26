@@ -112,22 +112,15 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
     }),
 
     tap(data => {
-      console.log(data);
 
-      //let addedAsParent = new Map<string, boolean>();
       let arr: IssueNode[] = [];
 
       data.values.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
-        console.log(node);
-        console.log(arr.findIndex(currNode => currNode.id === node.id));
-
         if (arr.findIndex(currNode => currNode.id === node.id) === -1) arr.push(node);
       });
 
-      console.log(arr);
-
-      //prepare the nodes before!!!!
+      //prepare the nodes before
       this.prepareDragAndDrop(arr);
 
       this.buildHierarchy(
@@ -155,15 +148,10 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   }
 
   placeChildreninTree(searchID: string, child: IssueNode, nodes: IssueNode[]) {
-    console.log(child)
     nodes.forEach(node => {
       if (node.id === searchID) node.children.push(child);
       else this.placeChildreninTree(searchID, child, node.children);
     });
-  }
-
-  sortNodes(nodes: IssueNode) {
-    
   }
 
   buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[]) {
@@ -179,12 +167,12 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       let newRelations: IssueRelation[] = allRelations.filter(
         newvalue => newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId && newvalue !== value
       );
-      console.log(newRelations)
       if (newRelations.length > 0) this.buildHierarchy(newRelations, allRelations);
     });
   }
 
   saveRelations() {
+    this.treeLoading = true;
     this.relationsSave.length = 0;
     let viewpoint: number = this.data.staticActiveViewpoint;
     let projectId: string = this.data.staticProject;
@@ -198,6 +186,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
+        this.treeLoading = false;
         this.relationsSave.length = 0; //Reset after saving
       });
   }
