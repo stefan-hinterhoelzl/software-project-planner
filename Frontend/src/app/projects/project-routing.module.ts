@@ -32,8 +32,8 @@ const routes: Routes = [
              canDeactivate: [CanDeactivateGuard],
              children: [
               {path: '', redirectTo: 'list', pathMatch: 'full'},
-              { path: 'list', component: ProjectListViewComponent },
-              { path: 'tree', component: ProjectTreeViewComponent },
+              { path: 'list', component: ProjectListViewComponent, canDeactivate:  [CanDeactivateGuard] },
+              { path: 'tree', component: ProjectTreeViewComponent, canDeactivate: [CanDeactivateGuard] },
               { path: 'options', component: ProjectItemOptionsComponent, canDeactivate: [CanDeactivateGuard]}]
             },
             { path: 'config', component: ProjectConfigViewComponent, canDeactivate: [CanDeactivateGuard]},

@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { combineLatest, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
 import { Issue, IssueRelation } from 'src/app/models/issue';
@@ -9,6 +10,7 @@ import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
+import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { DataService } from 'src/app/services/data.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 
@@ -17,7 +19,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   templateUrl: './project-tree-view.component.html',
   styleUrls: ['./project-tree-view.component.scss'],
 })
-export class ProjectTreeViewComponent implements OnInit, OnDestroy {
+export class ProjectTreeViewComponent implements CanComponentDeactivate {
   data = inject(DataService);
   backend = inject(BackendService);
   dialog = inject(MatDialog);
@@ -27,6 +29,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
   //State Booleans
   backlogLoading: boolean = false;
   treeLoading: boolean = false;
+  itemMoved: boolean = false;
 
   nodeLookup = new Map<string, IssueNode>();
   dropActionTodo!: DropInfo;
@@ -136,9 +139,34 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
 
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
-  ngOnDestroy(): void {}
 
-  ngOnInit(): void {}
+  canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+        if (this.itemMoved) {
+
+          const dialogConfigKeep = new MatDialogConfig();
+
+          dialogConfigKeep.data = {
+            title: 'Unsaved Changes!',
+            content: 'It seems that you changed the hierarchy - changes are lost when you leave the page.',
+            button1: 'Discard Changes',
+            button2: 'Save Changes',
+          };
+
+          dialogConfigKeep.disableClose = true;
+
+          const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+          return dialogRef.afterClosed().pipe(switchMap(result => {
+
+            if (!result) {
+              this.saveRelations()
+            }
+            return of(true)
+          })
+          );
+        }
+        else return of(true)
+      
+  }
 
   prepareDragAndDrop(nodes: IssueNode[]) {
     nodes.forEach(node => {
@@ -187,6 +215,7 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
         this.treeLoading = false;
+        this.itemMoved = false;
         this.relationsSave.length = 0; //Reset after saving
       });
   }
@@ -288,6 +317,8 @@ export class ProjectTreeViewComponent implements OnInit, OnDestroy {
       this.clearDragInfo(true);
       return;
     }
+
+    this.itemMoved = true;
 
     const parentItemId = event.previousContainer.id;
 
