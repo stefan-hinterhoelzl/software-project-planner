@@ -1,7 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { combineLatest, concat, debounceTime, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
@@ -38,6 +39,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.aggregator = new GitLabAggregator();
     this.backlog = [];
     this.treeData = [];
+    this.filteredBacklog = [];
     this.relationsSave = [];
   }
 
@@ -53,11 +55,29 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   );
 
   backlog: IssueNode[];
+  filteredBacklog: IssueNode[];
   treeData: IssueNode[];
 
   relationsSave: IssueRelation[];
 
   project$ = this.data.activeProject$;
+
+  filterControl = new FormControl();
+
+  filterGroup = new FormGroup({
+    filterControl: this.filterControl,
+  });
+
+  filter = this.filterControl.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(value => {
+        this.filteredBacklog.length = 0;
+        this.filteredBacklog.push(...this.backlog.filter(val => val.issue.title.toLowerCase().includes(value.toLowerCase())));
+      })
+    )
+    .subscribe();
 
   issuesBacklog$ = this.viewpoint$.pipe(
     switchMap(viewpoint => {
@@ -70,10 +90,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       issues.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
         this.backlog.push(node);
-        this.nodeLookup.set(node.id, node);
+        this.filteredBacklog.push(node);
+        if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
       });
-
-      this.prepareDragAndDrop(this.backlog);
 
       //state boolean
       this.backlogLoading = false;
@@ -115,7 +134,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     }),
 
     tap(data => {
-
       let arr: IssueNode[] = [];
 
       data.values.forEach(issue => {
@@ -128,7 +146,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
       this.buildHierarchy(
         data.relations.filter(value => value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId),
-        data.relations,
+        data.relations
       );
 
       //state boolean
@@ -139,33 +157,29 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
 
-
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
-        if (this.itemMoved) {
+    if (this.itemMoved) {
+      const dialogConfigKeep = new MatDialogConfig();
 
-          const dialogConfigKeep = new MatDialogConfig();
+      dialogConfigKeep.data = {
+        title: 'Unsaved Changes!',
+        content: 'It seems that you changed the hierarchy - changes are lost when you leave the page.',
+        button1: 'Discard Changes',
+        button2: 'Save Changes',
+      };
 
-          dialogConfigKeep.data = {
-            title: 'Unsaved Changes!',
-            content: 'It seems that you changed the hierarchy - changes are lost when you leave the page.',
-            button1: 'Discard Changes',
-            button2: 'Save Changes',
-          };
+      dialogConfigKeep.disableClose = true;
 
-          dialogConfigKeep.disableClose = true;
-
-          const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
-          return dialogRef.afterClosed().pipe(switchMap(result => {
-
-            if (!result) {
-              this.saveRelations()
-            }
-            return of(true)
-          })
-          );
-        }
-        else return of(true)
-      
+      const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+      return dialogRef.afterClosed().pipe(
+        switchMap(result => {
+          if (!result) {
+            this.saveRelations();
+          }
+          return of(true);
+        })
+      );
+    } else return of(true);
   }
 
   prepareDragAndDrop(nodes: IssueNode[]) {
@@ -193,7 +207,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         this.nodeLookup.get(parentID)?.children.push(this.nodeLookup.get(childID)!);
       }
       let newRelations: IssueRelation[] = allRelations.filter(
-        newvalue => newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId && newvalue !== value
+        newvalue =>
+          newvalue.parentIssueId === value.childIssueId && newvalue.parentRemoteProjectId === value.childRemoteProjectId && newvalue !== value
       );
       if (newRelations.length > 0) this.buildHierarchy(newRelations, allRelations);
     });
@@ -244,7 +259,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           childIssueId: node.issue.issueId,
           childRemoteProjectId: node.issue.projectId,
         };
-        
+
         this.relationsSave.push(relation);
       }
     });
@@ -332,12 +347,17 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     );
 
     const oldItemContainer =
-      parentItemId !== 'main' ? (parentItemId !== 'backlog' ? this.nodeLookup.get(parentItemId)!.children : this.backlog) : this.treeData;
+      parentItemId !== 'main' ? (parentItemId !== 'backlog' ? this.nodeLookup.get(parentItemId)!.children : this.filteredBacklog) : this.treeData;
     const newContainer =
-      targetListId !== 'main' ? (targetListId !== 'backlog' ? this.nodeLookup.get(targetListId)!.children : this.backlog) : this.treeData;
+      targetListId !== 'main' ? (targetListId !== 'backlog' ? this.nodeLookup.get(targetListId)!.children : this.filteredBacklog) : this.treeData;
 
     let i = oldItemContainer.findIndex((c: IssueNode) => c.id === draggedItemId);
     oldItemContainer.splice(i, 1);
+
+    if (parentItemId === 'backlog') { //handle backlog filtering
+      let i = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
+      this.backlog.splice(i, 1);
+    }
 
     switch (this.dropActionTodo.action) {
       case 'before':
@@ -347,6 +367,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           newContainer.splice(targetIndex, 0, draggedItem!);
         } else {
           newContainer.splice(targetIndex + 1, 0, draggedItem!);
+        }
+        if (targetListId === 'backlog') { //handle backlog filering
+          this.backlog.push(draggedItem!);
         }
         break;
 

@@ -39,19 +39,18 @@
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
           <div class="backlog-header">
             <h2>Backlog</h2>
-            <mat-form-field color="accent" appearance="outline">
+            <div [formGroup]="filterGroup" style = "width: 50%;">
+            <mat-form-field style="width: 100%" subscriptSizing="dynamic" color="accent" appearance="outline">
               <mat-label>Filter</mat-label>
-              <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filter" />
-              <!-- <mat-error *ngIf="viewpointDetails.controls['nameCtrl'].hasError('required')"> Title is
-                mandatory
-              </mat-error> -->
+              <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filterControl" />
             </mat-form-field>
+          </div>
           </div>
           <mat-card class="issue-list">
             <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
             <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)"
               [cdkDropListSortingDisabled]="true">
-              <div cdkDrag *ngFor="let node of backlog" cdkDrag [cdkDragData]="node.id"
+              <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id"
                 (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
                 <div class="node-item backlog-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
                   <p>{{ node.issue.title }}</p>

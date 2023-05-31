@@ -102,7 +102,7 @@ export class BackendService {
   }
 
   getSelectedRemoteIssuesWithoutRelations(projectId: string, viewpointId: number) {
-    return this.http.get<any[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssuesWithoutRelation' , {responseType: 'json'})
+    return this.http.get<Issue[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssuesWithoutRelation' , {responseType: 'json'})
   }
 
   getSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
