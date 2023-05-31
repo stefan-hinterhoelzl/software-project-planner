@@ -14,4 +14,5 @@ export interface IssueRelation extends RowDataPacket {
     parentIssueId: number,
     childRemoteProjectId: number,
     childIssueId: number,
+    nodeOrder: number,
   }

@@ -5,6 +5,7 @@ export interface IssueNode {
   id: string;
   children: IssueNode[];
   isExpanded?: boolean;
+  nodeOrder?: number;
 }
 
 export interface DropInfo {

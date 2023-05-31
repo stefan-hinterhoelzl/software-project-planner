@@ -8,6 +8,11 @@ export interface Issue {
   remoteIssueId: number,
 }
 
+export interface IssueJSONCheckObject {
+  id: string,
+  children: IssueJSONCheckObject[],
+}
+
 export interface IssueRelation {
   projectId: string,
   viewpointId: number,
@@ -15,6 +20,7 @@ export interface IssueRelation {
   parentIssueId: number,
   childRemoteProjectId: number,
   childIssueId: number,
+  nodeOrder: number,
 }
 
 export interface IssueRelationObjects {

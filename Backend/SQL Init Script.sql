@@ -58,6 +58,7 @@ Create Table RemoteIssuesRelation (
     childRemoteProjectId    int NOT NULL,
     projectId               varchar(100) NOT NULL,
     viewpointId             int NOT NULL,
+    nodeOrder				int NOT NULL,
     Primary KEY (projectId, viewpointId, parentIssueId, parentRemoteProjectId, childIssueId, childRemoteProjectId),
     Foreign KEY (projectId, viewpointId) References Viewpoints (projectId, viewpointId) ON DELETE CASCADE,
     Foreign KEY (viewpointId, projectId, parentRemoteProjectId, parentIssueId) References RemoteIssues(viewpointId, projectId, remoteProjectId, remoteIssueId) ON DELETE CASCADE,

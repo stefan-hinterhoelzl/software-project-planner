@@ -1,12 +1,12 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, concat, debounceTime, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { Issue, IssueRelation } from 'src/app/models/issue';
+import { Issue, IssueJSONCheckObject, IssueRelation } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -41,6 +41,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.treeData = [];
     this.filteredBacklog = [];
     this.relationsSave = [];
+    this.treeDataSaveState = '';
   }
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
@@ -57,6 +58,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   backlog: IssueNode[];
   filteredBacklog: IssueNode[];
   treeData: IssueNode[];
+  treeDataSaveState: string;
 
   relationsSave: IssueRelation[];
 
@@ -135,9 +137,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
     tap(data => {
       let arr: IssueNode[] = [];
-
       data.values.forEach(issue => {
-        let node: IssueNode = this.convertALMIssueToNode(issue);
+        let currIndex: number = data.relations.findIndex(val => val.childIssueId === issue.issueId && val.childRemoteProjectId === issue.projectId);
+        let order: number = data.relations[currIndex].nodeOrder;
+        let node: IssueNode = this.convertALMIssueToNode(issue, order);
         if (arr.findIndex(currNode => currNode.id === node.id) === -1) arr.push(node);
       });
 
@@ -149,6 +152,12 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         data.relations
       );
 
+      //sort all the items accordingly
+      this.sortArray(this.treeData);
+
+      //create Savestate
+      this.treeDataSaveState = this.createJSONTree(this.treeData);
+
       //state boolean
       this.treeLoading = false;
     }),
@@ -156,6 +165,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   );
 
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
+  loaded$ = combineLatest([this.issuesRelation$, this.issuesBacklog$]);
 
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     if (this.itemMoved) {
@@ -196,6 +206,13 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     });
   }
 
+  sortArray(nodes: IssueNode[]) {
+    nodes.sort((a, b) => a.nodeOrder! - b.nodeOrder!);
+    nodes.forEach(value => {
+      if (value.children.length !== 0) this.sortArray(value.children);
+    });
+  }
+
   buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[]) {
     startRelations.forEach(value => {
       let parentID: string = `${value.parentRemoteProjectId}${value.parentIssueId}`;
@@ -223,7 +240,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       .deleteSelectedRemoteIssueRelations(projectId, viewpoint)
       .pipe(
         switchMap(res => {
-          this.buildRelationObjects(this.treeData, viewpoint, projectId, true);
+          this.buildRelationObjects(this.treeData, viewpoint, projectId, 0, true);
           return this.backend.addSelectedRemoteIssueRelations(projectId, viewpoint, this.relationsSave);
         })
       )
@@ -235,8 +252,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       });
   }
 
-  buildRelationObjects(nodes: IssueNode[], viewpoint: number, projectId: string, level_zero: boolean): void {
+  buildRelationObjects(nodes: IssueNode[], viewpoint: number, projectId: string, outerorder: number, level_zero: boolean): void {
     nodes.forEach(node => {
+      let innerorder: number = 0;
       node.children.forEach(child => {
         let relation = <IssueRelation>{
           projectId: projectId,
@@ -245,9 +263,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           parentRemoteProjectId: node.issue.projectId,
           childIssueId: child.issue.issueId,
           childRemoteProjectId: child.issue.projectId,
+          nodeOrder: innerorder,
         };
         this.relationsSave.push(relation);
-        this.buildRelationObjects([child], viewpoint, projectId, false);
+        innerorder++;
+        this.buildRelationObjects([child], viewpoint, projectId, outerorder, false);
       });
 
       if (level_zero) {
@@ -258,8 +278,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           parentRemoteProjectId: node.issue.projectId,
           childIssueId: node.issue.issueId,
           childRemoteProjectId: node.issue.projectId,
+          nodeOrder: outerorder,
         };
-
+        outerorder++;
         this.relationsSave.push(relation);
       }
     });
@@ -315,8 +336,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
     //handle empty droplist
     if (this.treeData.length === 0 && draggedItem !== undefined) {
-      let index = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
-      this.backlog.splice(index, 1);
+      let indexBacklog = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
+      let indexFilteredBacklog = this.filteredBacklog.findIndex((c: IssueNode) => c.id === draggedItemId);
+      this.backlog.splice(indexBacklog, 1);
+      this.filteredBacklog.splice(indexFilteredBacklog, 1);
+
       this.treeData.push(draggedItem);
       return;
     }
@@ -354,7 +378,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     let i = oldItemContainer.findIndex((c: IssueNode) => c.id === draggedItemId);
     oldItemContainer.splice(i, 1);
 
-    if (parentItemId === 'backlog') { //handle backlog filtering
+    if (parentItemId === 'backlog') {
+      //handle backlog filtering
       let i = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
       this.backlog.splice(i, 1);
     }
@@ -368,7 +393,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         } else {
           newContainer.splice(targetIndex + 1, 0, draggedItem!);
         }
-        if (targetListId === 'backlog') { //handle backlog filering
+        if (targetListId === 'backlog') {
+          //handle backlog filering
           this.backlog.push(draggedItem!);
         }
         break;
@@ -380,6 +406,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     }
 
     this.clearDragInfo(true);
+    this.itemMoved = this.compareTreeToSavestate(this.treeData);
   }
 
   dragMoved(event: any) {
@@ -452,12 +479,46 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.document.querySelectorAll('.drop-inside').forEach(element => element.classList.remove('drop-inside'));
   }
 
-  convertALMIssueToNode(issue: ALMIssue): IssueNode {
+  convertALMIssueToNode(issue: ALMIssue, order: number = -1): IssueNode {
     return <IssueNode>{
       issue: issue,
       children: [],
       id: `${issue.projectId}${issue.issueId}`,
       isExpanded: false,
+      nodeOrder: order,
     };
+  }
+
+  convertNodeToIssueJSONCheckObject(node: IssueNode): IssueJSONCheckObject {
+    return <IssueJSONCheckObject>{
+      id: node.id,
+      children: [],
+    };
+  }
+
+  compareTreeToSavestate(nodes: IssueNode[]): boolean {
+    console.log(this.treeDataSaveState);
+    console.log(this.createJSONTree(nodes));
+    return this.createJSONTree(nodes) !== this.treeDataSaveState;
+  }
+
+  convertNodes(nodes: IssueNode[], res: IssueJSONCheckObject[]): IssueJSONCheckObject[] {
+    nodes.forEach(value => {
+      res.push(this.convertNodeToIssueJSONCheckObject(value));
+    });
+  }
+
+  placeNodeinTree(parentID: string, nodes: IssueJSONCheckObject[], node: IssueJSONCheckObject, levelZero: boolean) {
+    if (levelZero) nodes.push(node);
+    else {
+      nodes.forEach(value => {
+        if (value.id === parentID) value.children.push(node);
+        else this.placeNodeinTree(parentID, value.children, node, false);
+      });
+    }
+  }
+
+  createJSONTree(nodes: IssueNode[]): string {
+    return JSON.stringify(this.convertNodes(nodes, []));
   }
 }
