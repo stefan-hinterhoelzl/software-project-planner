@@ -173,7 +173,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
       dialogConfigKeep.data = {
         title: 'Unsaved Changes!',
-        content: 'It seems that you changed the hierarchy - changes are lost when you leave the page.',
+        content: 'You have unsaved changes in the hierarchy. They are lost when you leave the page!.',
         button1: 'Discard Changes',
         button2: 'Save Changes',
       };
