@@ -248,6 +248,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
         this.treeLoading = false;
         this.itemMoved = false;
+        this.treeDataSaveState = this.createJSONTree(this.treeData)
         this.relationsSave.length = 0; //Reset after saving
       });
   }
@@ -340,8 +341,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       let indexFilteredBacklog = this.filteredBacklog.findIndex((c: IssueNode) => c.id === draggedItemId);
       this.backlog.splice(indexBacklog, 1);
       this.filteredBacklog.splice(indexFilteredBacklog, 1);
-
       this.treeData.push(draggedItem);
+      this.itemMoved = this.compareTreeToSavestate(this.treeData);
+
       return;
     }
 
@@ -497,28 +499,43 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   }
 
   compareTreeToSavestate(nodes: IssueNode[]): boolean {
-    console.log(this.treeDataSaveState);
-    console.log(this.createJSONTree(nodes));
-    return this.createJSONTree(nodes) !== this.treeDataSaveState;
+    let tree: string = this.createJSONTree(nodes)
+    return tree !== this.treeDataSaveState;
   }
 
-  convertNodes(nodes: IssueNode[], res: IssueJSONCheckObject[]): IssueJSONCheckObject[] {
+  convertTopNodes(nodes: IssueNode[]): IssueJSONCheckObject[] {
+    let res: IssueJSONCheckObject[] = []
     nodes.forEach(value => {
       res.push(this.convertNodeToIssueJSONCheckObject(value));
     });
+    return res;
   }
 
-  placeNodeinTree(parentID: string, nodes: IssueJSONCheckObject[], node: IssueJSONCheckObject, levelZero: boolean) {
-    if (levelZero) nodes.push(node);
-    else {
-      nodes.forEach(value => {
-        if (value.id === parentID) value.children.push(node);
-        else this.placeNodeinTree(parentID, value.children, node, false);
-      });
-    }
+  convertChildren(nodes: IssueNode[], res: IssueJSONCheckObject[]): IssueJSONCheckObject[] {
+    nodes.forEach(node => {
+      if (node.children.length !== 0) {
+        node.children.forEach(child => {
+          this.placeNodeinTree(node.id, res, this.convertNodeToIssueJSONCheckObject(child))
+          this.convertChildren([child], res)
+        }) 
+      }
+    })
+    return res;
   }
+
+  placeNodeinTree(parentID: string, nodes: IssueJSONCheckObject[], node: IssueJSONCheckObject) {
+    nodes.forEach(value => {
+      if (value.id === parentID) value.children.push(node);
+      else this.placeNodeinTree(parentID, value.children, node);
+    });
+  }
+
 
   createJSONTree(nodes: IssueNode[]): string {
-    return JSON.stringify(this.convertNodes(nodes, []));
+    let arr: IssueJSONCheckObject[] = []
+    arr.push(...this.convertTopNodes(nodes))
+    this.convertChildren(nodes, arr)
+    let tree: string = JSON.stringify(arr);
+    return tree;
   }
 }
