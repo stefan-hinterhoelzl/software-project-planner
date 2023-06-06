@@ -1,5 +1,5 @@
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, filter, forkJoin, lastValueFrom, map, O
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
-import { Issue } from 'src/app/models/issue';
+import { Issue, createEmptyErrorObject, IssueErrorObject } from 'src/app/models/issue';
 import { Project, RemoteProject, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
@@ -138,7 +138,6 @@ export class ProjectListViewComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    console.log(this.data.staticRemoteProjects)
     this.filterGroup
       .get('projectsControl')
       ?.valueChanges.pipe(

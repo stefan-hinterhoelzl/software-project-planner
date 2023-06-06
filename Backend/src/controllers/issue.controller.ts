@@ -34,6 +34,30 @@ export async function removeRemoteIssuesFromProjectViewpoint(req: Request, res: 
   }
 }
 
+export async function getRemoteIssuesbyIDs(req: Request, res: Response) {
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
+
+  try {
+    const issues: string[] = req.body;
+    if (issues === undefined || issues.length === 0) res.json([]);
+    else {
+      const conn = await connect();
+      const result = (
+        await conn.query<RemoteIssues[]>('SELECT * FROM RemoteIssues WHERE projectId = ? AND viewpointId = ? and remoteissueId IN (?) ', [
+          projectId,
+          viewpointId,
+          issues,
+        ])
+      )[0];
+
+      res.json(result);
+    }
+  } catch (err: any) {
+    handleError(res, err);
+  }
+}
+
 export async function getRemoteIssuesFromProjectViewpoint(req: Request, res: Response) {
   var projectId: string = req.params.projectId;
   var viewpointId: number = Number(req.params.viewpointId);

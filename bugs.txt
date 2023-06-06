@@ -17,6 +17,8 @@ Going from List to Hierarchy no "unchanged Saves" pop up
 
 Keine Fehlermeldung bei IssueRelation Adding
 
+Entfernen eines Items Problem wenn in Relationen eingebaut
+
 
 Style Changes:
 My Projects weiß mit blauer Schrift

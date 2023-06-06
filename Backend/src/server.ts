@@ -16,6 +16,7 @@ import {
   getSelectedIssueRelations,
   postSelectedIssueRelations,
   deleteSelectedIssueRelations,
+  getRemoteIssuesbyIDs,
 } from './controllers/issue.controller';
 import {
   createViewpoint,
@@ -89,6 +90,7 @@ express_app.delete('/project/:projectId/Viewpoints/:viewpointId', authenticateJW
 
 //Issues
 express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, addRemoteIssuesToProjectViewpoint);
+express_app.put('/project/:projectId/Viewpoint/:viewpointId/GetRemoteIssues', authenticateJWT, getRemoteIssuesbyIDs); //Dirty but OK, I need the body
 express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, removeRemoteIssuesFromProjectViewpoint);
 express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, getRemoteIssuesFromProjectViewpoint);
 express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssuesWithoutRelation', authenticateJWT, getSelectedIssuesFromViewpointWithoutRelation);

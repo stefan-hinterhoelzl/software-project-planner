@@ -109,6 +109,10 @@ export class BackendService {
     return this.http.get<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues/Relations', {responseType: 'json'})
   }
 
+  getRemoteIssuesByIDs(projectId: string, viewpointId: number, remoteIssues: number[]) {
+    return this.http.put<Issue[]>(this.BASE_URL + 'project/'+projectId + '/Viewpoint/' + viewpointId + '/GetRemoteIssues' , remoteIssues, {responseType: 'json', observe: 'body'})
+  }
+
   deleteSelectedRemoteIssueRelations(projectId: string, viewpointId: number) {
     return this.http.delete<IssueRelation[]>(this.BASE_URL + 'project/' + projectId + '/Viewpoint/' + viewpointId + '/RemoteIssues/Relations', {responseType: 'json'})
   }

@@ -86,14 +86,17 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
     switchMap(issues => {
-      return this.getALMIssues(issues).pipe(map(ALMIssues => ({issues, ALMIssues})));
+      return this.getALMIssues(issues).pipe(map(ALMIssues => ({ issues, ALMIssues })));
     }),
     tap(issues => {
-      issues.ALMIssues.forEach(issue => {
-        let node: IssueNode = this.convertALMIssueToNode(issue);
-        this.backlog.push(node);
-        this.filteredBacklog.push(node);
-        if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
+      issues.ALMIssues.forEach(ALMIssue => {
+        let issue: Issue = issues.issues.find(val => val.remoteIssueId === ALMIssue.issueId && val.remoteProjectId === ALMIssue.projectId)!;
+        if (issue !== undefined) {
+          let node: IssueNode = this.convertALMIssueToNode(ALMIssue, issue);
+          this.backlog.push(node);
+          this.filteredBacklog.push(node);
+          if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
+        }
       });
 
       //state boolean
@@ -108,39 +111,31 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     }),
     filter(relations => relations !== undefined),
     switchMap(relations => {
-      const arr: Issue[] = [];
+      const ids: number[] = [];
 
       relations.forEach(value => {
-        let viewpoint = value.viewpointId;
-        let projectid = value.projectId;
-
-        let parent: Issue = <Issue>{
-          viewpointId: viewpoint,
-          projectId: projectid,
-          remoteIssueId: value.parentIssueId,
-          remoteProjectId: value.parentRemoteProjectId,
-        };
-
-        let child: Issue = <Issue>{
-          viewpointId: viewpoint,
-          projectId: projectid,
-          remoteIssueId: value.childIssueId,
-          remoteProjectId: value.childRemoteProjectId,
-        };
-
-        arr.push(parent);
-        arr.push(child);
+        if (ids.find(id => id === value.parentIssueId) === undefined) ids.push(value.parentIssueId);
+        if (ids.find(id => id === value.childIssueId) === undefined) ids.push(value.childIssueId);
       });
 
-      return this.getALMIssues(arr).pipe(map(values => ({ relations, values })));
-    }),
+      let viewpoint = this.data.staticActiveViewpoint;
+      let project = this.data.staticProject;
 
+
+      return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res => ({ res, relations })));
+    }),
+    switchMap(data => {
+      return this.getALMIssues(data.res).pipe(map(values => ({ values, data })));
+    }),
     tap(data => {
       let arr: IssueNode[] = [];
-      data.values.forEach(issue => {
-        let currIndex: number = data.relations.findIndex(val => val.childIssueId === issue.issueId && val.childRemoteProjectId === issue.projectId);
-        let order: number = data.relations[currIndex].nodeOrder;
-        let node: IssueNode = this.convertALMIssueToNode(issue, order);
+      data.values.forEach(ALMIssue => {
+        let currIndex: number = data.data.relations.findIndex(
+          val => val.childIssueId === ALMIssue.issueId && val.childRemoteProjectId === ALMIssue.projectId
+        );
+        let order: number = data.data.relations[currIndex].nodeOrder;
+        let issue: Issue = data.data.res.find(iss => iss.remoteIssueId === ALMIssue.issueId && iss.remoteProjectId === ALMIssue.projectId)!;
+        let node: IssueNode = this.convertALMIssueToNode(ALMIssue, issue, order);
         if (arr.findIndex(currNode => currNode.id === node.id) === -1) arr.push(node);
       });
 
@@ -148,8 +143,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       this.prepareDragAndDrop(arr);
 
       this.buildHierarchy(
-        data.relations.filter(value => value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId),
-        data.relations
+        data.data.relations.filter(value => value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId),
+        data.data.relations
       );
 
       //sort all the items accordingly
@@ -248,7 +243,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         this.snackbar.openSnackBar('Hierarchy saved to server!', 'green-snackbar');
         this.treeLoading = false;
         this.itemMoved = false;
-        this.treeDataSaveState = this.createJSONTree(this.treeData)
+        this.treeDataSaveState = this.createJSONTree(this.treeData);
         this.relationsSave.length = 0; //Reset after saving
       });
   }
@@ -291,7 +286,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     let remoteProjects: RemoteProject[] = this.data.staticRemoteProjects;
     let projectsCopy: RemoteProject[] = JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
     const o_issues = issues.map(issue => {
-      let project = projectsCopy.find(value => (value.remoteProjectId = issue.remoteProjectId));
+      let project = projectsCopy.find(value => value.remoteProjectId === issue.remoteProjectId);
+
       return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
     });
 
@@ -481,13 +477,14 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.document.querySelectorAll('.drop-inside').forEach(element => element.classList.remove('drop-inside'));
   }
 
-  convertALMIssueToNode(issue: ALMIssue, order: number = -1): IssueNode {
+  convertALMIssueToNode(ALMIssue: ALMIssue, issue: Issue, order: number = -1): IssueNode {
     return <IssueNode>{
-      issue: issue,
+      issue: ALMIssue,
       children: [],
-      id: `${issue.projectId}${issue.issueId}`,
+      id: `${ALMIssue.projectId}${ALMIssue.issueId}`,
       isExpanded: false,
       nodeOrder: order,
+      kpiErrors: issue.kpiErrors,
     };
   }
 
@@ -499,12 +496,12 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   }
 
   compareTreeToSavestate(nodes: IssueNode[]): boolean {
-    let tree: string = this.createJSONTree(nodes)
+    let tree: string = this.createJSONTree(nodes);
     return tree !== this.treeDataSaveState;
   }
 
   convertTopNodes(nodes: IssueNode[]): IssueJSONCheckObject[] {
-    let res: IssueJSONCheckObject[] = []
+    let res: IssueJSONCheckObject[] = [];
     nodes.forEach(value => {
       res.push(this.convertNodeToIssueJSONCheckObject(value));
     });
@@ -515,11 +512,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     nodes.forEach(node => {
       if (node.children.length !== 0) {
         node.children.forEach(child => {
-          this.placeNodeinTree(node.id, res, this.convertNodeToIssueJSONCheckObject(child))
-          this.convertChildren([child], res)
-        }) 
+          this.placeNodeinTree(node.id, res, this.convertNodeToIssueJSONCheckObject(child));
+          this.convertChildren([child], res);
+        });
       }
-    })
+    });
     return res;
   }
 
@@ -530,11 +527,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     });
   }
 
-
   createJSONTree(nodes: IssueNode[]): string {
-    let arr: IssueJSONCheckObject[] = []
-    arr.push(...this.convertTopNodes(nodes))
-    this.convertChildren(nodes, arr)
+    let arr: IssueJSONCheckObject[] = [];
+    arr.push(...this.convertTopNodes(nodes));
+    this.convertChildren(nodes, arr);
     let tree: string = JSON.stringify(arr);
     return tree;
   }
