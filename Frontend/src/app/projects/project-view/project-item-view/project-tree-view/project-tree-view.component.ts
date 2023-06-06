@@ -86,10 +86,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
     switchMap(issues => {
-      return this.getALMIssues(issues);
+      return this.getALMIssues(issues).pipe(map(ALMIssues => ({issues, ALMIssues})));
     }),
     tap(issues => {
-      issues.forEach(issue => {
+      issues.ALMIssues.forEach(issue => {
         let node: IssueNode = this.convertALMIssueToNode(issue);
         this.backlog.push(node);
         this.filteredBacklog.push(node);
