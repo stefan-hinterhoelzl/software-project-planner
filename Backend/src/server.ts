@@ -64,106 +64,38 @@ express_app.use(express.json());
 
 //Routes
 //Projects
-express_app.post('/projects', authenticateJWT, (req, res) => {
-  createProject(req, res);
-});
-
-express_app.get('/projects/:owner', authenticateJWT, (req, res) => {
-  getProjectsByOwner(req, res);
-});
-
-express_app.get('/project/:projectId', authenticateJWT, (req, res) => {
-  getProjectById(req, res);
-});
-
-express_app.put('/project/:projectId', authenticateJWT, (req, res) => {
-  updateProjectById(req, res);
-});
-
-express_app.delete('/project/:projectId', authenticateJWT, (req, res) => {
-  deleteProjectById(req, res);
-});
+express_app.post('/projects', authenticateJWT, createProject);
+express_app.get('/projects/:owner', authenticateJWT, getProjectsByOwner);
+express_app.get('/project/:projectId', authenticateJWT, getProjectById);
+express_app.put('/project/:projectId', authenticateJWT, updateProjectById);
+express_app.delete('/project/:projectId', authenticateJWT, deleteProjectById);
 
 //Users
-express_app.post('/users', authenticateJWT, (req, res) => {
-  createUser(req, res);
-});
-
-express_app.get('/user/:userId', authenticateJWT, (req, res) => {
-  getUserById(req, res);
-});
+express_app.post('/users', authenticateJWT, createUser);
+express_app.get('/user/:userId', authenticateJWT, getUserById);
 
 //RemoteProjects
-express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
-  addRemoteProjects(req, res);
-});
-
-express_app.get('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
-  getRomoteProjects(req, res);
-});
-
-express_app.put('/project/:projectId/RemoteProjects', authenticateJWT, (req, res) => {
-  updateRemoteProjects(req, res);
-});
-
-express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, (req, res) => {
-  deleteRemoteProjectById(req, res);
-});
+express_app.post('/project/:projectId/RemoteProjects', authenticateJWT, addRemoteProjects);
+express_app.get('/project/:projectId/RemoteProjects', authenticateJWT, getRomoteProjects);
+express_app.put('/project/:projectId/RemoteProjects', authenticateJWT, updateRemoteProjects);
+express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId', authenticateJWT, deleteRemoteProjectById);
 
 //ProjectViewpoint
-
-express_app.post('/project/:projectId/Viewpoints', authenticateJWT, (req, res) => {
-  createViewpoint(req, res);
-});
-
-express_app.get('/project/:projectId/Viewpoints', authenticateJWT, (req, res) => {
-  getViewpointsByProject(req, res);
-});
-
-express_app.get('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, (req, res) => {
-  getViewpointById(req, res);
-});
-
-express_app.put('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, (req, res) => {
-  updateViewpointById(req, res);
-});
-
-express_app.delete('/project/:projectId/Viewpoints/:viewpointId', authenticateJWT, (req, res) => {
-  deleteViewpointById(req, res);
-});
+express_app.post('/project/:projectId/Viewpoints', authenticateJWT, createViewpoint);
+express_app.get('/project/:projectId/Viewpoints', authenticateJWT, getViewpointsByProject);
+express_app.get('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, getViewpointById);
+express_app.put('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, updateViewpointById);
+express_app.delete('/project/:projectId/Viewpoints/:viewpointId', authenticateJWT, deleteViewpointById);
 
 //Issues
-express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
-  addRemoteIssuesToProjectViewpoint(req, res);
-});
-
-express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
-  removeRemoteIssuesFromProjectViewpoint(req, res);
-});
-
-express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, (req, res) => {
-  getRemoteIssuesFromProjectViewpoint(req, res);
-});
-
-express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssuesWithoutRelation', authenticateJWT, (req, res) => {
-  getSelectedIssuesFromViewpointWithoutRelation(req, res);
-});
-
-express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, (req, res) => {
-  getSelectedIssueRelations(req, res);
-});
-
-express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, (req, res) => {
-  postSelectedIssueRelations(req, res);
-});
-
-express_app.delete('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, (req, res) => {
-  deleteSelectedIssueRelations(req, res);
-});
-
-express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId/RemoteIssues', authenticateJWT, (req, res) => {
-  removeAllIssuesByRemoteProject(req, res);
-});
+express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, addRemoteIssuesToProjectViewpoint);
+express_app.put('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, removeRemoteIssuesFromProjectViewpoint);
+express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, getRemoteIssuesFromProjectViewpoint);
+express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssuesWithoutRelation', authenticateJWT, getSelectedIssuesFromViewpointWithoutRelation);
+express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, getSelectedIssueRelations);
+express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, postSelectedIssueRelations);
+express_app.delete('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, deleteSelectedIssueRelations);
+express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId/RemoteIssues', authenticateJWT, removeAllIssuesByRemoteProject);
 
 //Start the Server
 const server = express_app.listen(process.env.PORT, () => {
