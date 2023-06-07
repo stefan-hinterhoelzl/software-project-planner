@@ -40,7 +40,6 @@ export class AuthService {
         this.router.navigate(["/login"])
     })
     .catch((error) => {
-      const errorCode = error.code;
       this.snackBar.openSnackBar(
         'Logout failed, try again later!',
         'red-snackbar'
