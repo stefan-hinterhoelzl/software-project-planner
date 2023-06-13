@@ -78,7 +78,7 @@
         <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
-            <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="'tree'">
+            <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="'main'">
               <h3>Drop First Item</h3>
             </div>
             <!-- Rendering for the tree -->

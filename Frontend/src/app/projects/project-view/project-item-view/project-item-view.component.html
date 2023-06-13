@@ -1,7 +1,6 @@
 <div class="main-wrapper" *ngIf="this.viewpoints$ | async as view; else elseBlock">
   <div class="sidenav">
     <mat-card class="drawer">
-      <p>Viewpoint Menu</p>
       <div routerLinkActive="active" class="menu-item" [routerLink]="['list']">
         <mat-icon class="icon">list</mat-icon>
         <span>List</span>

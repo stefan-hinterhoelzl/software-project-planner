@@ -21,8 +21,8 @@
   </mat-menu>
 
   <div class="card-wrapper">
-    <mat-card class="card">
-      <div *ngIf="viewpoint$ | async as viewpoint; else ElseBlock2" class="card-internal-wrapper">
+    <div *ngIf="viewpoint$ | async as viewpoint" class="card">
+      <mat-card class="card-internal-wrapper">
         <div [formGroup]="filterGroup" class="filter-group">
           <mat-form-field color="accent">
             <mat-label>Remote Project</mat-label>
@@ -84,9 +84,6 @@
             <p class="button-text">Apply</p>
           </div>
         </div>
-        <!-- <mat-spinner *ngIf="!(this.view$ | async)" class="progress-spinner">
-
-        </mat-spinner> -->
 
         <div *ngIf="remoteProject$ | async" class="button-row">
           <button
@@ -185,13 +182,14 @@
             </mat-paginator>
           </div>
         </div>
-      </div>
-      <ng-template #ElseBlock2>
+
+        <!-- <ng-template #ElseBlock2>
         <div class="viewpoint-selection-text">
           <h2>Please select a viewpoint</h2>
         </div>
-      </ng-template>
-    </mat-card>
+      </ng-template> -->
+      </mat-card>
+    </div>
   </div>
 </div>
 

@@ -121,7 +121,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       let viewpoint = this.data.staticActiveViewpoint;
       let project = this.data.staticProject;
 
-
       return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res => ({ res, relations })));
     }),
     switchMap(data => {
@@ -133,6 +132,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         let currIndex: number = data.data.relations.findIndex(
           val => val.childIssueId === ALMIssue.issueId && val.childRemoteProjectId === ALMIssue.projectId
         );
+        console.log(data.data.relations)
         let order: number = data.data.relations[currIndex].nodeOrder;
         let issue: Issue = data.data.res.find(iss => iss.remoteIssueId === ALMIssue.issueId && iss.remoteProjectId === ALMIssue.projectId)!;
         let node: IssueNode = this.convertALMIssueToNode(ALMIssue, issue, order);
@@ -332,18 +332,18 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
     //handle empty droplist
-    if (this.treeData.length === 0 && draggedItem !== undefined) {
-      let indexBacklog = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
-      let indexFilteredBacklog = this.filteredBacklog.findIndex((c: IssueNode) => c.id === draggedItemId);
-      this.backlog.splice(indexBacklog, 1);
-      this.filteredBacklog.splice(indexFilteredBacklog, 1);
-      this.treeData.push(draggedItem);
-      this.itemMoved = this.compareTreeToSavestate(this.treeData);
+    // if (this.treeData.length === 0 && draggedItem !== undefined) {
+    //   let indexBacklog = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
+    //   let indexFilteredBacklog = this.filteredBacklog.findIndex((c: IssueNode) => c.id === draggedItemId);
+    //   this.backlog.splice(indexBacklog, 1);
+    //   this.filteredBacklog.splice(indexFilteredBacklog, 1);
+    //   this.treeData.push(draggedItem);
+    //   this.itemMoved = this.compareTreeToSavestate(this.treeData);
 
-      return;
-    }
+    //   return;
+    // }
 
-    console.log(this.dropActionTodo)
+    console.log(this.dropActionTodo);
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
@@ -357,13 +357,19 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return;
     }
 
-
     this.itemMoved = true;
 
     const parentItemId = event.previousContainer.id;
 
-    let targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog');
+    let targetListId;
+
+    if (this.dropActionTodo.targetId === "backlog" || this.dropActionTodo.targetId === "main") {
+      targetListId = this.dropActionTodo.targetId
+    } else {
+
+    targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog');
     if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
+    }
 
     console.log(
       '\nmoving\n',
@@ -404,6 +410,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         this.nodeLookup.get(this.dropActionTodo.targetId)!.children.push(draggedItem!);
         this.nodeLookup.get(this.dropActionTodo.targetId)!.isExpanded = true;
         break;
+
+      case 'top':
+        newContainer.push(draggedItem)
+
     }
 
     this.clearDragInfo(true);
@@ -416,8 +426,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       this.clearDragInfo();
       return;
     }
-    let container = e.classList.contains('node-item') || e.classList.contains('adding-box') ? e : e.closest('.node-item');
+    let container = e.classList.contains('node-item') || !e.classList.contains('adding-box') ? e : e.closest('.node-item');
     if (!container) {
+      console.log("i am here")
       this.clearDragInfo();
       return;
     }
@@ -430,27 +441,29 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     const oneThird = targetRect.height / 3;
     const half = targetRect.height / 2;
 
-    if (this.dropActionTodo.targetId === "backlog" || this.dropActionTodo.targetId === "tree")
-
-    //target is in the backlog
-    if (this.backlog.findIndex(value => this.dropActionTodo.targetId === value.id) !== -1) {
-      if (event.pointerPosition.y - targetRect.top < half) {
-        // before
-        this.dropActionTodo['action'] = 'before';
-      } else {
-        // after
-        this.dropActionTodo['action'] = 'after';
-      }
+    if (this.dropActionTodo.targetId === 'backlog' || this.dropActionTodo.targetId === 'main') {
+      this.dropActionTodo['action'] = 'top';
     } else {
-      if (event.pointerPosition.y - targetRect.top < oneThird) {
-        // before
-        this.dropActionTodo['action'] = 'before';
-      } else if (event.pointerPosition.y - targetRect.top > 2 * oneThird) {
-        // after
-        this.dropActionTodo['action'] = 'after';
+      //target is in the backlog
+      if (this.backlog.findIndex(value => this.dropActionTodo.targetId === value.id) !== -1) {
+        if (event.pointerPosition.y - targetRect.top < half) {
+          // before
+          this.dropActionTodo['action'] = 'before';
+        } else {
+          // after
+          this.dropActionTodo['action'] = 'after';
+        }
       } else {
-        // inside
-        this.dropActionTodo['action'] = 'inside';
+        if (event.pointerPosition.y - targetRect.top < oneThird) {
+          // before
+          this.dropActionTodo['action'] = 'before';
+        } else if (event.pointerPosition.y - targetRect.top > 2 * oneThird) {
+          // after
+          this.dropActionTodo['action'] = 'after';
+        } else {
+          // inside
+          this.dropActionTodo['action'] = 'inside';
+        }
       }
     }
 
@@ -468,7 +481,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
   showDragInfo() {
     this.clearDragInfo();
-    if (this.dropActionTodo) {
+    if (this.dropActionTodo ) {
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }
