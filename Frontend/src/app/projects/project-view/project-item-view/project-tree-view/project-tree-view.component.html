@@ -52,7 +52,7 @@
             </div>
           </div>
           <mat-card class="issue-list">
-            <div class="adding-box" *ngIf="backlog.length === 0" [attr.data-id]="'backlog'">
+            <div class="adding-box" *ngIf="filteredBacklog.length === 0" [attr.data-id]="'backlog'">
               <h3>No Items in the Backlog</h3>
             </div>
             <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">

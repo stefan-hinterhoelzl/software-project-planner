@@ -129,6 +129,7 @@ mat-select {
   max-height: 100%;
   min-height: 600px;
   flex: 1;
+  overflow-y: auto;
 }
 
 .button-row {

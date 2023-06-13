@@ -331,19 +331,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     const draggedItemId: string = event.item.data;
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
-    //handle empty droplist
-    // if (this.treeData.length === 0 && draggedItem !== undefined) {
-    //   let indexBacklog = this.backlog.findIndex((c: IssueNode) => c.id === draggedItemId);
-    //   let indexFilteredBacklog = this.filteredBacklog.findIndex((c: IssueNode) => c.id === draggedItemId);
-    //   this.backlog.splice(indexBacklog, 1);
-    //   this.filteredBacklog.splice(indexFilteredBacklog, 1);
-    //   this.treeData.push(draggedItem);
-    //   this.itemMoved = this.compareTreeToSavestate(this.treeData);
-
-    //   return;
-    // }
-
-    console.log(this.dropActionTodo);
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
@@ -367,7 +354,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       targetListId = this.dropActionTodo.targetId
     } else {
 
-    targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.backlog, 'backlog');
+    targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.filteredBacklog, 'backlog');
     if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
     }
 
@@ -426,9 +413,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       this.clearDragInfo();
       return;
     }
-    let container = e.classList.contains('node-item') || !e.classList.contains('adding-box') ? e : e.closest('.node-item');
+    let container = e.classList.contains('node-item') || e.classList.contains('adding-box') ? e : e.closest('.node-item');
     if (!container) {
-      console.log("i am here")
       this.clearDragInfo();
       return;
     }
@@ -481,7 +467,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
   showDragInfo() {
     this.clearDragInfo();
-    if (this.dropActionTodo ) {
+    if (this.dropActionTodo && this.dropActionTodo.targetId !== "backlog" && this.dropActionTodo.targetId !== "main") {
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }
