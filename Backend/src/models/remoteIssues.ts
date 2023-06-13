@@ -4,7 +4,8 @@ export interface RemoteIssues extends RowDataPacket {
     viewpointId: number;
     remoteProjectId: number;
     remoteIssueId: number;
-    projectId: string
+    projectId: string;
+    kpiErrors: string;
 }
 
 export interface IssueRelation extends RowDataPacket {
