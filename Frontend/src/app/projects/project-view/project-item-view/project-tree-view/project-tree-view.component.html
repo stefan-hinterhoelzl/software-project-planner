@@ -52,7 +52,9 @@
             </div>
           </div>
           <mat-card class="issue-list">
-            <div class="no-items" *ngIf="backlog.length === 0">No Items in the Backlog</div>
+            <div class="adding-box" *ngIf="backlog.length === 0" [attr.data-id]="'backlog'">
+              <h3>No Items in the Backlog</h3>
+            </div>
             <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
               <div
                 cdkDrag
@@ -76,7 +78,7 @@
         <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">
           <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
-            <div *ngIf="treeData.length === 0" class="adding-box">
+            <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="'tree'">
               <h3>Drop First Item</h3>
             </div>
             <!-- Rendering for the tree -->

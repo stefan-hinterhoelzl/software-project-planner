@@ -343,6 +343,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return;
     }
 
+    console.log(this.dropActionTodo)
+
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
       return;
@@ -354,6 +356,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       this.clearDragInfo(true);
       return;
     }
+
 
     this.itemMoved = true;
 
@@ -413,7 +416,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       this.clearDragInfo();
       return;
     }
-    let container = e.classList.contains('node-item') ? e : e.closest('.node-item');
+    let container = e.classList.contains('node-item') || e.classList.contains('adding-box') ? e : e.closest('.node-item');
     if (!container) {
       this.clearDragInfo();
       return;
@@ -426,6 +429,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     const targetRect = container.getBoundingClientRect();
     const oneThird = targetRect.height / 3;
     const half = targetRect.height / 2;
+
+    if (this.dropActionTodo.targetId === "backlog" || this.dropActionTodo.targetId === "tree")
 
     //target is in the backlog
     if (this.backlog.findIndex(value => this.dropActionTodo.targetId === value.id) !== -1) {
