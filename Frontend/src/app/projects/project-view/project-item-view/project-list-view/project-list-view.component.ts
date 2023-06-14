@@ -404,26 +404,4 @@ export class ProjectListViewComponent implements OnInit {
       perPage: this.pageSize,
     };
   }
-
-  createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.autoFocus = true;
-
-    const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe((data: string) => {
-      if (data !== undefined) {
-        const newViewpoint = <Viewpoint>{
-          title: data,
-        };
-
-        this.data.addViewpoint(projectId, newViewpoint, viewpoints);
-      }
-    });
-  }
-
-  chooseViewpoint(viewpoint: Viewpoint) {
-    if (viewpoint.viewpointId !== undefined) this.data.setActiveViewpoint(viewpoint.viewpointId);
-  }
 }

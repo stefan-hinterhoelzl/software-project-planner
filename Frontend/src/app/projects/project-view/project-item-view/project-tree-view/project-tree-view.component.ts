@@ -358,11 +358,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
     }
 
-    console.log(
-      '\nmoving\n',
-      '[' + draggedItemId + '] from list [' + parentItemId + ']',
-      '\n[' + this.dropActionTodo.action + ']\n[' + this.dropActionTodo.targetId + '] from list [' + targetListId + ']'
-    );
+    // console.log(
+    //   '\nmoving\n',
+    //   '[' + draggedItemId + '] from list [' + parentItemId + ']',
+    //   '\n[' + this.dropActionTodo.action + ']\n[' + this.dropActionTodo.targetId + '] from list [' + targetListId + ']'
+    // );
 
     const oldItemContainer =
       parentItemId !== 'main' ? (parentItemId !== 'backlog' ? this.nodeLookup.get(parentItemId)!.children : this.filteredBacklog) : this.treeData;

@@ -1,39 +1,19 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
-  <div class="viewpoint-button">
-    <h3>Viewpoint:</h3>
-    <button *ngIf="viewpoint$ | async as viewpoint; else ElseBlock" mat-stroked-button class="second-line-button" [matMenuTriggerFor]="menu">
-      {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
-    </button>
-    <ng-template #ElseBlock>
-      <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint <mat-icon>view_carousel</mat-icon></button>
-    </ng-template>
+  <div class = "viewpoint-button">
+    <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>
+
     <span class="spacer"></span>
-    <mat-icon color="accent" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && !itemMoved" class="icon">cloud_done</mat-icon>
-    <mat-icon color="warn" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && itemMoved" class="icon">cloud_off</mat-icon>
-    <button
-      *ngIf=" (loaded$ | async) && !treeLoading && !backlogLoading"
-      style="margin-right: 10px"
-      [matTooltipPosition]="'below'"
-      matTooltip="Save the current hierachy and order to the server"
-      [matTooltipShowDelay]="2000"
-      mat-raised-button
-      color="primary"
-      (click)="saveRelations()"
-      [disabled]="!itemMoved">
+    
+    <mat-icon color="accent" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && !itemMoved"
+      class="icon">cloud_done</mat-icon>
+    <mat-icon color="warn" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && itemMoved"
+      class="icon">cloud_off</mat-icon>
+    <button *ngIf=" (loaded$ | async) && !treeLoading && !backlogLoading" style="margin-right: 10px"
+      [matTooltipPosition]="'below'" matTooltip="Save the current hierachy and order to the server"
+      [matTooltipShowDelay]="2000" mat-raised-button color="primary" (click)="saveRelations()" [disabled]="!itemMoved">
       <mat-icon>save</mat-icon> Save Hierarchy
     </button>
   </div>
-
-  <mat-menu #menu="matMenu">
-    <button (click)="chooseViewpoint(viewpoint)" mat-menu-item *ngFor="let viewpoint of view[1]; first as isFirst">
-      <span>{{ viewpoint.title }}</span>
-    </button>
-    <mat-divider *ngIf="view[1].length! > 0"></mat-divider>
-    <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[1])">
-      <mat-icon>add</mat-icon>
-      <span>Create new Viewpoint</span>
-    </button>
-  </mat-menu>
 
   <div class="card-wrapper">
     <div class="row-wrapper" cdkDropListGroup>
@@ -55,14 +35,10 @@
             <div class="adding-box" *ngIf="filteredBacklog.length === 0" [attr.data-id]="'backlog'">
               <h3>No Items in the Backlog</h3>
             </div>
-            <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
-              <div
-                cdkDrag
-                *ngFor="let node of filteredBacklog"
-                cdkDrag
-                [cdkDragData]="node.id"
-                (cdkDragMoved)="dragMoved($event)"
-                class="issue-list-item">
+            <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)"
+              [cdkDropListSortingDisabled]="true">
+              <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id"
+                (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
                 <div class="node-item backlog-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
                   <p>{{ node.issue.title }}</p>
                 </div>
@@ -82,7 +58,8 @@
               <h3>Drop First Item</h3>
             </div>
             <!-- Rendering for the tree -->
-            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
+            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)"
+              [cdkDropListSortingDisabled]="true">
               <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
                 <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>
               </div>
@@ -112,16 +89,12 @@
 
       {{ node.issue.title }}
 
-      <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested Items' }})</span>
+      <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
+        Items' }})</span>
     </div>
 
-    <div
-      *ngIf="node.isExpanded && node.children.length"
-      class="node-children"
-      cdkDropList
-      [cdkDropListData]="node.children"
-      [id]="node.id"
-      (cdkDropListDropped)="drop($event)"
+    <div *ngIf="node.isExpanded && node.children.length" class="node-children" cdkDropList
+      [cdkDropListData]="node.children" [id]="node.id" (cdkDropListDropped)="drop($event)"
       [cdkDropListSortingDisabled]="true">
       <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">
         <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>

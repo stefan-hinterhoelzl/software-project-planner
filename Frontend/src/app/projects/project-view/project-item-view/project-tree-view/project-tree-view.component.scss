@@ -21,19 +21,9 @@
 
 .viewpoint-button {
   display: flex;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 10px 10px 0px 20px;
-  margin-bottom: 0;
-}
-
-h3 {
-  font-weight: 400;
-  font-size: 1.1rem;
-}
-
-.viewpoint-button button {
-  margin-left: 10px;
 }
 
 .issue-list {

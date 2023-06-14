@@ -1,31 +1,9 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
-        <div class="viewpoint-selection">
-            <div class="viewpoint-button">
-                <h3>Viewpoint:</h3>
-                <button *ngIf="viewpoint$ | async  as viewpoint; else ElseBlock" mat-stroked-button
-                    class="second-line-button" [matMenuTriggerFor]="menu">
-                    {{ viewpoint.title }} <mat-icon>view_carousel</mat-icon>
-                </button>
-                <ng-template #ElseBlock>
-                    <button mat-button class="second-line-button" [matMenuTriggerFor]="menu">Select a Viewpoint
-                        <mat-icon>view_carousel</mat-icon></button>
-                </ng-template>
-            </div>
+    <div class="viewpoint-selection">
 
+        <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>
 
-            <mat-menu #menu="matMenu">
-                <button (click)="chooseViewpoint(viewpoint)" mat-menu-item
-                    *ngFor="let viewpoint of view[1]; first as isFirst">
-                    <span>{{ viewpoint.title }}</span>
-                </button>
-                <mat-divider *ngIf="view[1].length! > 0"></mat-divider>
-                <button mat-menu-item (click)="createViewpoint(view[0]?.projectId!, view[1])">
-                    <mat-icon>add</mat-icon>
-                    <span>Create new Viewpoint</span>
-                </button>
-            </mat-menu>
-
-        <div *ngIf="viewpoint$ | async as viewpoint; else viewpointsettingselse">
+        <div *ngIf="viewpoint$ | async as viewpoint">
             <mat-card style="margin-top: 0">
                 <h1 matCardTitle>Viewpoint Details</h1>
                 <mat-divider></mat-divider>
@@ -43,23 +21,18 @@
                     </div>
                 </form>
                 <div>
-                    <button [disabled]="!viewpointDetails.valid" class="margin-top"  mat-raised-button color="primary" (click)="updateViewpoint(view[0]!.projectId, viewpoint, view[1])">Save</button>
+                    <button [disabled]="!viewpointDetails.valid" class="margin-top" mat-raised-button color="primary"
+                        (click)="updateViewpoint(view[0]!.projectId, viewpoint, view[1])">Save</button>
                 </div>
             </mat-card>
-            <mat-card style = "margin-bottom: 50px">
-              <h1 matCardTitle>Danger Zone</h1>
-              <mat-divider></mat-divider>
-              <div>
-                <button class = "margin-top" mat-raised-button color="warn" (click)="deleteViewpoint(viewpoint, view[1])">Delete Viewpoint</button>
-              </div>
+            <mat-card style="margin-bottom: 50px">
+                <h1 matCardTitle>Danger Zone</h1>
+                <mat-divider></mat-divider>
+                <div>
+                    <button class="margin-top" mat-raised-button color="warn"
+                        (click)="deleteViewpoint(viewpoint, view[1])">Delete Viewpoint</button>
+                </div>
             </mat-card>
         </div>
-        <ng-template #viewpointsettingselse>
-            <div class="viewpoint-selection-text">
-                <mat-card style="margin-top: 0; justify-content: center; align-items: center; display: flex;">
-                    <h3>Please select a viewpoint</h3>
-                </mat-card>
-            </div>
-        </ng-template>
-      </div>
+    </div>
 </div>

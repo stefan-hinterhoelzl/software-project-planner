@@ -35,6 +35,7 @@ import { ProjectItemOptionsComponent } from './project-view/project-item-view/pr
 import { CanDeactivateGuard } from '../services/can-deactivate-guard.service';
 import {MatTreeModule} from '@angular/material/tree';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ViewpointManagerComponent } from '../shared/viewpoint-manager/viewpoint-manager.component';
 
 
 
@@ -83,6 +84,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatSidenavModule,
     MatTreeModule,
     DragDropModule,
+    ViewpointManagerComponent,
 
 
   ],
