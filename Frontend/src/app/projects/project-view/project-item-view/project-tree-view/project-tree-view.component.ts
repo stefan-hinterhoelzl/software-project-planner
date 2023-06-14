@@ -353,8 +353,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       targetListId = this.dropActionTodo.targetId
     } else {
 
-    targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.filteredBacklog, 'backlog');
-    if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
+      targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.filteredBacklog, 'backlog');
+      if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
     }
 
     // console.log(
@@ -467,8 +467,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   showDragInfo() {
     this.clearDragInfo();
     if (this.dropActionTodo && this.dropActionTodo.targetId !== "backlog" && this.dropActionTodo.targetId !== "main") {
-      console.log(this.document.getElementById('node-'+ this.dropActionTodo.targetId))
-      this.document.getElementById('node-'+ this.dropActionTodo.targetId)!.classList.remove('tree-item:hover','issue-list-item:hover')
+      // console.log(this.document.getElementById('node-' + this.dropActionTodo.targetId)!.querySelector('.tree-issue-title-nesting'))
+      // this.document.getElementById('node-' + this.dropActionTodo.targetId)!.querySelector('.tree-issue-title-nesting')?.classList.remove('tree-issue-title-nesting:hover')
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }
