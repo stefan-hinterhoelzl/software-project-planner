@@ -1,3 +1,12 @@
+.mat-divider-horicontal {
+  margin: 10px 0px 10px 0px;
+}
+
+.mat-divider-vertical {
+  margin: 0px 10px 0px 10px;
+  height: 36px;
+}
+
 .main-wrapper {
   display: flex;
   width: 100%;
@@ -17,6 +26,14 @@
   padding-bottom: 20px;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.card-header {
+  display: flex; 
+  flex-direction: row; 
+  width: 100%; 
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .viewpoint-button {
@@ -198,6 +215,29 @@ p {
   flex: 1;
 }
 
+.tree-issue-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  
+}
+
+.tree-issue-title-nesting {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 5px;
+}
+
+
+.issue-list-item:hover, .tree-issue-title-nesting:hover {
+  background: grey;
+  cursor: pointer;
+}
+
+
 .icon {
   font-size: 35px;
   width: 35px;
@@ -210,7 +250,18 @@ p {
   font-size: 27px;
   width: 27px;
   height: 27px;
-  margin: 0;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.indicator-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+  border: 0.5px solid white;
+  border-radius: 5px;
+
 }
 
 @mixin traffic-light {

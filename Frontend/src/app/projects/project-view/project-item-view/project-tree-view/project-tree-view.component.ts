@@ -467,6 +467,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   showDragInfo() {
     this.clearDragInfo();
     if (this.dropActionTodo && this.dropActionTodo.targetId !== "backlog" && this.dropActionTodo.targetId !== "main") {
+      console.log(this.document.getElementById('node-'+ this.dropActionTodo.targetId))
+      this.document.getElementById('node-'+ this.dropActionTodo.targetId)!.classList.remove('tree-item:hover','issue-list-item:hover')
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }
