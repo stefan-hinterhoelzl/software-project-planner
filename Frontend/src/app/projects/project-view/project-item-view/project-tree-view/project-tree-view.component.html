@@ -1,14 +1,14 @@
 <div class="main-wrapper" *ngIf="this.view$ | async as view">
-  <div class = "viewpoint-button">
+  <div class="viewpoint-button">
     <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>
 
     <span class="spacer"></span>
-    
+
     <mat-icon color="accent" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && !itemMoved"
       class="icon">cloud_done</mat-icon>
     <mat-icon color="warn" *ngIf="(loaded$ | async) && !treeLoading && !backlogLoading && itemMoved"
       class="icon">cloud_off</mat-icon>
-    <button *ngIf=" (loaded$ | async) && !treeLoading && !backlogLoading" style="margin-right: 10px"
+    <button *ngIf=" (loaded$ | async) && !treeLoading && !backlogLoading"
       [matTooltipPosition]="'below'" matTooltip="Save the current hierachy and order to the server"
       [matTooltipShowDelay]="2000" mat-raised-button color="primary" (click)="saveRelations()" [disabled]="!itemMoved">
       <mat-icon>save</mat-icon> Save Hierarchy
@@ -22,16 +22,18 @@
           <mat-spinner class="no-items"></mat-spinner>
         </div>
         <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">
-          <div class="backlog-header">
-            <h2>Backlog</h2>
-            <div [formGroup]="filterGroup" style="width: 50%">
-              <mat-form-field style="width: 100%" subscriptSizing="dynamic" color="accent" appearance="outline">
-                <mat-label>Filter</mat-label>
-                <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filterControl" />
-              </mat-form-field>
-            </div>
-          </div>
+
           <mat-card class="issue-list">
+            <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between;">
+              <h1 matCardTitle>Backlog</h1>
+              <div [formGroup]="filterGroup" style="width: 50%">
+                <mat-form-field style="width: 100%" subscriptSizing="dynamic" color="accent" appearance="fill">
+                  <mat-label>Filter</mat-label>
+                  <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filterControl" />
+                </mat-form-field>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
             <div class="adding-box" *ngIf="filteredBacklog.length === 0" [attr.data-id]="'backlog'">
               <h3>No Items in the Backlog</h3>
             </div>
@@ -52,8 +54,9 @@
           <mat-spinner class="no-items"></mat-spinner>
         </div>
         <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">
-          <h2>Hierarchy</h2>
           <mat-card class="issue-tree">
+            <h1 style ="height: 56px;" matCardTitle>Hierarchy</h1>
+            <mat-divider></mat-divider>
             <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="'main'">
               <h3>Drop First Item</h3>
             </div>
@@ -86,11 +89,21 @@
         </button>
       </span>
       <span *ngIf="!node.children.length" style="margin-left: 48px"> </span>
+      <div style="display: flex; flex-direction: row; width: 100%;">
+        <div style="display: flex; flex-direction: column;">
+          {{ node.issue.title }}
+          <span class="item-notes"> {{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
+            Items' }} | {{node.issue.state}} </span>
+        </div>
 
-      {{ node.issue.title }}
+        <div class="spacer"></div>
+        <!-- <mat-icon class = "icon-row">check_circle_outline</mat-icon> -->
+        <!-- <mat-icon class = "icon-row">highlight_off</mat-icon> -->
+        <mat-icon color="accent" class="icon-row">timeline</mat-icon>
+        <div class="traffic-light-red"></div>
 
-      <span class="item-notes"> ({{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
-        Items' }})</span>
+      </div>
+
     </div>
 
     <div *ngIf="node.isExpanded && node.children.length" class="node-children" cdkDropList
