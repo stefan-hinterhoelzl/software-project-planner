@@ -132,7 +132,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         let currIndex: number = data.data.relations.findIndex(
           val => val.childIssueId === ALMIssue.issueId && val.childRemoteProjectId === ALMIssue.projectId
         );
-        console.log(data.data.relations)
         let order: number = data.data.relations[currIndex].nodeOrder;
         let issue: Issue = data.data.res.find(iss => iss.remoteIssueId === ALMIssue.issueId && iss.remoteProjectId === ALMIssue.projectId)!;
         let node: IssueNode = this.convertALMIssueToNode(ALMIssue, issue, order);
