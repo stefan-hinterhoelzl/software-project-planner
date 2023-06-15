@@ -25,7 +25,7 @@
             <div class="adding-box" *ngIf="filteredBacklog.length === 0" [attr.data-id]="'backlog'">
               <h3>No Items in the Backlog</h3>
             </div>
-            <div cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)"
+            <div class = "issue-drop-list" cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)"
               [cdkDropListSortingDisabled]="true">
               <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id"
                 (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
@@ -43,27 +43,28 @@
         </div>
         <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">
           <mat-card class="issue-tree">
-            <div class="card-header" style="height: 56px;">
+            <div class="card-header">
               <mat-card-title>Hierarchy</mat-card-title>
 
               <span class="spacer"></span>
 
               <mat-icon color="accent" *ngIf="!treeLoading && !backlogLoading && !itemMoved"
-                class="icon">cloud_done</mat-icon>
+                class="icon" style = "margin-right: 0;">cloud_done</mat-icon>
               <mat-icon color="warn" *ngIf="!treeLoading && !backlogLoading && itemMoved"
-                class="icon">cloud_off</mat-icon>
+                class="icon" style = "margin-right: 0;">cloud_off</mat-icon>
+              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
                 matTooltip="Save the current hierachy and order to the server" [matTooltipShowDelay]="2000"
                 mat-raised-button color="primary" (click)="saveRelations()" [disabled]="!itemMoved">
                 <mat-icon>save</mat-icon> Save Hierarchy
               </button>
-              <mat-divider  class = "mat-divider-vertical" [vertical] = "true"></mat-divider>
+              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
-                matTooltip="Auto-detect hierarchies" [matTooltipShowDelay]="2000"
-                mat-raised-button color="primary" (click)="saveRelations()">
+                matTooltip="Auto-detect hierarchies" [matTooltipShowDelay]="2000" mat-raised-button color="primary"
+                (click)="saveRelations()">
                 <mat-icon>device_hub</mat-icon> Detect Hierarchies
               </button>
-              <mat-divider  class = "mat-divider-vertical" [vertical] = "true"></mat-divider>
+              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
                 matTooltip="Evaluate the tree for any planning inconsistencies" [matTooltipShowDelay]="2000"
                 mat-raised-button color="primary" (click)="saveRelations()">
@@ -78,7 +79,7 @@
               <h3>Drop First Item</h3>
             </div>
             <!-- Rendering for the tree -->
-            <div cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)"
+            <div class="tree-drop-list" cdkDropList [cdkDropListData]="treeData" [id]="'main'" (cdkDropListDropped)="drop($event)"
               [cdkDropListSortingDisabled]="true">
               <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
                 <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>
@@ -105,7 +106,7 @@
           <mat-icon>chevron_left</mat-icon>
         </button>
       </span>
-      <span *ngIf="!node.children.length" style="margin-left: 48px"> </span>
+      <span *ngIf="!node.children.length" style="margin-left: 24px"> </span>
       <div class="tree-issue-title">
         <div class="tree-issue-title-nesting">
           {{ node.issue.title }}
@@ -117,7 +118,7 @@
         <!-- <mat-icon class = "icon-row">check_circle_outline</mat-icon> -->
         <!-- <mat-icon class = "icon-row">highlight_off</mat-icon> -->
         <div class="indicator-bar">
-          <p>Workprogress:</p>
+          <p>Progress:</p>
           <mat-icon color="accent" class="icon-row">timeline</mat-icon>
           <p>Overall:</p>
           <div class="traffic-light-red"></div>

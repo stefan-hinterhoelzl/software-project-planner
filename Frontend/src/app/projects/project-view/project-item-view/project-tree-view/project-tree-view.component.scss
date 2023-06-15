@@ -34,6 +34,7 @@
   width: 100%; 
   justify-content: space-between;
   align-items: flex-start;
+  min-height: 56px;
 }
 
 .viewpoint-button {
@@ -52,12 +53,20 @@
   overflow: auto;
 }
 
+.issue-drop-list {
+  overflow: auto;
+}
+
 .issue-tree {
   padding: 10px 10px 10px 10px;
   width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: auto;
+}
+
+.tree-drop-list {
   overflow: auto;
 }
 
@@ -175,7 +184,6 @@ p {
 
 .node-title {
   padding: 5px;
-  margin: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
