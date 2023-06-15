@@ -258,8 +258,8 @@ p {
   font-size: 27px;
   width: 27px;
   height: 27px;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .indicator-bar {
@@ -273,11 +273,11 @@ p {
 }
 
 @mixin traffic-light {
-  border-radius: 12.5px;
-  width: 25px;
-  height: 25px;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
   border: solid 1px grey;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 .traffic-light-green {

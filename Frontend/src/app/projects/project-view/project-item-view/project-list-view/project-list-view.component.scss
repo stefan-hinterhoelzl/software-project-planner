@@ -29,6 +29,11 @@ mat-select {
   height: 100%;
 }
 
+.mat-divider-vertical {
+  margin: 0px 10px 0px 10px;
+  height: 36px;
+}
+
 .list-item:hover {
   background: grey;
   cursor: pointer;
@@ -144,7 +149,6 @@ mat-select {
   width: 35px;
   height: 35px;
   margin: 0;
-  margin-right: 15px;
 }
 
 .spacer {

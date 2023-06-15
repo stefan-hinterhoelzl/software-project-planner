@@ -16,7 +16,7 @@
               <mat-card-title>Backlog</mat-card-title>
               <div [formGroup]="filterGroup" style="width: 50%">
                 <mat-form-field style="width: 100%" subscriptSizing="dynamic" color="accent" appearance="fill">
-                  <mat-label>Filter</mat-label>
+                  <mat-label><mat-icon class="icon">filter_list</mat-icon>Filter</mat-label>
                   <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filterControl" />
                 </mat-form-field>
               </div>
@@ -113,13 +113,15 @@
           <span class="item-notes"> {{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
             Items' }} | {{node.issue.state}} </span>
         </div>
-
-        <!-- <div class="spacer"></div> -->
-        <!-- <mat-icon class = "icon-row">check_circle_outline</mat-icon> -->
-        <!-- <mat-icon class = "icon-row">highlight_off</mat-icon> -->
+        
         <div class="indicator-bar">
           <p>Progress:</p>
-          <mat-icon color="accent" class="icon-row">timeline</mat-icon>
+          <mat-icon  [matTooltipPosition]="'below'" matTooltip="Work is in progress on this item"
+          [matTooltipShowDelay]="2000" *ngIf="node.issue.state==='opened' && node.issue.timeStats.spentHours !== 0" color="accent" class="icon-row">timeline</mat-icon>
+          <mat-icon [matTooltipPosition]="'below'" matTooltip="Work has not started yet on this item"
+          [matTooltipShowDelay]="2000" *ngIf="node.issue.state==='opened' && node.issue.timeStats.spentHours === 0" color="accent"  class = "icon-row">highlight_off</mat-icon>
+          <mat-icon [matTooltipPosition]="'below'" matTooltip="Item is finished"
+          [matTooltipShowDelay]="2000" *ngIf="node.issue.state==='closed'" color="accent" class = "icon-row">check_circle_outline</mat-icon>
           <p>Overall:</p>
           <div class="traffic-light-red"></div>
         </div>
