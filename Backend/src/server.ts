@@ -26,6 +26,8 @@ import {
   getViewpointById,
 } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
+import { auth } from 'firebase-admin';
+import { detectHierarchies, evaluateTree } from './controllers/tree.controller';
 
 dotenv.config();
 
@@ -98,6 +100,12 @@ express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relatio
 express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, postSelectedIssueRelations);
 express_app.delete('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, deleteSelectedIssueRelations);
 express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId/RemoteIssues', authenticateJWT, removeAllIssuesByRemoteProject);
+
+
+//LogicEndpoints
+express_app.put('/project/:projectId/Viewpoints/:viewpointId/EvaluateTree', authenticateJWT, evaluateTree);
+express_app.put('/project/:projectId/Viewpoints/:viewpointId/DetectHierarchies', authenticateJWT, detectHierarchies);
+
 
 //Start the Server
 const server = express_app.listen(process.env.PORT, () => {
