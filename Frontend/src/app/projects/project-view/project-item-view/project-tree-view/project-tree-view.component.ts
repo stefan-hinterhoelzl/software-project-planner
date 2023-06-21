@@ -1,8 +1,8 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, debounceTime, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
@@ -25,6 +25,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   backend = inject(BackendService);
   dialog = inject(MatDialog);
   snackbar = inject(SnackbarComponent);
+  cd = inject(ChangeDetectorRef);
   aggregator: ALMDataAggregator;
 
   //State Booleans
@@ -46,11 +47,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(
+    delay(1), //help the change detection
     tap(() => {
-      this.backlogLoading = true;
-      this.treeLoading = true;
-      this.treeData.length = 0;
-      this.backlog.length = 0;
       this.nodeLookup.clear();
     })
   );
@@ -82,6 +80,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     .subscribe();
 
   issuesBacklog$ = this.viewpoint$.pipe(
+    tap(() => {
+      this.backlogLoading = true
+      this.backlog.length = 0
+    }),
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
@@ -106,6 +108,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   );
 
   issuesRelation$ = this.viewpoint$.pipe(
+    tap(() => {
+      this.treeLoading = true
+      this.treeData.length = 0
+    }),
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
     }),
