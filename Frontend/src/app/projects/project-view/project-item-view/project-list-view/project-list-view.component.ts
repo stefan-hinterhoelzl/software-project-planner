@@ -217,7 +217,25 @@ export class ProjectListViewComponent implements OnInit {
       );
   }
 
-  setSelected(bool: boolean, issue: ALMIssue) {
+  async setSelected(bool: boolean, issue: ALMIssue) {
+
+    //check if included in hierarchy -- if so prevent unselecting
+    if (!bool) {
+    let isPart: boolean | void = await lastValueFrom(this.backend.issueIsPartofRelation(this.data.staticProject, this.data.staticActiveViewpoint, issue.issueId))
+    .catch(error => {
+      this.snackbar.openSnackBar('Server not responding, item can not be unselected.')
+      console.error(error.err)
+    })
+
+      if (isPart) {
+        issue.selected = true;
+        this.snackbar.openSnackBar('Item contained in realtionships cannot be unselected.')
+        return;
+      }
+    }
+
+    console.log("Hello ")
+
     issue.selected = bool;
 
     if (bool) {

@@ -168,3 +168,22 @@ export async function deleteSelectedIssueRelations(req: Request, res: Response) 
     handleError(res, err);
   }
 }
+
+export async function issueIsPartofRelationship(req: Request, res: Response) {
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
+  var issueId: number = Number(req.params.issueId);
+
+  try {
+    const conn = await connect();
+
+    const result = (await conn.query<IssueRelation[]>('SELECT * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ? AND (parentIssueId = ? OR childIssueId = ?)', [projectId, viewpointId, issueId, issueId]))[0];
+    
+    if (result.length === 0) res.json({ isPart: false })
+    else res.json({ isPart: true })
+
+  } catch (err: any) {
+    handleError(res, err);
+  }
+
+}

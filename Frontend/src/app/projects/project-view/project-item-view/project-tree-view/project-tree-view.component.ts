@@ -47,7 +47,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(
-    delay(1), //help the change detection
+    delay(0), //help the change detection by moving the execution into the next cycle
     tap(() => {
       this.nodeLookup.clear();
     })
@@ -307,30 +307,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     }
   }
 
-  createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.autoFocus = true;
-
-    const dialogRef = this.dialog.open(NewViewpointDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe((data: string) => {
-      if (data !== undefined) {
-        const newViewpoint = <Viewpoint>{
-          title: data,
-        };
-
-        this.data.addViewpoint(projectId, newViewpoint, viewpoints);
-      }
-    });
-  }
-
-  chooseViewpoint(viewpoint: Viewpoint) {
-    if (viewpoint.viewpointId !== undefined) {
-      this.backlogLoading = true;
-      this.data.setActiveViewpoint(viewpoint.viewpointId);
-    }
-  }
 
   drop(event: any) {
     const draggedItemId: string = event.item.data;

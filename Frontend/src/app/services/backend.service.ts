@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, take, tap } from 'rxjs';
+import { map, Observable, take, tap } from 'rxjs';
 import { Project, RemoteProject, Viewpoint } from '../models/project';
 import { DataService } from './data.service';
 import { getAuth, User } from '@firebase/auth';
@@ -131,6 +131,11 @@ export class BackendService {
 
   removeRemoteIssuesByRemoteProject(remoteProject: RemoteProject) {
     return this.http.delete(this.BASE_URL + 'project/' + remoteProject.projectId + '/RemoteProject/' + remoteProject.remoteProjectId + "/RemoteIssues")
+  }
+
+  issueIsPartofRelation(projectId: string, viewpointId: number, issueId: number): Observable<boolean> {
+    return this.http.get<any>(`${this.BASE_URL}project/${projectId}/viewpoint/${viewpointId}/remoteissues/${issueId}/ispartofrelation`, {responseType: 'json', observe: 'body'})
+    .pipe(map(body => body.isPart))
   }
 
 

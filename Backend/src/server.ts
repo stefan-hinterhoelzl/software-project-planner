@@ -17,6 +17,7 @@ import {
   postSelectedIssueRelations,
   deleteSelectedIssueRelations,
   getRemoteIssuesbyIDs,
+  issueIsPartofRelationship,
 } from './controllers/issue.controller';
 import {
   createViewpoint,
@@ -100,6 +101,7 @@ express_app.get('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relatio
 express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, postSelectedIssueRelations);
 express_app.delete('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues/Relations', authenticateJWT, deleteSelectedIssueRelations);
 express_app.delete('/project/:projectId/RemoteProject/:remoteProjectId/RemoteIssues', authenticateJWT, removeAllIssuesByRemoteProject);
+express_app.get('/project/:projectId/viewpoint/:viewpointId/remoteissues/:issueId/ispartofrelation', authenticateJWT, issueIsPartofRelationship);
 
 
 //LogicEndpoints
