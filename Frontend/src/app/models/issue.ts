@@ -30,17 +30,23 @@ export interface IssueRelationObjects {
 }
 
 export interface IssueErrorObject {
-  deadlineError: boolean,
+  deadlineError: ErrorType,
   deadlineErrorDescr: string,
-  bookedHoursError: boolean,
+  bookedHoursError: ErrorType,
   bookedHoursErrorDescr: string,
+}
+
+export enum ErrorType {
+  W, 
+  E,
+  N,
 }
 
 export function createEmptyErrorObject(): IssueErrorObject {
   return <IssueErrorObject> {
-    deadlineError: false,
+    deadlineError: ErrorType.N,
     deadlineErrorDescr: '',
-    bookedHoursError: false,
+    bookedHoursError: ErrorType.N,
     bookedHoursErrorDescr: '',
   }
 }

@@ -15,6 +15,7 @@ export interface ALMIssue {
     labels: string[];
     createdAt: Date;
     updatedAt: Date;
+    dueDate: Date;
     state: string;
     type: string;
     webURL: string;
@@ -28,8 +29,14 @@ export interface ALMTimeStats {
 }
 
 export interface IssueErrorObject {
-    deadlineError: boolean,
+    deadlineError: ErrorType,
     deadlineErrorDescr: string,
-    bookedHoursError: boolean,
+    bookedHoursError: ErrorType,
     bookedHoursErrorDescr: string,
+}
+
+export enum ErrorType {
+    W, 
+    E,
+    N,
 }

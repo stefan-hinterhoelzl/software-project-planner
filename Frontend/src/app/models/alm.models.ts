@@ -15,6 +15,7 @@ export interface ALMIssue {
   labels: string[];
   createdAt: Date;
   updatedAt: Date;
+  dueDate: Date;
   state: string;
   type: string;
   webURL: string;
