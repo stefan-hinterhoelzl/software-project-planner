@@ -234,8 +234,6 @@ export class ProjectListViewComponent implements OnInit {
       }
     }
 
-    console.log("Hello ")
-
     issue.selected = bool;
 
     if (bool) {
