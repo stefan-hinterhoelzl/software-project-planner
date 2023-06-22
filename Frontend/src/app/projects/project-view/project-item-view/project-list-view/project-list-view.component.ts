@@ -132,10 +132,6 @@ export class ProjectListViewComponent implements OnInit {
     this.init = true;
   }
 
-  // ngOnDestroy(): void {
-  //   this.data.setActiveRemoteproject(-1)
-  // }
-
   ngOnInit(): void {
     this.filterGroup
       .get('projectsControl')
@@ -228,7 +224,7 @@ export class ProjectListViewComponent implements OnInit {
 
       if (isPart) {
         issue.selected = true;
-        this.snackbar.openSnackBar('Item contained in realtionships cannot be unselected.')
+        this.snackbar.openSnackBar('Item contained in the hierarchy cannot be unselected.')
         return;
       }
     }
