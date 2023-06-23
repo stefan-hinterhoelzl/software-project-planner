@@ -198,10 +198,13 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     });
   }
 
-  placeChildreninTree(searchID: string, child: IssueNode, nodes: IssueNode[]) {
+  placeChildreninTree(searchID: string, child: IssueNode, parent: IssueNode, nodes: IssueNode[]) {
     nodes.forEach(node => {
-      if (node.id === searchID) node.children.push(child);
-      else this.placeChildreninTree(searchID, child, node.children);
+      if (node.id === searchID) {
+        node.children.push(child);
+        node.parent = parent;
+      } 
+      else this.placeChildreninTree(searchID, child, node, node.children);
     });
   }
 
@@ -219,7 +222,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       if (value.parentIssueId === value.childIssueId && value.parentRemoteProjectId === value.childRemoteProjectId) {
         this.treeData.push(this.nodeLookup.get(childID)!);
       } else {
-        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.treeData);
+        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.nodeLookup.get(parentID)!, this.treeData);
         this.nodeLookup.get(parentID)?.children.push(this.nodeLookup.get(childID)!);
       }
       let newRelations: IssueRelation[] = allRelations.filter(

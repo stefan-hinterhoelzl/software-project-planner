@@ -6,6 +6,7 @@ export interface IssueNode {
   id: string;
   kpiErrors: IssueErrorObject;
   children: IssueNode[];
+  parent?: IssueNode;
   isExpanded?: boolean;
   nodeOrder?: number;
 }
