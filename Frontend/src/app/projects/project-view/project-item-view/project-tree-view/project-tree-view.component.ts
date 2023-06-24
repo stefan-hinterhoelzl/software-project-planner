@@ -203,7 +203,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       if (node.id === searchID) {
         node.children.push(child);
         node.parent = parent;
-      } 
+      }
       else this.placeChildreninTree(searchID, child, node, node.children);
     });
   }
@@ -307,6 +307,17 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
         })
       );
     }
+  }
+
+  evaluateTree(tree: IssueNode[]) {
+    this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
+      next: (evaluatedTree) => {
+        console.log(evaluatedTree)
+      },
+      error: (err) => {
+        this.snackbar.openSnackBar("Error evaluating the hierarchy. Try again later", 'red-snackbar')
+      }
+    })
   }
 
 
