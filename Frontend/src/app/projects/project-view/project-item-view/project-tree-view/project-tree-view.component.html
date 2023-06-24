@@ -67,7 +67,7 @@
               <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
                 matTooltip="Evaluate the tree for any planning inconsistencies" [matTooltipShowDelay]="2000"
-                mat-raised-button color="primary" (click)="saveRelations()">
+                mat-raised-button color="primary" (click)="evaluateTree(treeData)">
                 <mat-icon>loop</mat-icon> Evaluate Tree
               </button>
 
@@ -113,7 +113,7 @@
           <span class="item-notes"> {{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
             Items' }} | {{node.issue.state}} </span>
         </div>
-        
+
         <div class="indicator-bar">
           <p>Progress:</p>
           <mat-icon  [matTooltipPosition]="'below'" matTooltip="Work is in progress on this item"

@@ -6,7 +6,7 @@ export interface Issue {
   projectId: string,
   remoteProjectId: number,
   remoteIssueId: number,
-  kpiErrors: IssueErrorObject,
+  kpiErrors: IssueErrorObject[],
 }
 
 export interface IssueJSONCheckObject {
@@ -30,24 +30,17 @@ export interface IssueRelationObjects {
 }
 
 export interface IssueErrorObject {
-  deadlineError: ErrorType,
-  deadlineErrorDescr: string,
-  bookedHoursError: ErrorType,
-  bookedHoursErrorDescr: string,
+  class: ErrorClass,
+  type: ErrorType,
+  descr: string,
 }
 
 export enum ErrorType {
-  W, 
-  E,
-  N,
+  W = 1,
+  E = 2,
 }
 
-export function createEmptyErrorObject(): IssueErrorObject {
-  return <IssueErrorObject> {
-    deadlineError: ErrorType.N,
-    deadlineErrorDescr: '',
-    bookedHoursError: ErrorType.N,
-    bookedHoursErrorDescr: '',
-  }
+export enum ErrorClass {
+  DeadlineError = 1,
+  WorkhoursError = 2,
 }
-

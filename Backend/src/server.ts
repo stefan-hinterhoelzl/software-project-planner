@@ -105,8 +105,8 @@ express_app.get('/project/:projectId/viewpoint/:viewpointId/remoteissues/:issueI
 
 
 //LogicEndpoints
-express_app.put('/project/:projectId/Viewpoints/:viewpointId/EvaluateTree', authenticateJWT, evaluateTree);
-express_app.put('/project/:projectId/Viewpoints/:viewpointId/DetectHierarchies', authenticateJWT, detectHierarchies);
+express_app.put('/project/:projectId/Viewpoint/:viewpointId/EvaluateTree', authenticateJWT, evaluateTree);
+express_app.put('/project/:projectId/Viewpoint/:viewpointId/DetectHierarchies', authenticateJWT, detectHierarchies);
 
 
 //Start the Server

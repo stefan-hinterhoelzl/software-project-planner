@@ -48,6 +48,7 @@ Create Table RemoteIssues (
     projectId				varchar(100) NOT NULL,
     remoteProjectId         int NOT NULL,
     remoteIssueId	        int NOT NULL,
+    kpiErrors               JSON NOT NULL,
     Primary KEY (viewpointId, projectId, remoteProjectId, remoteIssueId),
     Foreign KEY (projectId, viewpointId) References Viewpoints (projectId, viewpointId) ON DELETE CASCADE
 );

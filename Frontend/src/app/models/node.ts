@@ -4,7 +4,7 @@ import { IssueErrorObject } from './issue';
 export interface IssueNode {
   issue: ALMIssue;
   id: string;
-  kpiErrors: IssueErrorObject;
+  kpiErrors: IssueErrorObject[];
   children: IssueNode[];
   parent?: IssueNode;
   isExpanded?: boolean;

@@ -8,6 +8,7 @@ import { UserSettings } from '../models/user';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMIssue } from '../models/alm.models';
 import { Issue, IssueRelation } from '../models/issue';
+import { IssueNode } from '../models/node';
 
 @Injectable({
   providedIn: 'root',
@@ -136,6 +137,10 @@ export class BackendService {
   issueIsPartofRelation(projectId: string, viewpointId: number, issueId: number): Observable<boolean> {
     return this.http.get<any>(`${this.BASE_URL}project/${projectId}/viewpoint/${viewpointId}/remoteissues/${issueId}/ispartofrelation`, {responseType: 'json', observe: 'body'})
     .pipe(map(body => body.isPart))
+  }
+
+  evaluateTree(projectId: string, viewpointId: number, tree: IssueNode[]): Observable<IssueNode[]> {
+    return this.http.put<IssueNode[]>(`${this.BASE_URL}project/${projectId}/viewpoint/${viewpointId}/EvaluateTree`, tree, {observe: 'body', responseType: 'json'})
   }
 
 

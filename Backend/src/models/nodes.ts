@@ -1,7 +1,7 @@
 export interface IssueNode {
     issue: ALMIssue;
     id: string;
-    kpiErrors: IssueErrorObject;
+    kpiErrors: IssueErrorObject[];
     children: IssueNode[];
     parent?: IssueNode;
     isExpanded?: boolean;
@@ -30,14 +30,17 @@ export interface ALMTimeStats {
 }
 
 export interface IssueErrorObject {
-    deadlineError: ErrorType,
-    deadlineErrorDescr: string,
-    bookedHoursError: ErrorType,
-    bookedHoursErrorDescr: string,
-}
-
-export enum ErrorType {
-    W, 
-    E,
-    N,
-}
+    class: ErrorClass,
+    type: ErrorType,
+    descr: string,
+  }
+  
+  export enum ErrorType {
+    W = 1,
+    E = 2,
+  }
+  
+  export enum ErrorClass {
+    DeadlineError = 1,
+    WorkhoursError = 2,
+  }

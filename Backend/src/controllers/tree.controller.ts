@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ErrorType, IssueNode } from "../models/nodes";
+import { ErrorClass, ErrorType, IssueErrorObject, IssueNode } from "../models/nodes";
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
@@ -8,27 +8,36 @@ export async function evaluateTree(req: Request, res: Response) {
     tree.forEach((value, index, arr) => {
         checkDeadlines(value, value)
     })
+
+    res.json(tree);
 }
 
 
 //check for the deadlines - Depth first search
 const checkDeadlines = (node: IssueNode, entryNode: IssueNode): void => {
+    node.kpiErrors = node.kpiErrors.filter(value => value.class !== ErrorClass.DeadlineError); //filter out old errors
 
     if (node.issue.state === 'opened') { //only evaluate opened items / closed ones are automatically green
+        
 
         let timeDiff: number = node.issue.dueDate.getTime() - Date.now()
 
         if (timeDiff < 86400000) {
-            
-            node.kpiErrors.deadlineError = ErrorType.W;
-            node.kpiErrors.deadlineErrorDescr = node.id === entryNode.id ? `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).` :
-                `Due date of nested item is less than 6 days from today (Due Date: ${node.issue.dueDate})`
+            let errorObject: IssueErrorObject = <IssueErrorObject> {
+                type: ErrorType.W,
+                class: ErrorClass.DeadlineError,
+                descr: `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`
+            }
+            node.kpiErrors.push(errorObject)
         }
 
         else if (timeDiff < 0) {
-            node.kpiErrors.deadlineError = ErrorType.E;
-            node.kpiErrors.deadlineErrorDescr = node.id === entryNode.id ? `This item is overdue (Due Date: ${node.issue.dueDate}).` :
-                `Nested item is overdue (Due Date: ${node.issue.dueDate})`
+            let errorObject: IssueErrorObject = <IssueErrorObject> {
+                type: ErrorType.E,
+                class: ErrorClass.DeadlineError,
+                descr: `This item is overdue (Due Date: ${node.issue.dueDate}).`
+            }
+            node.kpiErrors.push(errorObject)
         }
     }
 
@@ -40,17 +49,9 @@ const checkDeadlines = (node: IssueNode, entryNode: IssueNode): void => {
 
 
 
-
+//Also mark parent Nodes?
 const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {
-    if (errorClass === 'deadline') {
-        node.kpiErrors.deadlineError = errorType;
-        node.kpiErrors.deadlineErrorDescr = errorDescr;
-    }
-
-    else if(errorClass === 'workhours') {
-
-    }
-
+    
 
 }
 
