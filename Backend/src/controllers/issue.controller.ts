@@ -191,6 +191,10 @@ export async function issueIsPartofRelationship(req: Request, res: Response) {
 
 }
 
+export async function updateIssuesKPIErrors(RemoteIssues: RemoteIssues) {
+  
+}
+
 
 function convertJSONtoString(issues: RemoteIssues[]) {
   issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
