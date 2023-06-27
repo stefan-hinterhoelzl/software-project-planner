@@ -5,7 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { Issue, IssueJSONCheckObject, IssueRelation } from 'src/app/models/issue';
+import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -310,14 +310,27 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   }
 
   evaluateTree(tree: IssueNode[]) {
+    console.log(tree)
     this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
       next: (evaluatedTree) => {
-        console.log(evaluatedTree)
+        this.applyNewKPIErrors(evaluatedTree)
       },
       error: (err) => {
         this.snackbar.openSnackBar("Error evaluating the hierarchy. Try again later", 'red-snackbar')
       }
     })
+  }
+
+  applyNewKPIErrors(tree: IssueNode[]) {
+    tree.forEach(node => {
+      let currNode: IssueNode | undefined = this.nodeLookup.get(node.id)
+      if (currNode !== undefined) currNode.kpiErrors = node.kpiErrors;
+      if (node.children.length !== 0) this.applyNewKPIErrors(node.children)
+    })
+  }
+
+  errorsContainErrorType(errors: IssueErrorObject[], type: ErrorType): boolean {
+    return errors.find(element => element.type === type) !== undefined
   }
 
 
@@ -462,8 +475,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   showDragInfo() {
     this.clearDragInfo();
     if (this.dropActionTodo && this.dropActionTodo.targetId !== "backlog" && this.dropActionTodo.targetId !== "main") {
-      // console.log(this.document.getElementById('node-' + this.dropActionTodo.targetId)!.querySelector('.tree-issue-title-nesting'))
-      // this.document.getElementById('node-' + this.dropActionTodo.targetId)!.querySelector('.tree-issue-title-nesting')?.classList.remove('tree-issue-title-nesting:hover')
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }

@@ -99,6 +99,7 @@ export class GitLabAggregator implements ALMDataAggregator {
             labels: issue.labels,
             createdAt: issue.created_at,
             updatedAt: issue.updated_at,
+            dueDate: issue.due_date,
             state: issue.state,
             type: issue.type,
             webURL: issue.web_url,

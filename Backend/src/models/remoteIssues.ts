@@ -5,7 +5,7 @@ export interface RemoteIssues extends RowDataPacket {
     remoteProjectId: number;
     remoteIssueId: number;
     projectId: string;
-    kpiErrors: string;
+    kpiErrors: IssueErrorObject[] | string;
 }
 
 export interface IssueRelation extends RowDataPacket {
@@ -16,4 +16,20 @@ export interface IssueRelation extends RowDataPacket {
     childRemoteProjectId: number,
     childIssueId: number,
     nodeOrder: number,
+  }
+
+  export interface IssueErrorObject {
+    class: ErrorClass,
+    type: ErrorType,
+    descr: string,
+  }
+  
+  export enum ErrorType {
+    W = 1,
+    E = 2,
+  }
+  
+  export enum ErrorClass {
+    DeadlineError = 1,
+    WorkhoursError = 2,
   }

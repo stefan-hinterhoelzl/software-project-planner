@@ -123,7 +123,9 @@
           <mat-icon [matTooltipPosition]="'below'" matTooltip="Item is finished"
           [matTooltipShowDelay]="2000" *ngIf="node.issue.state==='closed'" color="accent" class = "icon-row">check_circle_outline</mat-icon>
           <p>Overall:</p>
-          <div class="traffic-light-red"></div>
+          <div *ngIf="node.kpiErrors.length > 0 && errorsContainErrorType(node.kpiErrors, 2)" class="traffic-light-red"></div>
+          <div *ngIf="node.kpiErrors.length > 0 && errorsContainErrorType(node.kpiErrors, 1) && !errorsContainErrorType(node.kpiErrors, 2)" class="traffic-light-yellow"></div>
+          <div *ngIf="node.kpiErrors.length===0" class="traffic-light-green"></div>
         </div>
 
       </div>

@@ -5,10 +5,13 @@ import { handleError } from './controller.util';
 
 export async function addRemoteIssuesToProjectViewpoint(req: Request, res: Response) {
   try {
-    const newProjects: RemoteIssues[] = req.body;
+    let newIssues: RemoteIssues[] = req.body;
+    console.log(newIssues)
+    convertJSONtoString(newIssues);
+    console.log(newIssues)
     const conn = await connect();
-    await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteIssues SET ?', [value]))]);
-    res.json(newProjects);
+    await Promise.all([newIssues.map(value => conn.query('INSERT INTO RemoteIssues SET ?', [value]))]);
+    res.json(newIssues);
   } catch (err: any) {
     handleError(res, err);
   }
@@ -50,7 +53,6 @@ export async function getRemoteIssuesbyIDs(req: Request, res: Response) {
           issues,
         ])
       )[0];
-
       res.json(result);
     }
   } catch (err: any) {
@@ -120,6 +122,7 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
       )
     )[0];
 
+
     res.json(result);
   } catch (err: any) {
     handleError(res, err);
@@ -187,3 +190,9 @@ export async function issueIsPartofRelationship(req: Request, res: Response) {
   }
 
 }
+
+
+function convertJSONtoString(issues: RemoteIssues[]) {
+  issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
+}
+
