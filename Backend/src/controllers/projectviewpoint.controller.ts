@@ -90,3 +90,11 @@ export async function getViewpointById(req: Request, res: Response) {
       }
 }
 
+export const updateViewpointLastEdited = async(projectId: string, viewpointId: number) => {
+    const conn = await connect()
+    let lastModified: Date;
+    let lastEvaluated: Date;
+    lastModified = lastEvaluated =  new Date(Date.now())       
+    await conn.query('UPDATE Viewpoints SET lastModified = ?, lastEvaluated = ? WHERE projectId = ? AND viewpointId = ?', [lastModified, lastEvaluated, projectId, viewpointId]);    
+}
+

@@ -1,15 +1,26 @@
 import { Request, Response } from 'express';
 import { ErrorClass, ErrorType, IssueErrorObject, IssueNode } from '../models/nodes';
+import { updateViewpointLastEdited } from './projectviewpoint.controller';
+import { handleError } from './controller.util';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
-  let tree: IssueNode[] = req.body;
+  try {
+    let tree: IssueNode[] = req.body;
 
-  tree.forEach((value, index, arr) => {
-    checkDeadlines(value, value);
-  });
+    var projectId: string = req.params.projectId;
+    var viewpointId: number = Number(req.params.viewpointId);
 
-  res.json(tree);
+    tree.forEach((value, index, arr) => {
+      checkDeadlines(value, value);
+    });
+
+    await updateViewpointLastEdited(projectId, viewpointId);
+
+    res.json(tree);
+  } catch (err: any) {
+    handleError(res, err);
+  }
 }
 
 //check for the deadlines - Depth first search

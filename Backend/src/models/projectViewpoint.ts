@@ -4,6 +4,7 @@ export interface Viewpoint extends RowDataPacket {
     viewpointId: number;
     projectId: string;
     title: string;
-    lastModified?: Date; 
+    lastModified?: Date;
+    lastEvaluated?: Date;
 
 }
