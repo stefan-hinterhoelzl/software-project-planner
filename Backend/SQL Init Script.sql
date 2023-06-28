@@ -19,7 +19,7 @@ Create Table Projects (
     description 	varchar(2000),
     owner			varchar(100),
     createdAt 		datetime,
-    lastmodified	datetime,
+    lastModified	datetime,
     favourite		boolean,
     Primary Key (ProjectID),
     Foreign Key (owner) References Users (userId) ON DELETE CASCADE
@@ -29,16 +29,29 @@ Create Table Viewpoints (
     viewpointId 	   int NOT NULL,
     projectId          varchar(100) NOT NULL,
     title              varchar(100),
-    lastmodified       datetime,
+    lastModified       datetime NOT NULL,
+    lastEvaluated      datetime,
     Primary Key (projectId, viewpointId),
     Foreign Key (projectId) References Projects (projectId) ON DELETE CASCADE
-
 );
+
+Create Table ViewpointHierarchieSettings (
+	projectId 			varchar(100) NOT NULL,
+    viewpointId			int NOT NULL,
+    level               int NOT NULL,
+    parent              varchar(100) NOT NULL,
+    child               varchar(100) NOT NULL,
+    Primary Key (projectId, viewpointId, level),
+    Foreign key (projectId) references Projects (projectId) ON DELETE CASCADE,
+    Foreign key (viewpointId) references Viewpoints (viewpointId) ON DELETE CASCADE
+);
+    
 
 Create Table RemoteProjects (
 	projectId		varchar(100) NOT NULL,
     remoteProjectId	int NOT NULL,
     accessToken		varchar(100),
+    dateAdded       datetime NOT NULL,
     Primary KEY (projectId, remoteProjectId),
     Foreign Key (projectId) References Projects (projectId) ON DELETE CASCADE
 );

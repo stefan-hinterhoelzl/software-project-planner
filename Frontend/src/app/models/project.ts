@@ -27,6 +27,7 @@ export interface Viewpoint {
     projectId?: string,
     title: string,
     lastModified: Date,
+    lastEvaluated: Date,
 }
 
 export interface ProjectWrapper {
