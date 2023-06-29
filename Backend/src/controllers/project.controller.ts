@@ -8,7 +8,7 @@ export async function createProject(req: Request, res: Response) {
   try {
     const newProject: Project = req.body;
     newProject.createdAt = new Date(Date.now());
-    newProject.lastmodified = new Date(Date.now());
+    newProject.lastModified = new Date(Date.now());
     newProject.projectId = uuidv4();
 
     const conn = await connect();
@@ -52,9 +52,11 @@ export async function updateProjectById(req: Request, res: Response) {
     const conn = await connect();
     const result: Project = (await conn.query<Project[]>('SELECT * FROM Projects Where projectId = ?', [id]))[0][0];
     if (result !== undefined) {
-      updateProject.lastmodified = new Date(Date.now());
+      
+      updateProject.lastModified = new Date(Date.now());
       //reformat for entering again, also use server sided string to prevent manipulation
-      updateProject.createdAt = new Date(result.createdAt);
+    
+      
       await conn.query('UPDATE Projects SET ? WHERE projectId = ?', [updateProject, id]);
       return res.json(updateProject);
     } else {

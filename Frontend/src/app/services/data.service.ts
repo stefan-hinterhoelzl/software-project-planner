@@ -162,7 +162,7 @@ export class DataService {
   addViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     this.backend.addViewpointToProject(projectId, viewpoint).subscribe({
       next: (newViewpoint: Viewpoint) => {
-        this.snackbar.openSnackBar(`Viewpoint ${newViewpoint.title} created!`, 'green-snackbar');
+        this.snackbar.openSnackBar(`Viewpoint '${newViewpoint.title}' created!`, 'green-snackbar');
         this._viewpoints.next([...viewpoints, newViewpoint]);
         this._activeViewpointId.next(newViewpoint.viewpointId!);
       },

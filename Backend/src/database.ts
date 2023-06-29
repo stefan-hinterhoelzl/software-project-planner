@@ -1,4 +1,4 @@
-import { createPool, Pool } from 'mysql2/promise';
+import { createPool, Pool, PoolConnection } from 'mysql2/promise';
 
 let connection: Pool | undefined = undefined;
 
@@ -9,7 +9,7 @@ export async function connect(): Promise<Pool> {
     return connection;
   }
 
-    connection = await createPool({
+    connection = createPool({
         host: process.env.DATABASE_URL,
         user: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,
@@ -19,4 +19,9 @@ export async function connect(): Promise<Pool> {
 
     return connection;
 
+}
+
+
+export async function getConnection(): Promise<PoolConnection> {
+  return (await connect()).getConnection();
 }

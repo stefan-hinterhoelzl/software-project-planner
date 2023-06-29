@@ -2,24 +2,37 @@ import { Request, Response } from 'express';
 import { ErrorClass, ErrorType, IssueErrorObject, IssueNode } from '../models/nodes';
 import { updateViewpointLastEdited } from './projectviewpoint.controller';
 import { handleError } from './controller.util';
+import { getConnection } from '../database';
+import { PoolConnection } from 'mysql2/promise';
+import { updateIssueKPIErrors } from './issue.controller';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
-  try {
-    let tree: IssueNode[] = req.body;
+  let connection: PoolConnection = await getConnection();
+  let tree: IssueNode[] = req.body;
 
+  try {
     var projectId: string = req.params.projectId;
     var viewpointId: number = Number(req.params.viewpointId);
 
-    tree.forEach((value, index, arr) => {
+    tree.forEach(async (value, index, arr) => {
       checkDeadlines(value, value);
+      await updateIssueKPIErrors(connection, projectId, viewpointId, value.issue.projectId, value.issue.issueId, value.kpiErrors)
     });
 
-    await updateViewpointLastEdited(projectId, viewpointId);
+    await updateViewpointLastEdited(connection, projectId, viewpointId);
+    
+    await connection.commit();
 
     res.json(tree);
+
   } catch (err: any) {
+    await connection.rollback();
     handleError(res, err);
+
+  } finally {
+
+    connection.release();
   }
 }
 
@@ -64,7 +77,7 @@ const checkDeadlines = (node: IssueNode, entryNode: IssueNode): void => {
 };
 
 //Also mark parent Nodes?
-const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
+const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => { };
 
 export async function detectHierarchies(req: Request, res: Response) {
   //TODO

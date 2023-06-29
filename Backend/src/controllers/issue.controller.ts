@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { connect } from '../database';
-import { IssueRelation, RemoteIssues } from '../models/remoteIssues';
+import { IssueErrorObject, IssueRelation, RemoteIssues } from '../models/remoteIssues';
 import { handleError } from './controller.util';
+import { PoolConnection } from 'mysql2/promise';
+import { IssueNode } from '../models/nodes';
 
 export async function addRemoteIssuesToProjectViewpoint(req: Request, res: Response) {
   try {
     let newIssues: RemoteIssues[] = req.body;
-    console.log(newIssues)
     convertJSONtoString(newIssues);
-    console.log(newIssues)
     const conn = await connect();
     await Promise.all([newIssues.map(value => conn.query('INSERT INTO RemoteIssues SET ?', [value]))]);
     res.json(newIssues);
@@ -112,7 +112,7 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
 
     const result = (
       await conn.query<RemoteIssues[]>(
-        `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId
+        `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId, ri.kpiErrors
       FROM remoteissues ri LEFT JOIN remoteissuesrelation rir 
       ON ri.viewpointId = rir.viewpointId AND ri.projectId = rir.projectId
       AND ((ri.remoteIssueId = rir.parentIssueId AND ri.remoteProjectId = rir.parentRemoteProjectId) 
@@ -121,7 +121,6 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
         [viewpointId, projectId]
       )
     )[0];
-
 
     res.json(result);
   } catch (err: any) {
@@ -191,12 +190,16 @@ export async function issueIsPartofRelationship(req: Request, res: Response) {
 
 }
 
-export async function updateIssuesKPIErrors(RemoteIssues: RemoteIssues) {
-  
+export async function updateIssueKPIErrors(connection: PoolConnection, projectId: string, viewpointId: number, remoteProjectId: number, remoteIssueId: number, kpiErrors: IssueErrorObject[]) {
+
+  let kpiErrorsString: string = JSON.stringify(kpiErrors);
+  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId])
+
 }
 
 
 function convertJSONtoString(issues: RemoteIssues[]) {
+  console.log(issues)
   issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
 }
 

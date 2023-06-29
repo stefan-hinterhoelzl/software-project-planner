@@ -15,6 +15,7 @@ export interface RemoteProject {
     projectId?: string,
     remoteProjectId: number,
     accessToken: string,
+    dateAdded?: Date,
 }
 
 export interface RemoteProjectDeleteObject {

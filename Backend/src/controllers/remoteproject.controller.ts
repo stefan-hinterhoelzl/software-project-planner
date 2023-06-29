@@ -10,7 +10,9 @@ export async function addRemoteProjects(req: Request, res: Response) {
     const newProjects: RemoteProject[] = req.body;
     newProjects.forEach(value => {
       value.projectid = id;
+      value.dateAdded = new Date(Date.now());
     });
+    console.log(newProjects);
     const conn = await connect();
     await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteProjects SET ?', [value]))]);
     res.json(newProjects);
@@ -59,7 +61,11 @@ export async function updateRemoteProjects(req: Request, res: Response) {
     await conn.query('DELETE FROM RemoteProjects Where projectId = ?', [id]);
 
     const newProjects: RemoteProject[] = req.body;
-    await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteProjects SET ?', [value]))]);
+    newProjects.forEach(project => {
+      project.dateAdded = new Date(Date.now());
+    })
+
+    await Promise.all([newProjects.map(async value => await conn.query('INSERT INTO RemoteProjects SET ?', [value]))]);
 
     res.json(newProjects)
     

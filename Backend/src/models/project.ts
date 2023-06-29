@@ -7,5 +7,5 @@ export interface Project extends RowDataPacket {
     owner: string;
     favourite: boolean;
     createdAt: Date;
-    lastmodified: Date;
+    lastModified: Date;
 }

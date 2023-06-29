@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { connect } from "../database";
 import { Viewpoint } from "../models/projectViewpoint";
 import { handleError } from "./controller.util";
+import { PoolConnection } from "mysql2/promise";
 
 export async function createViewpoint(req: Request, res: Response) {
     var projectId: string = req.params.projectId;
@@ -90,11 +91,10 @@ export async function getViewpointById(req: Request, res: Response) {
       }
 }
 
-export const updateViewpointLastEdited = async(projectId: string, viewpointId: number) => {
-    const conn = await connect()
+export const updateViewpointLastEdited = async(connection: PoolConnection, projectId: string, viewpointId: number) => {
     let lastModified: Date;
     let lastEvaluated: Date;
     lastModified = lastEvaluated =  new Date(Date.now())       
-    await conn.query('UPDATE Viewpoints SET lastModified = ?, lastEvaluated = ? WHERE projectId = ? AND viewpointId = ?', [lastModified, lastEvaluated, projectId, viewpointId]);    
+    await connection.query('UPDATE Viewpoints SET lastModified = ?, lastEvaluated = ? WHERE projectId = ? AND viewpointId = ?', [lastModified, lastEvaluated, projectId, viewpointId]);    
 }
 

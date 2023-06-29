@@ -90,6 +90,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.getALMIssues(issues).pipe(map(ALMIssues => ({ issues, ALMIssues })));
     }),
     tap(issues => {
+      console.log(issues)
       issues.ALMIssues.forEach(ALMIssue => {
         let issue: Issue = issues.issues.find(val => val.remoteIssueId === ALMIssue.issueId && val.remoteProjectId === ALMIssue.projectId)!;
         if (issue !== undefined) {
@@ -132,6 +133,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.getALMIssues(data.res).pipe(map(values => ({ values, data })));
     }),
     tap(data => {
+      console.log(data)
       let arr: IssueNode[] = [];
       data.values.forEach(ALMIssue => {
         let currIndex: number = data.data.relations.findIndex(
@@ -338,6 +340,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     const draggedItemId: string = event.item.data;
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
+    console.log(draggedItem)
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
