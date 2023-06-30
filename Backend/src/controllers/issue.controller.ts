@@ -191,9 +191,10 @@ export async function issueIsPartofRelationship(req: Request, res: Response) {
 }
 
 export async function updateIssueKPIErrors(connection: PoolConnection, projectId: string, viewpointId: number, remoteProjectId: number, remoteIssueId: number, kpiErrors: IssueErrorObject[]) {
-
+  console.log(kpiErrors)
   let kpiErrorsString: string = JSON.stringify(kpiErrors);
-  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId])
+  console.log(kpiErrorsString)
+  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrors, projectId, viewpointId, remoteProjectId, remoteIssueId])
 
 }
 
