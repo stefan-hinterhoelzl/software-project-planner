@@ -194,7 +194,7 @@ export async function updateIssueKPIErrors(connection: PoolConnection, projectId
   console.log(kpiErrors)
   let kpiErrorsString: string = JSON.stringify(kpiErrors);
   console.log(kpiErrorsString)
-  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrors, projectId, viewpointId, remoteProjectId, remoteIssueId])
+  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId])
 
 }
 
