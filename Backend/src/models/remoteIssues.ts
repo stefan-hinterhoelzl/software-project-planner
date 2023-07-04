@@ -1,11 +1,18 @@
 import { RowDataPacket } from "mysql2";
 
-export interface RemoteIssues extends RowDataPacket {
+export interface RemoteIssuesWithErrors extends RowDataPacket {
     viewpointId: number;
     remoteProjectId: number;
     remoteIssueId: number;
     projectId: string;
-    kpiErrors: IssueErrorObject[] | string;
+    kpiErrors: IssueErrorObject[];
+}
+
+export interface RemoteIssues extends RowDataPacket {
+  viewpointId: number;
+  remoteProjectId: number;
+  remoteIssueId: number;
+  projectId: string;
 }
 
 export interface IssueRelation extends RowDataPacket {
@@ -18,7 +25,7 @@ export interface IssueRelation extends RowDataPacket {
     nodeOrder: number,
   }
 
-  export interface IssueErrorObject {
+  export interface IssueErrorObject extends RowDataPacket {
     class: ErrorClass,
     type: ErrorType,
     descr: string,

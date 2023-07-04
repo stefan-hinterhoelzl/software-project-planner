@@ -1,3 +1,6 @@
+import { RowDataPacket } from "mysql2";
+import { IssueErrorObject } from "./remoteIssues";
+
 export interface IssueNode {
     issue: ALMIssue;
     id: string;
@@ -29,12 +32,6 @@ export interface ALMTimeStats {
     spentHours: number;
 }
 
-export interface IssueErrorObject {
-    class: ErrorClass,
-    type: ErrorType,
-    descr: string,
-  }
-  
   export enum ErrorType {
     W = 1,
     E = 2,

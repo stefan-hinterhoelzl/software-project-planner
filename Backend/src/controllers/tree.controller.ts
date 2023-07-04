@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { ErrorClass, ErrorType, IssueErrorObject, IssueNode } from '../models/nodes';
+import { ErrorClass, ErrorType, IssueNode } from '../models/nodes';
 import { updateViewpointLastEdited } from './projectviewpoint.controller';
 import { handleError } from './controller.util';
 import { getConnection } from '../database';
 import { PoolConnection } from 'mysql2/promise';
 import { updateIssueKPIErrors } from './issue.controller';
+import { IssueErrorObject } from '../models/remoteIssues';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {

@@ -3,12 +3,11 @@ import { connect } from '../database';
 import { IssueErrorObject, IssueRelation, RemoteIssues } from '../models/remoteIssues';
 import { handleError } from './controller.util';
 import { PoolConnection } from 'mysql2/promise';
-import { IssueNode } from '../models/nodes';
 
 export async function addRemoteIssuesToProjectViewpoint(req: Request, res: Response) {
   try {
     let newIssues: RemoteIssues[] = req.body;
-    convertJSONtoString(newIssues);
+    //convertJSONtoString(newIssues);
     const conn = await connect();
     await Promise.all([newIssues.map(value => conn.query('INSERT INTO RemoteIssues SET ?', [value]))]);
     res.json(newIssues);
@@ -112,7 +111,7 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
 
     const result = (
       await conn.query<RemoteIssues[]>(
-        `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId, ri.kpiErrors
+        `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId
       FROM remoteissues ri LEFT JOIN remoteissuesrelation rir 
       ON ri.viewpointId = rir.viewpointId AND ri.projectId = rir.projectId
       AND ((ri.remoteIssueId = rir.parentIssueId AND ri.remoteProjectId = rir.parentRemoteProjectId) 
@@ -121,6 +120,17 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
         [viewpointId, projectId]
       )
     )[0];
+
+    result.forEach(async value => {
+      value.kpiErrors = (
+        await conn.query<IssueErrorObject[]>(
+          `SELECT class, type, descr 
+        FROM RemoteIssuesKPIErrors
+        WHERE viewpointId = ? AND projectId = ? AND remoteProjectId = ? AND RemoteIssueId = ?`,
+          [value.viewpointId, value.projectId, value.remoteIssueId, value.remoteIssueId]
+        )
+      )[0];
+    });
 
     res.json(result);
   } catch (err: any) {
@@ -179,28 +189,38 @@ export async function issueIsPartofRelationship(req: Request, res: Response) {
   try {
     const conn = await connect();
 
-    const result = (await conn.query<IssueRelation[]>('SELECT * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ? AND (parentIssueId = ? OR childIssueId = ?)', [projectId, viewpointId, issueId, issueId]))[0];
-    
-    if (result.length === 0) res.json({ isPart: false })
-    else res.json({ isPart: true })
+    const result = (
+      await conn.query<IssueRelation[]>(
+        'SELECT * FROM RemoteIssuesRelation WHERE projectId = ? AND viewpointId = ? AND (parentIssueId = ? OR childIssueId = ?)',
+        [projectId, viewpointId, issueId, issueId]
+      )
+    )[0];
 
+    if (result.length === 0) res.json({ isPart: false });
+    else res.json({ isPart: true });
   } catch (err: any) {
     handleError(res, err);
   }
-
 }
 
-export async function updateIssueKPIErrors(connection: PoolConnection, projectId: string, viewpointId: number, remoteProjectId: number, remoteIssueId: number, kpiErrors: IssueErrorObject[]) {
-  console.log(kpiErrors)
-  let kpiErrorsString: string = JSON.stringify(kpiErrors);
-  console.log(kpiErrorsString)
-  await connection.query('UPDATE kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId])
-
+export async function updateIssueKPIErrors(
+  connection: PoolConnection,
+  projectId: string,
+  viewpointId: number,
+  remoteProjectId: number,
+  remoteIssueId: number,
+  kpiErrors: IssueErrorObject[]
+) {
+  console.log(kpiErrors);
+  let kpiErrorsString = JSON.stringify(kpiErrors);
+  await connection.query(
+    `UPDATE remoteissues SET kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?`,
+    [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId]
+  );
 }
 
+// function convertJSONtoString(issues: RemoteIssues[]) {
+//   issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
+// }
 
-function convertJSONtoString(issues: RemoteIssues[]) {
-  console.log(issues)
-  issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
-}
-
+//TODO Function that enhances RemoteIssues
