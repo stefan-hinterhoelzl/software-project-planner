@@ -224,3 +224,7 @@ export async function updateIssueKPIErrors(
 // }
 
 //TODO Function that enhances RemoteIssues
+
+async function enrichIssuesWithErrors(remoteIssues: RemoteIssues) {
+  
+}
