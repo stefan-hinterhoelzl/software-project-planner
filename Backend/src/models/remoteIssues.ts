@@ -30,6 +30,16 @@ export interface IssueRelation extends RowDataPacket {
     type: ErrorType,
     descr: string,
   }
+
+  export interface ExtendedIssueErrorObject extends RowDataPacket {
+    class: ErrorClass,
+    type: ErrorType,
+    descr: string,
+    projectId: string,
+    viewpointId: number,
+    remoteProjectId: number,
+    remoteIssueId: number,
+  }
   
   export enum ErrorType {
     W = 1,

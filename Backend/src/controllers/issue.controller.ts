@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { connect } from '../database';
-import { IssueErrorObject, IssueRelation, RemoteIssues } from '../models/remoteIssues';
+import { ExtendedIssueErrorObject, IssueErrorObject, IssueRelation, RemoteIssues, RemoteIssuesWithErrors } from '../models/remoteIssues';
 import { handleError } from './controller.util';
-import { PoolConnection } from 'mysql2/promise';
+import { PoolConnection, Pool } from 'mysql2/promise';
 
 export async function addRemoteIssuesToProjectViewpoint(req: Request, res: Response) {
   try {
@@ -52,7 +52,10 @@ export async function getRemoteIssuesbyIDs(req: Request, res: Response) {
           issues,
         ])
       )[0];
-      res.json(result);
+
+      const extendedResult: RemoteIssuesWithErrors[] = await getKPIErrorsForIssue(result, conn);
+
+      res.json(extendedResult);
     }
   } catch (err: any) {
     handleError(res, err);
@@ -211,16 +214,50 @@ export async function updateIssueKPIErrors(
   remoteIssueId: number,
   kpiErrors: IssueErrorObject[]
 ) {
-  console.log(kpiErrors);
-  let kpiErrorsString = JSON.stringify(kpiErrors);
-  await connection.query(
-    `UPDATE remoteissues SET kpiErrors = ? WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?`,
-    [kpiErrorsString, projectId, viewpointId, remoteProjectId, remoteIssueId]
-  );
+  await connection.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [
+    projectId,
+    viewpointId,
+    remoteProjectId,
+    remoteIssueId,
+  ]);
+
+  const extendedErrors = kpiErrors.map(value => {
+    return <ExtendedIssueErrorObject>{
+      class: value.class,
+      type: value.type,
+      descr: value.descr,
+      projectId: projectId,
+      viewpointId: viewpointId,
+      remoteProjectId: remoteProjectId,
+      remoteIssueId: remoteIssueId,
+    };
+  });
+
+  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO remoteissueskpierrors SET ?', [value]))]);
 }
 
-// function convertJSONtoString(issues: RemoteIssues[]) {
-//   issues.forEach(value => value.kpiErrors = JSON.stringify(value.kpiErrors))
-// }
+async function getKPIErrorsForIssue(remoteIssues: RemoteIssues[], conn: Pool): Promise<RemoteIssuesWithErrors[]> {
+  const remoteIssuesWithErrors: RemoteIssuesWithErrors[] = [];
 
-//TODO Function that enhances RemoteIssues
+  for (let i = 0; i < remoteIssues.length; i++) {
+    let issue = remoteIssues[i];
+    const result = (
+      await conn.query<IssueErrorObject[]>(
+        `SELECT class, type, descr  FROM RemoteIssuesKPIErrors WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?`,
+        [issue.projectId, issue.viewpointId, issue.remoteProjectId, issue.remoteIssueId]
+      )
+    )[0];
+
+    let newValue = <RemoteIssuesWithErrors>{
+      projectId: issue.projectId,
+      remoteProjectId: issue.remoteProjectId,
+      viewpointId: issue.viewpointId,
+      remoteIssueId: issue.remoteIssueId,
+      kpiErrors: result,
+    };
+
+    remoteIssuesWithErrors.push(newValue);
+  }
+
+  return remoteIssuesWithErrors;
+}

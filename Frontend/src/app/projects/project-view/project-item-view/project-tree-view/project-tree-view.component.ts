@@ -130,6 +130,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res => ({ res, relations })));
     }),
     switchMap(data => {
+      console.log(data)
       return this.getALMIssues(data.res).pipe(map(values => ({ values, data })));
     }),
     tap(data => {
@@ -161,6 +162,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
       //state boolean
       this.treeLoading = false;
+      console.log(this.treeData)
     }),
     share()
   );
