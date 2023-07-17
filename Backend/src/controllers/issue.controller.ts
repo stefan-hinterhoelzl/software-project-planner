@@ -259,5 +259,6 @@ async function getKPIErrorsForIssue(remoteIssues: RemoteIssues[], conn: Pool): P
     remoteIssuesWithErrors.push(newValue);
   }
 
-  return remoteIssuesWithErrors;
+  return remoteIssuesWithErrors
 }
+
