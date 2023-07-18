@@ -48,8 +48,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   viewpoint$ = this.data.activeViewpoint$.pipe(
     delay(0), //help the change detection by moving the execution into the next cycle
     tap(() => {
+      console.log('i am here')
       this.nodeLookup.clear();
-    })
+    }),
+    share()
   );
 
   backlog: IssueNode[];
@@ -90,7 +92,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.getALMIssues(issues).pipe(map(ALMIssues => ({ issues, ALMIssues })));
     }),
     tap(issues => {
-      console.log(issues)
       issues.ALMIssues.forEach(ALMIssue => {
         let issue: Issue = issues.issues.find(val => val.remoteIssueId === ALMIssue.issueId && val.remoteProjectId === ALMIssue.projectId)!;
         if (issue !== undefined) {
@@ -99,6 +100,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           this.filteredBacklog.push(node);
           if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
         }
+      });
+
+      console.log(this.nodeLookup)
+      this.nodeLookup.forEach((value, key) => {
+        console.log(key, value);
       });
 
       //state boolean
@@ -130,11 +136,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
       return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res => ({ res, relations })));
     }),
     switchMap(data => {
-      console.log(data)
       return this.getALMIssues(data.res).pipe(map(values => ({ values, data })));
     }),
     tap(data => {
-      console.log(data)
       let arr: IssueNode[] = [];
       data.values.forEach(ALMIssue => {
         let currIndex: number = data.data.relations.findIndex(
@@ -162,7 +166,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
       //state boolean
       this.treeLoading = false;
-      console.log(this.treeData)
     }),
     share()
   );
@@ -314,10 +317,12 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   }
 
   evaluateTree(tree: IssueNode[]) {
-    console.log(tree)
+    this.treeLoading = true;
     this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
       next: (evaluatedTree) => {
         this.applyNewKPIErrors(evaluatedTree)
+        this.treeLoading = false;
+        this.snackbar.openSnackBar("Tree evalutation successful!")
       },
       error: (err) => {
         this.snackbar.openSnackBar("Error evaluating the hierarchy. Try again later", 'red-snackbar')
@@ -339,7 +344,17 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
 
   drop(event: any) {
+
+    console.log(event)
     const draggedItemId: string = event.item.data;
+
+    console.log(draggedItemId)
+    console.log(this.nodeLookup)
+
+    this.nodeLookup.forEach((value, key) => {
+      console.log(key, value);
+    });
+
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
     console.log(draggedItem)

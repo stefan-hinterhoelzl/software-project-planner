@@ -66,14 +66,12 @@
               </button>
               <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
-                matTooltip="Evaluate the tree for any planning inconsistencies" [matTooltipShowDelay]="2000"
+                matTooltip="Evaluate the tree for any planning inconsistencies. Last evaluation: {{(this.viewpoint$ | async)?.lastEvaluated | date:'short'}}" [matTooltipShowDelay]="2000"
                 mat-raised-button color="primary" (click)="evaluateTree(treeData)">
                 <mat-icon>loop</mat-icon> Evaluate Tree
               </button>
 
-
             </div>
-
             <mat-divider class="mat-divider-horicontal"></mat-divider>
             <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="'main'">
               <h3>Drop First Item</h3>

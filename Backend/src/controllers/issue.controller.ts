@@ -124,18 +124,9 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
       )
     )[0];
 
-    result.forEach(async value => {
-      value.kpiErrors = (
-        await conn.query<IssueErrorObject[]>(
-          `SELECT class, type, descr 
-        FROM RemoteIssuesKPIErrors
-        WHERE viewpointId = ? AND projectId = ? AND remoteProjectId = ? AND RemoteIssueId = ?`,
-          [value.viewpointId, value.projectId, value.remoteIssueId, value.remoteIssueId]
-        )
-      )[0];
-    });
+    const extendedResult: RemoteIssuesWithErrors[] = await getKPIErrorsForIssue(result, conn);
 
-    res.json(result);
+    res.json(extendedResult);
   } catch (err: any) {
     handleError(res, err);
   }
@@ -214,12 +205,6 @@ export async function updateIssueKPIErrors(
   remoteIssueId: number,
   kpiErrors: IssueErrorObject[]
 ) {
-  await connection.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ? AND remoteProjectId = ? AND remoteIssueId = ?', [
-    projectId,
-    viewpointId,
-    remoteProjectId,
-    remoteIssueId,
-  ]);
 
   const extendedErrors = kpiErrors.map(value => {
     return <ExtendedIssueErrorObject>{

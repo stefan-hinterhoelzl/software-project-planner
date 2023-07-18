@@ -2,48 +2,56 @@ import { Request, Response } from 'express';
 import { ErrorClass, ErrorType, IssueNode } from '../models/nodes';
 import { updateViewpointLastEdited } from './projectviewpoint.controller';
 import { handleError } from './controller.util';
-import { getConnection } from '../database';
+import { connect, getConnection } from '../database';
 import { PoolConnection } from 'mysql2/promise';
 import { updateIssueKPIErrors } from './issue.controller';
 import { IssueErrorObject } from '../models/remoteIssues';
+import { error } from 'console';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
   let connection: PoolConnection = await getConnection();
   let tree: IssueNode[] = req.body;
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
 
   try {
-    var projectId: string = req.params.projectId;
-    var viewpointId: number = Number(req.params.viewpointId);
+    const conn = await connect();
+    await conn.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
     tree.forEach(async (value, index, arr) => {
-      checkDeadlines(value, value);
-      await updateIssueKPIErrors(connection, projectId, viewpointId, value.issue.projectId, value.issue.issueId, value.kpiErrors)
+      checkForErrors(value, value, connection, projectId, viewpointId);
+      await updateIssueKPIErrors(connection, projectId, viewpointId, value.issue.projectId, value.issue.issueId, value.kpiErrors);
     });
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
-    
+
     await connection.commit();
 
     res.json(tree);
-
   } catch (err: any) {
     await connection.rollback();
     handleError(res, err);
-
   } finally {
-
     connection.release();
   }
 }
 
 //check for the deadlines - Depth first search
-const checkDeadlines = (node: IssueNode, entryNode: IssueNode): void => {
-  node.kpiErrors = node.kpiErrors.filter(value => value.class !== ErrorClass.DeadlineError); //filter out old errors
+const checkForErrors = async (
+  node: IssueNode,
+  entryNode: IssueNode,
+  connection: PoolConnection,
+  projectId: string,
+  viewpointId: number
+): Promise<void> => {
+  node.kpiErrors = [];
 
   if (node.issue.state === 'opened') {
     //only evaluate opened items / closed ones are automatically green
 
+
+    //Deadline
     if (node.issue.dueDate !== null) {
       let timeDiff: number = node.issue.dueDate.getTime() - Date.now();
 
@@ -64,21 +72,42 @@ const checkDeadlines = (node: IssueNode, entryNode: IssueNode): void => {
       }
     } else {
       let errorObject: IssueErrorObject = <IssueErrorObject>{
-        type: ErrorType.W,
+        type: ErrorType.E,
         class: ErrorClass.DeadlineError,
         descr: `There is no due date for this item.`,
       };
       node.kpiErrors.push(errorObject);
     }
+
+    //Timestats
+    if (node.issue.timeStats.estimateHours === null || node.issue.timeStats.estimateHours === 0) {
+      let errorObject: IssueErrorObject = <IssueErrorObject>{
+        type: ErrorType.E,
+        class: ErrorClass.WorkhoursError,
+        descr: `There is no time estimate for this item.`,
+      };
+      node.kpiErrors.push(errorObject);
+    } else {
+      if (node.issue.timeStats.estimateHours <= node.issue.timeStats.spentHours) {
+        let errorObject: IssueErrorObject = <IssueErrorObject>{
+          type: ErrorType.E,
+          class: ErrorClass.WorkhoursError,
+          descr: `The work estimate for this item was overshot.`,
+        };
+        node.kpiErrors.push(errorObject);
+      }
+    }
+
+    await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
   }
 
   node.children.forEach((value, index, arr) => {
-    checkDeadlines(value, entryNode);
+    checkForErrors(value, entryNode, connection, projectId, viewpointId);
   });
 };
 
 //Also mark parent Nodes?
-const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => { };
+const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
 
 export async function detectHierarchies(req: Request, res: Response) {
   //TODO
