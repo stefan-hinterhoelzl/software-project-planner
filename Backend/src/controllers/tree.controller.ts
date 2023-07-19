@@ -6,7 +6,6 @@ import { connect, getConnection } from '../database';
 import { PoolConnection } from 'mysql2/promise';
 import { updateIssueKPIErrors } from './issue.controller';
 import { IssueErrorObject } from '../models/remoteIssues';
-import { error } from 'console';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
@@ -88,6 +87,7 @@ const checkForErrors = async (
       };
       node.kpiErrors.push(errorObject);
     } else {
+
       if (node.issue.timeStats.estimateHours <= node.issue.timeStats.spentHours) {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
           type: ErrorType.E,
@@ -96,6 +96,11 @@ const checkForErrors = async (
         };
         node.kpiErrors.push(errorObject);
       }
+
+      else if (node.issue.timeStats.spentHours >= node.issue.timeStats.estimateHours * 0.95) {
+        
+      }
+
     }
 
     await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
