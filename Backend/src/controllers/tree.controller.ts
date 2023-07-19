@@ -98,9 +98,13 @@ const checkForErrors = async (
       }
 
       else if (node.issue.timeStats.spentHours >= node.issue.timeStats.estimateHours * 0.95) {
-        
+        let errorObject: IssueErrorObject = <IssueErrorObject>{
+          type: ErrorType.W,
+          class: ErrorClass.WorkhoursError,
+          descr: `The work estimate for this item has reached 95% of the estimate.`,
+        };
+        node.kpiErrors.push(errorObject);
       }
-
     }
 
     await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
