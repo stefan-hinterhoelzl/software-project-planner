@@ -1,1 +1,16 @@
-<p>node-backlog-detail-dialog works!</p>
+<h1 cdkFocusRegionStart mat-dialog-title>{{ node.issue.title }}</h1>
+
+<mat-dialog-content class="mat-typography">
+
+  <button mat-flat-button color="primary" [autofocus]="false"> {{ node.issue.type }} </button>
+  <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ node.issue.state }} </button>
+
+
+  <p>Issue last modified at: {{ node.issue.updatedAt | date : "short" }}</p>
+
+  <p [innerHTML]="node.issue.description | markdown"></p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button color="primary" mat-raised-button (keydown)="onKeydownEvent($event)" mat-dialog-close (click) = "close()">Close</button>
+</mat-dialog-actions>
+

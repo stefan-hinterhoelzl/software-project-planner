@@ -4,6 +4,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
+import { NodeBacklogDetailDialogComponent } from 'src/app/dialogs/node-backlog-detail-dialog/node-backlog-detail-dialog.component';
+import { NodeTreeDetailDialogComponent } from 'src/app/dialogs/node-tree-detail-dialog/node-tree-detail-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
 import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
@@ -564,5 +566,19 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.convertChildren(nodes, arr);
     let tree: string = JSON.stringify(arr);
     return tree;
+  }
+
+  openIssueDetailDialog(node: IssueNode, tree: boolean) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.minWidth = '1000px';
+
+    dialogConfig.data = {
+      node: node,
+    };
+
+    if (tree) this.dialog.open(NodeTreeDetailDialogComponent, dialogConfig);
+    else this.dialog.open(NodeBacklogDetailDialogComponent, dialogConfig);
+
   }
 }

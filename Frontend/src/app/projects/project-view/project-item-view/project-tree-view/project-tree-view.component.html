@@ -27,7 +27,7 @@
             </div>
             <div class = "issue-drop-list" cdkDropList [cdkDropListData]="backlog" [id]="'backlog'" (cdkDropListDropped)="drop($event)"
               [cdkDropListSortingDisabled]="true">
-              <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id"
+              <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id" (click)="openIssueDetailDialog(node, false)"
                 (cdkDragMoved)="dragMoved($event)" class="issue-list-item">
                 <div class="node-item backlog-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
                   <p>{{ node.issue.title }}</p>
@@ -106,7 +106,7 @@
       </span>
       <span *ngIf="!node.children.length" style="margin-left: 24px"> </span>
       <div class="tree-issue-title">
-        <div class="tree-issue-title-nesting">
+        <div class="tree-issue-title-nesting" (click)="openIssueDetailDialog(node, true)">
           {{ node.issue.title }}
           <span class="item-notes"> {{ node.children.length }} {{ node.children.length === 1 ? 'Nested Item' : 'Nested
             Items' }} | {{node.issue.state}} </span>
