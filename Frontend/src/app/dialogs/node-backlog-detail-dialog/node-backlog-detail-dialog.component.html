@@ -1,6 +1,8 @@
-<h1 cdkFocusRegionStart mat-dialog-title>{{ node.issue.title }}</h1>
+<h1 cdkFocusRegionStart mat-dialog-title>Item in Backlog</h1>
+<h1 mat-dialog-title>{{ node.issue.title }}</h1>
 
 <mat-dialog-content class="mat-typography">
+
 
   <button mat-flat-button color="primary" [autofocus]="false"> {{ node.issue.type }} </button>
   <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ node.issue.state }} </button>

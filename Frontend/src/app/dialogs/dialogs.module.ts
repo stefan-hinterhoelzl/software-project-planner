@@ -10,6 +10,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { NewViewpointDialogComponent } from './new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { NodeBacklogDetailDialogComponent } from './node-backlog-detail-dialog/node-backlog-detail-dialog.component';
 import { NodeTreeDetailDialogComponent } from './node-tree-detail-dialog/node-tree-detail-dialog.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { NodeTreeDetailDialogComponent } from './node-tree-detail-dialog/node-tr
     MatButtonModule,
     MatButtonToggleModule,
     MatChipsModule,
+    MatDividerModule,
   ]
 })
 export class DialogsModule { }

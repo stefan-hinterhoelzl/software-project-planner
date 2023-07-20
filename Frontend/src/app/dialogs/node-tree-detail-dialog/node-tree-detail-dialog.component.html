@@ -1,17 +1,22 @@
-<h1 cdkFocusRegionStart mat-dialog-title>{{ node.issue.title }}</h1>
+<h3 cdkFocusRegionStart mat-dialog-title>Item in Tree</h3>
+<h1 mat-dialog-title>{{ node.issue.title }}</h1>
 
 <mat-dialog-content class="mat-typography">
+  <h5 class="section-header">KPIs</h5>
+  <mat-divider></mat-divider>
 
-  <button mat-flat-button color="primary" [autofocus]="false"> {{ node.issue.type }} </button>
-  <button style = "margin-left: 10px" mat-flat-button color="primary"> {{ node.issue.state }} </button>
+  <div style ="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center;">
+    <p style = "margin-bottom: 2px;">{{ node.issue.timeStats.spentHours }} / {{ node.issue.timeStats.estimateHours }}</p>
+    <p style = "margin-top: 0px; font-size: small;">Hours spent</p>
+  </div>
 
+  <button mat-flat-button color="primary" [autofocus]="false">{{ node.issue.type }}</button>
+  <button style="margin-left: 10px" mat-flat-button color="primary">{{ node.issue.state }}</button>
 
-  <p>Issue last modified at: {{ node.issue.updatedAt | date : "short" }}</p>
+  <p>Issue last modified at: {{ node.issue.updatedAt | date : 'short' }}</p>
 
   <p [innerHTML]="node.issue.description | markdown"></p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button color="primary" mat-raised-button (keydown)="onKeydownEvent($event)" mat-dialog-close (click) = "close()">Close</button>
+  <button color="primary" mat-raised-button (keydown)="onKeydownEvent($event)" mat-dialog-close (click)="close()">Close</button>
 </mat-dialog-actions>
-
-
