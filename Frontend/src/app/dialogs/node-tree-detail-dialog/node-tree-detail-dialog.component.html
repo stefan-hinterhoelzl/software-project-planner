@@ -1,17 +1,37 @@
-<h3 cdkFocusRegionStart mat-dialog-title>Item in Tree</h3>
+<h3 cdkFocusRegionStart mat-dialog-title>Item in tree</h3>
 <h1 mat-dialog-title>{{ node.issue.title }}</h1>
 
 <mat-dialog-content class="mat-typography">
+  <button mat-flat-button color="primary" [autofocus]="false">{{ node.issue.type }}</button>
+  <button style="margin-left: 10px" mat-flat-button color="primary">{{ node.issue.state }}</button>
   <h5 class="section-header">KPIs</h5>
   <mat-divider></mat-divider>
 
-  <div style ="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center;">
-    <p style = "margin-bottom: 2px;">{{ node.issue.timeStats.spentHours }} / {{ node.issue.timeStats.estimateHours }}</p>
-    <p style = "margin-top: 0px; font-size: small;">Hours spent</p>
+  <div style="display: flex; flex-direction: row; align-items: center">
+    <div style="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center">
+      <p style="margin-bottom: 2px">{{ node.issue.timeStats.spentHours }} / {{ node.issue.timeStats.estimateHours }}</p>
+      <p style="margin-top: 0px; font-size: smaller">Hours spent</p>
+    </div>
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 2) === 2" src="../../../assets/images/error.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 2) === 1" src="../../../assets/images/warning.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 2) === undefined" src="../../../assets/images/success.png" />
+
+    <div style="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center">
+      <p *ngIf="node.issue.dueDate !== null" style="margin-bottom: 2px">{{ node.issue.dueDate }}</p>
+      <p *ngIf="node.issue.dueDate === null" style="margin-bottom: 2px">no due date</p>
+      <p style="margin-top: 0px; font-size: smaller">Due date</p>
+    </div>
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === 2" src="../../../assets/images/error.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === 1" src="../../../assets/images/warning.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === undefined" src="../../../assets/images/success.png" />
   </div>
 
-  <button mat-flat-button color="primary" [autofocus]="false">{{ node.issue.type }}</button>
-  <button style="margin-left: 10px" mat-flat-button color="primary">{{ node.issue.state }}</button>
+  <h5 class="section-header">Detected problems</h5>
+  <mat-divider></mat-divider>
+
+
+  <h5 class="section-header">Issue Information</h5>
+  <mat-divider></mat-divider>
 
   <p>Issue last modified at: {{ node.issue.updatedAt | date : 'short' }}</p>
 

@@ -20,6 +20,7 @@ export interface ALMIssue {
     createdAt: Date;
     updatedAt: Date;
     dueDate: Date;
+    closedAt: Date;
     state: string;
     type: string;
     webURL: string;

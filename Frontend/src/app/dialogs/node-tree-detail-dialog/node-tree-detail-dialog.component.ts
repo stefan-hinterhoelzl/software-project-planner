@@ -1,6 +1,7 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IssueNode } from 'src/app/models/node';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-node-tree-detail-dialog',
@@ -11,6 +12,7 @@ export class NodeTreeDetailDialogComponent {
   public node: IssueNode
 
   dialogRef = inject(MatDialogRef<NodeTreeDetailDialogComponent>)
+  dialogService = inject(DialogService)
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.node = data.node;
