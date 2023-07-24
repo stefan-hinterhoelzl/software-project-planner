@@ -41,4 +41,5 @@ export interface ALMTimeStats {
   export enum ErrorClass {
     DeadlineError = 1,
     WorkhoursError = 2,
+    DeadlineInconsistencyError = 3,
   }

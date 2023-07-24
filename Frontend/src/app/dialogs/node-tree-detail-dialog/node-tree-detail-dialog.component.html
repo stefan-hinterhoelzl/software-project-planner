@@ -7,7 +7,7 @@
   <h5 class="section-header">KPIs</h5>
   <mat-divider></mat-divider>
 
-  <div style="display: flex; flex-direction: row; align-items: center">
+  <div class="problem-row">
     <div style="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center">
       <p style="margin-bottom: 2px">{{ node.issue.timeStats.spentHours }} / {{ node.issue.timeStats.estimateHours }}</p>
       <p style="margin-top: 0px; font-size: smaller">Hours spent</p>
@@ -29,6 +29,17 @@
   <h5 class="section-header">Detected problems</h5>
   <mat-divider></mat-divider>
 
+  <div *ngFor="let problem of node.kpiErrors">
+    <div class="problem-row" *ngIf="problem.type === 2">
+      <img src="../../../assets/images/error.png" />
+      <p>{{ problem.descr }}</p>
+    </div>
+
+    <div class="problem-row" *ngIf="problem.type === 1">
+      <img src="../../../assets/images/warning.png" />
+      <p>{{ problem.descr }}</p>
+    </div>
+  </div>
 
   <h5 class="section-header">Issue Information</h5>
   <mat-divider></mat-divider>

@@ -123,6 +123,16 @@ const checkForErrors = async (
     }
   }
 
+  let inconsistencyFound: boolean = false;
+
+  //Deadline Inconsistencies -- TODO
+  node.children.forEach((value, index, arr) => {
+    if (!inconsistencyFound) {
+      inconsistencyFound = childWithlaterDeadline(node, value);
+    }
+
+  })
+
   if (node.kpiErrors.length !== 0) {
     await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
   }
@@ -132,6 +142,11 @@ const checkForErrors = async (
     checkForErrors(value, entryNode, connection, projectId, viewpointId);
   });
 };
+
+function childWithlaterDeadline(parent: IssueNode, checkedChild: IssueNode): boolean {
+  return checkedChild.issue.dueDate > parent.issue.dueDate;
+
+}
 
 //Also mark parent Nodes?
 const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
