@@ -56,7 +56,8 @@ const checkForInternalErrors = async (
     if (node.issue.state === 'opened') {
       //only evaluate opened items / closed ones are automatically green
 
-      let timeDiff: number = node.issue.dueDate.getTime() - Date.now();
+      console.log(node.issue)
+      let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
 
       if (timeDiff < 86400000) {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
