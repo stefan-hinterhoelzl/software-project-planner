@@ -10,7 +10,7 @@
   <div class="problem-row">
     <div style="display: flex; justify-content: center; flex-direction: column; width: 100px; text-align: center">
       <p style="margin-bottom: 2px">{{ node.issue.timeStats.spentHours }} / {{ node.issue.timeStats.estimateHours }}</p>
-      <p style="margin-top: 0px; font-size: smaller">Hours spent</p>
+      <p style="margin-top: 0px; font-size: smaller">Time</p>
     </div>
     <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 2) === 2" src="../../../assets/images/error.png" />
     <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 2) === 1" src="../../../assets/images/warning.png" />
@@ -39,6 +39,11 @@
       <img src="../../../assets/images/warning.png" />
       <p>{{ problem.descr }}</p>
     </div>
+  </div>
+
+  <div class="problem-row" *ngIf="node.kpiErrors.length === 0">
+    <img src="../../../assets/images/success.png" />
+    <p>No problems detected</p>
   </div>
 
   <h5 class="section-header">Issue Information</h5>

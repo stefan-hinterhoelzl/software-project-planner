@@ -239,7 +239,6 @@ export class ProjectListViewComponent implements OnInit {
           remoteProjectId: issue.projectId,
           projectId: this.project?.projectId,
           viewpointId: this.viewpoint?.viewpointId,
-          kpiErrors: [],
         });
       else {
         let n: number = this.selectedDeltaMinus?.findIndex(value => value.remoteIssueId === issue.issueId)!;
@@ -253,7 +252,6 @@ export class ProjectListViewComponent implements OnInit {
           remoteProjectId: issue.projectId,
           projectId: this.project?.projectId,
           viewpointId: this.viewpoint?.viewpointId,
-          kpiErrors: [],
         });
       else {
         let n: number = this.selectedDeltaPlus?.findIndex(value => value.remoteIssueId === issue.issueId)!;

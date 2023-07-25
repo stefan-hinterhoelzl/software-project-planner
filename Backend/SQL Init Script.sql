@@ -1,6 +1,8 @@
 Drop Table RemoteIssues;
 Drop Table remoteissuesrelation;
+Drop Table remoteissueskpierrors;
 Drop Table RemoteProjects;
+Drop Table viewpointhierarchiesettings;
 Drop Table Viewpoints;
 Drop Table Projects;
 Drop Table Users;

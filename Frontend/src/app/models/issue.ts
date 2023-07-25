@@ -6,7 +6,7 @@ export interface Issue {
   projectId: string,
   remoteProjectId: number,
   remoteIssueId: number,
-  kpiErrors: IssueErrorObject[],
+  kpiErrors?: IssueErrorObject[],
 }
 
 export interface IssueJSONCheckObject {

@@ -19,11 +19,10 @@ export async function evaluateTree(req: Request, res: Response) {
     await conn.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
     tree.forEach(async (value, index, arr) => {
-      checkForErrors(value, value, connection, projectId, viewpointId);
+      checkForInternalErrors(value, value, connection, projectId, viewpointId);
     });
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
-
     await connection.commit();
 
     res.json(tree);
@@ -36,7 +35,7 @@ export async function evaluateTree(req: Request, res: Response) {
 }
 
 //check for the deadlines - Depth first search
-const checkForErrors = async (
+const checkForInternalErrors = async (
   node: IssueNode,
   entryNode: IssueNode,
   connection: PoolConnection,
@@ -123,23 +122,13 @@ const checkForErrors = async (
     }
   }
 
-  let inconsistencyFound: boolean = false;
-
-  //Deadline Inconsistencies -- TODO
-  node.children.forEach((value, index, arr) => {
-    if (!inconsistencyFound) {
-      inconsistencyFound = childWithlaterDeadline(node, value);
-    }
-
-  })
-
   if (node.kpiErrors.length !== 0) {
     await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
   }
   
 
   node.children.forEach((value, index, arr) => {
-    checkForErrors(value, entryNode, connection, projectId, viewpointId);
+    checkForInternalErrors(value, entryNode, connection, projectId, viewpointId);
   });
 };
 
@@ -150,8 +139,6 @@ function childWithlaterDeadline(parent: IssueNode, checkedChild: IssueNode): boo
 
 //Also mark parent Nodes?
 const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
-
-
 
 
 export async function detectHierarchies(req: Request, res: Response) {
