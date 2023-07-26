@@ -19,7 +19,8 @@ export async function evaluateTree(req: Request, res: Response) {
     await conn.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
     tree.forEach(async (value, index, arr) => {
-      checkForInternalErrors(value, value, connection, projectId, viewpointId);
+      checkForInternalErrors(value, connection, projectId, viewpointId);
+      checkForChildrenErrors(value, connection, projectId, viewpointId);
     });
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
@@ -34,10 +35,27 @@ export async function evaluateTree(req: Request, res: Response) {
   }
 }
 
+function checkForChildrenErrors(node: IssueNode, connection: PoolConnection, projectId: string, viewpointId: number) {
+  node.children.forEach((child, index, arr) => {
+    childWithlaterDeadline(node, child)
+  })
+
+
+
+  
+}
+
+//check if there is a child with later deadline
+function childWithlaterDeadline(parent: IssueNode, child: IssueNode): boolean {
+  if (child.issue.dueDate !== null && parent.issue.dueDate !== null)
+  return child.issue.dueDate > parent.issue.dueDate;
+  else return false
+
+}
+
 //check for the deadlines - Depth first search
 const checkForInternalErrors = async (
   node: IssueNode,
-  entryNode: IssueNode,
   connection: PoolConnection,
   projectId: string,
   viewpointId: number
@@ -128,14 +146,11 @@ const checkForInternalErrors = async (
   
 
   node.children.forEach((value, index, arr) => {
-    checkForInternalErrors(value, entryNode, connection, projectId, viewpointId);
+    checkForInternalErrors(value, connection, projectId, viewpointId);
   });
 };
 
-function childWithlaterDeadline(parent: IssueNode, checkedChild: IssueNode): boolean {
-  return checkedChild.issue.dueDate > parent.issue.dueDate;
 
-}
 
 //Also mark parent Nodes?
 const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
