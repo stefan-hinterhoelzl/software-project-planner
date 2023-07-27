@@ -18,10 +18,15 @@ export async function evaluateTree(req: Request, res: Response) {
     const conn = await connect();
     await conn.query('DELETE FROM remoteissueskpierrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
+
+    //Internal Errors
     tree.forEach(async (value, index, arr) => {
       checkForInternalErrors(value, connection, projectId, viewpointId);
-      checkForChildrenErrors(value, connection, projectId, viewpointId);
     });
+
+    //ChildrenErrors
+    checkForChildrenErrors(tree, connection, projectId, viewpointId);
+
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
     await connection.commit();
@@ -35,31 +40,46 @@ export async function evaluateTree(req: Request, res: Response) {
   }
 }
 
-function checkForChildrenErrors(node: IssueNode, connection: PoolConnection, projectId: string, viewpointId: number) {
-  node.children.forEach((child, index, arr) => {
-    childWithlaterDeadline(node, child)
-  })
+function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, projectId: string, viewpointId: number) {
+  tree.forEach((node, index, arr) => { //currently checked item
 
+    let problemNode: IssueNode | null = childWithlaterDeadline(node);
 
+    if (problemNode !== null) {
+      let errorObject: IssueErrorObject = <IssueErrorObject>{
+        type: ErrorType.E,
+        class: ErrorClass.DeadlineInconsistencyError,
+        descr: `Nested Item '${problemNode.issue.description}' has a later due date (${problemNode.issue.dueDate}) than the parent)`,
+      };
+      node.kpiErrors.push(errorObject);
+    };
 
-  
+    if (node.children.length !== 0) checkForChildrenErrors(node.children, connection, projectId, viewpointId)
+  });
 }
 
 //check if there is a child with later deadline
-function childWithlaterDeadline(parent: IssueNode, child: IssueNode): boolean {
-  if (child.issue.dueDate !== null && parent.issue.dueDate !== null)
-  return child.issue.dueDate > parent.issue.dueDate;
-  else return false
+function childWithlaterDeadline(node: IssueNode): IssueNode | null {
+  let problemNode: IssueNode | null = null;
 
+  let nodesToCheck: IssueNode[] = []
+
+  nodesToCheck.push(...node.children);
+
+  while (problemNode === null && nodesToCheck.length !== 0) {
+    let currNode: IssueNode = nodesToCheck[0];
+    if (currNode.issue.dueDate > node.issue.dueDate) {
+      problemNode = currNode;
+    } 
+
+    if (currNode.children.length !== 0) nodesToCheck.push(...currNode.children);
+  }
+
+  return problemNode;
 }
 
 //check for the deadlines - Depth first search
-const checkForInternalErrors = async (
-  node: IssueNode,
-  connection: PoolConnection,
-  projectId: string,
-  viewpointId: number
-): Promise<void> => {
+const checkForInternalErrors = async (node: IssueNode, connection: PoolConnection, projectId: string, viewpointId: number): Promise<void> => {
   node.kpiErrors = [];
 
   //Deadline
@@ -76,14 +96,21 @@ const checkForInternalErrors = async (
 
       let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
 
-      if (timeDiff < 432000000) {
+      if (timeDiff < 432000000 && timeDiff > 86400000) {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
           type: ErrorType.W,
           class: ErrorClass.DeadlineError,
           descr: `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`,
         };
         node.kpiErrors.push(errorObject);
-      } else if (timeDiff < 0) {
+      } else if (timeDiff < 86400000 && timeDiff > -43200000) {
+        let errorObject: IssueErrorObject = <IssueErrorObject>{
+          type: ErrorType.W,
+          class: ErrorClass.DeadlineError,
+          descr: `Item is due today.`,
+        };
+        node.kpiErrors.push(errorObject);
+      } else {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
           type: ErrorType.E,
           class: ErrorClass.DeadlineError,
@@ -143,18 +170,14 @@ const checkForInternalErrors = async (
   if (node.kpiErrors.length !== 0) {
     await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
   }
-  
 
   node.children.forEach((value, index, arr) => {
     checkForInternalErrors(value, connection, projectId, viewpointId);
   });
 };
 
-
-
 //Also mark parent Nodes?
 const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
-
 
 export async function detectHierarchies(req: Request, res: Response) {
   //TODO

@@ -49,4 +49,5 @@ export interface IssueRelation extends RowDataPacket {
   export enum ErrorClass {
     DeadlineError = 1,
     WorkhoursError = 2,
+    DeadlineInconsistencyError = 3,
   }
