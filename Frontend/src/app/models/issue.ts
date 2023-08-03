@@ -6,7 +6,7 @@ export interface Issue {
   projectId: string,
   remoteProjectId: number,
   remoteIssueId: number,
-  kpiErrors?: IssueErrorObject[],
+  kpiErrors: IssueErrorObject[],
 }
 
 export interface IssueJSONCheckObject {
@@ -43,4 +43,5 @@ export enum ErrorType {
 export enum ErrorClass {
   DeadlineError = 1,
   WorkhoursError = 2,
+  DeadlineInconsistencyError = 3,
 }
