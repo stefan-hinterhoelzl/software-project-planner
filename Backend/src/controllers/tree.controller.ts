@@ -96,7 +96,7 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
 
       let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
 
-      if (timeDiff < 432000000 && timeDiff > 86400000) {
+      if (timeDiff < 432000000 && timeDiff >= 86400000) {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
           type: ErrorType.W,
           class: ErrorClass.DeadlineError,
@@ -110,7 +110,7 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
           descr: `Item is due today.`,
         };
         node.kpiErrors.push(errorObject);
-      } else {
+      } else if (timeDiff <= -43200000) {
         let errorObject: IssueErrorObject = <IssueErrorObject>{
           type: ErrorType.E,
           class: ErrorClass.DeadlineError,
