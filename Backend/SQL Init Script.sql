@@ -67,15 +67,18 @@ Create Table RemoteIssues (
 );
 
 Create Table RemoteIssuesKPIErrors (
-	viewpointId             int NOT NULL,
-    projectId				varchar(100) NOT NULL,
-    remoteProjectId         int NOT NULL,
-    remoteIssueId		    int NOT NULL,
-    type                    int NOT NULL,
-    class                   int NOT NULL,
-    descr                   varchar(100),
-    Primary Key (viewpointId, projectId, remoteProjectId, remoteIssueId, type, class),
-    Foreign Key (viewpointId, projectId, remoteProjectId, remoteIssueId) References RemoteIssues (viewpointId, projectId, remoteProjectId, remoteIssueId) ON DELETE CASCADE
+	viewpointId             	int NOT NULL,
+    projectId					varchar(100) NOT NULL,
+    remoteProjectId         	int NOT NULL,
+    remoteIssueId		    	int NOT NULL,
+    errorIssueRemoteProjectId 	int NOT NULL,
+    errorIssueRemoteIssueId 	int NOT NULL,
+    type                    	int NOT NULL,
+    class                   	int NOT NULL,
+    descr                   	varchar(100),
+    Primary Key (viewpointId, projectId, remoteProjectId, remoteIssueId, errorIssueRemoteProjectId, errorIssueRemoteIssueId, type, class),
+    Foreign Key (viewpointId, projectId, remoteProjectId, remoteIssueId) References RemoteIssues (viewpointId, projectId, remoteProjectId, remoteIssueId) ON DELETE CASCADE,
+    Foreign Key (viewpointId, projectId, errorIssueRemoteProjectId, errorIssueRemoteIssueId) References RemoteIssues (viewpointId, projectId, remoteProjectId, remoteIssueId) ON DELETE CASCADE
 );
 
 Create Table RemoteIssuesRelation (
