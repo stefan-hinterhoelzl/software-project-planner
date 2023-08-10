@@ -27,7 +27,7 @@ export async function evaluateTree(req: Request, res: Response) {
     //ChildrenErrors
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
 
-
+    
     await updateViewpointLastEdited(connection, projectId, viewpointId);
     await connection.commit();
 
@@ -41,41 +41,44 @@ export async function evaluateTree(req: Request, res: Response) {
 }
 
 function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, projectId: string, viewpointId: number) {
-  tree.forEach((node, index, arr) => { //currently checked item
+  tree.forEach(async (node, index, arr) => { //currently checked item
 
-    let problemNode: IssueNode | null = childWithlaterDeadline(node);
+    //children with later deadline
+    let problemNode: IssueNode[] = childWithlaterDeadline(node);
 
-    if (problemNode !== null) {
-      let errorObject: IssueErrorObject = <IssueErrorObject>{
-        type: ErrorType.E,
-        class: ErrorClass.DeadlineInconsistencyError,
-        descr: `Nested Item '${problemNode.issue.description}' has a later due date (${problemNode.issue.dueDate}) than the parent)`,
-      };
-      node.kpiErrors.push(errorObject);
-    };
+    problemNode.forEach((problemNode, index, arr) => {
+      addErrorToList(ErrorType.E, ErrorClass.DeadlineInconsistencyError,
+        `Nested Item '${problemNode.issue.description}' has a later due date (${problemNode.issue.dueDate}) than this item (${node.issue.dueDate}).`,
+        node, problemNode)
+    });
+
+    //End of checking for the current Node
+    if (node.kpiErrors.length !== 0) {
+      await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
+    }
 
     if (node.children.length !== 0) checkForChildrenErrors(node.children, connection, projectId, viewpointId)
   });
 }
 
 //check if there is a child with later deadline
-function childWithlaterDeadline(node: IssueNode): IssueNode | null {
-  let problemNode: IssueNode | null = null;
+function childWithlaterDeadline(node: IssueNode): IssueNode[] {
+  let problemNodes: IssueNode[] = [];
 
   let nodesToCheck: IssueNode[] = []
 
   nodesToCheck.push(...node.children);
 
-  while (problemNode === null && nodesToCheck.length !== 0) {
+  while (nodesToCheck.length !== 0) {
     let currNode: IssueNode = nodesToCheck[0];
     if (currNode.issue.dueDate > node.issue.dueDate) {
-      problemNode = currNode;
-    } 
+      problemNodes.push(currNode);
+    }
 
     if (currNode.children.length !== 0) nodesToCheck.push(...currNode.children);
   }
 
-  return problemNode;
+  return problemNodes;
 }
 
 //check for the deadlines - Depth first search
@@ -84,12 +87,9 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
 
   //Deadline
   if (node.issue.dueDate === null) {
-    let errorObject: IssueErrorObject = <IssueErrorObject>{
-      type: ErrorType.E,
-      class: ErrorClass.DeadlineError,
-      descr: `There is no due date for this item.`,
-    };
-    node.kpiErrors.push(errorObject);
+    addErrorToList(ErrorType.E, ErrorClass.DeadlineError,
+      `There is no due date for this item.`,
+      node, node)
   } else {
     if (node.issue.state === 'opened') {
       //only evaluate opened items / closed ones are automatically green
@@ -97,78 +97,49 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
       let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
 
       if (timeDiff < 432000000 && timeDiff >= 86400000) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.W,
-          class: ErrorClass.DeadlineError,
-          descr: `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.W, ErrorClass.DeadlineError,
+          `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`,
+          node, node)
       } else if (timeDiff < 86400000 && timeDiff > -43200000) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.W,
-          class: ErrorClass.DeadlineError,
-          descr: `Item is due today.`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.W, ErrorClass.DeadlineError,
+          `Item is due today.`,
+          node, node)
       } else if (timeDiff <= -43200000) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.E,
-          class: ErrorClass.DeadlineError,
-          descr: `This item is overdue (Due Date: ${node.issue.dueDate}).`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.E, ErrorClass.DeadlineError,
+          `This item is overdue (Due Date: ${node.issue.dueDate}).`,
+          node, node)
       }
     } else {
       if (node.issue.closedAt > node.issue.dueDate) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.W,
-          class: ErrorClass.DeadlineError,
-          descr: `Item was finished overdue. (Due Date: ${node.issue.dueDate}).`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.W, ErrorClass.DeadlineError,
+          `Item was finished overdue. (Due Date: ${node.issue.dueDate}).`,
+          node, node)
       }
     }
   }
-
   //Timestats
   if (node.issue.timeStats.estimateHours === null || node.issue.timeStats.estimateHours === 0) {
-    let errorObject: IssueErrorObject = <IssueErrorObject>{
-      type: ErrorType.E,
-      class: ErrorClass.WorkhoursError,
-      descr: `There is no time estimate for this item.`,
-    };
-    node.kpiErrors.push(errorObject);
+    addErrorToList(ErrorType.E, ErrorClass.WorkhoursError,
+      `There is no time estimate for this item.`,
+      node, node)
   } else {
     if (node.issue.state === 'opened') {
       if (node.issue.timeStats.estimateHours <= node.issue.timeStats.spentHours) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.E,
-          class: ErrorClass.WorkhoursError,
-          descr: `The work estimate for this item was overshot.`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.E, ErrorClass.WorkhoursError,
+          `The work estimate for this item was overshot.`,
+          node, node)
       } else if (node.issue.timeStats.spentHours >= node.issue.timeStats.estimateHours * 0.95) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.W,
-          class: ErrorClass.WorkhoursError,
-          descr: `The work estimate for this item has reached 95% of the estimate.`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.W, ErrorClass.WorkhoursError,
+          `The work estimate for this item has reached 95% of the estimate.`,
+          node, node)
       }
     } else {
       if (node.issue.timeStats.spentHours > node.issue.timeStats.estimateHours) {
-        let errorObject: IssueErrorObject = <IssueErrorObject>{
-          type: ErrorType.W,
-          class: ErrorClass.WorkhoursError,
-          descr: `The item was finished with overspending time. (Time Estimate: ${node.issue.timeStats.estimateHours}).`,
-        };
-        node.kpiErrors.push(errorObject);
+        addErrorToList(ErrorType.W, ErrorClass.WorkhoursError,
+          `The item was finished with overspending time. (Time Estimate: ${node.issue.timeStats.estimateHours}).`,
+          node, node)
       }
     }
-  }
-
-  if (node.kpiErrors.length !== 0) {
-    await updateIssueKPIErrors(connection, projectId, viewpointId, node.issue.projectId, node.issue.issueId, node.kpiErrors);
   }
 
   node.children.forEach((value, index, arr) => {
@@ -176,9 +147,28 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
   });
 };
 
-//Also mark parent Nodes?
-const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => {};
 
 export async function detectHierarchies(req: Request, res: Response) {
   //TODO
 }
+
+
+
+
+//*** HELPER FUNCTIONS */
+
+//Also mark parent Nodes?
+const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => { };
+
+//Add errorobject to array
+function addErrorToList(errorType: ErrorType, errorClass: ErrorClass, descr: string, node: IssueNode, connectedErrorNode: IssueNode): void {
+  let errorObject: IssueErrorObject = <IssueErrorObject>{
+    type: errorType,
+    class: errorClass,
+    descr: descr,
+    connectedNode: connectedErrorNode,
+  };
+  node.kpiErrors.push(errorObject);
+}
+
+

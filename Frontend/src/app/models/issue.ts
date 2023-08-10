@@ -33,6 +33,7 @@ export interface IssueErrorObject {
   class: ErrorClass,
   type: ErrorType,
   descr: string,
+  connectedNode: IssueNode,
 }
 
 export enum ErrorType {

@@ -1,4 +1,5 @@
 import { RowDataPacket } from "mysql2";
+import { IssueNode } from "./nodes";
 
 export interface RemoteIssuesWithErrors extends RowDataPacket {
     viewpointId: number;
@@ -29,6 +30,7 @@ export interface IssueRelation extends RowDataPacket {
     class: ErrorClass,
     type: ErrorType,
     descr: string,
+    connectedNode: IssueNode,
   }
 
   export interface ExtendedIssueErrorObject extends RowDataPacket {
@@ -39,6 +41,8 @@ export interface IssueRelation extends RowDataPacket {
     viewpointId: number,
     remoteProjectId: number,
     remoteIssueId: number,
+    errorIssueRemoteProjectId: number,
+    errorIssueRemoteIssueId: number,
   }
   
   export enum ErrorType {
