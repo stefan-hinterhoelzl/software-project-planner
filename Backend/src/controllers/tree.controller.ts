@@ -24,9 +24,15 @@ export async function evaluateTree(req: Request, res: Response) {
       checkForInternalErrors(value, connection, projectId, viewpointId);
     });
 
+
+    console.log("I am here")
+    
+
     //ChildrenErrors
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
 
+
+    console.log("I am here")
     
     await updateViewpointLastEdited(connection, projectId, viewpointId);
     await connection.commit();
