@@ -25,14 +25,9 @@ export async function evaluateTree(req: Request, res: Response) {
     });
 
 
-    console.log("I am here")
-    
-
+  
     //ChildrenErrors
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
-
-
-    console.log("I am here")
     
     await updateViewpointLastEdited(connection, projectId, viewpointId);
     await connection.commit();
@@ -50,12 +45,12 @@ function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, p
   tree.forEach(async (node, index, arr) => { //currently checked item
 
     //children with later deadline
-    let problemNode: IssueNode[] = childWithlaterDeadline(node);
+    let problemNodes: IssueNode[] = childWithlaterDeadline(node);
 
-    problemNode.forEach((problemNode, index, arr) => {
+    problemNodes.forEach((problemNodes, index, arr) => {
       addErrorToList(ErrorType.E, ErrorClass.DeadlineInconsistencyError,
-        `Nested Item '${problemNode.issue.description}' has a later due date (${problemNode.issue.dueDate}) than this item (${node.issue.dueDate}).`,
-        node, problemNode)
+        `Nested Item '${problemNodes.issue.title}' has a later due date (${problemNodes.issue.dueDate}) than this item (${node.issue.dueDate}).`,
+        node, problemNodes)
     });
 
     //End of checking for the current Node
@@ -76,7 +71,7 @@ function childWithlaterDeadline(node: IssueNode): IssueNode[] {
   nodesToCheck.push(...node.children);
 
   while (nodesToCheck.length !== 0) {
-    let currNode: IssueNode = nodesToCheck[0];
+    let currNode: IssueNode = nodesToCheck.pop()!;
     if (currNode.issue.dueDate > node.issue.dueDate) {
       problemNodes.push(currNode);
     }
@@ -172,7 +167,7 @@ function addErrorToList(errorType: ErrorType, errorClass: ErrorClass, descr: str
     type: errorType,
     class: errorClass,
     descr: descr,
-    connectedNode: connectedErrorNode,
+    connectedNode: node.id === connectedErrorNode.id ? null : connectedErrorNode,
   };
   node.kpiErrors.push(errorObject);
 }

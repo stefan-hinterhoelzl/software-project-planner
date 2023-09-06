@@ -30,7 +30,7 @@ export interface IssueRelation extends RowDataPacket {
     class: ErrorClass,
     type: ErrorType,
     descr: string,
-    connectedNode: IssueNode,
+    connectedNode: IssueNode | null,
   }
 
   export interface ExtendedIssueErrorObject extends RowDataPacket {
