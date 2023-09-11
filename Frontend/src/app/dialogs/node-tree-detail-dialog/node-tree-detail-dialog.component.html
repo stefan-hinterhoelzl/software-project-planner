@@ -24,6 +24,14 @@
     <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === 2" src="../../../assets/images/error.png" />
     <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === 1" src="../../../assets/images/warning.png" />
     <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 1) === undefined" src="../../../assets/images/success.png" />
+
+    <div style="display: flex; justify-content: center; flex-direction: column; width: 120px; text-align: center">
+      <p style="margin-bottom: 2px;">{{node.issue.timeStats.accumulatedSpentHours}} / {{node.issue.timeStats.accumulatedEstimateHours}}</p>
+      <p style="margin-top: 0px; font-size: smaller">Accumulated Time</p>
+    </div>
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 4) === 2" src="../../../assets/images/error.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 4) === 1" src="../../../assets/images/warning.png" />
+    <img *ngIf="dialogService.nodeContainsErrorOnTopLevel(node, 4) === undefined" src="../../../assets/images/success.png" />
   </div>
 
   <h5 class="section-header">Detected problems</h5>

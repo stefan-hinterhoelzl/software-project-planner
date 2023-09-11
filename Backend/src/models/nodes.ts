@@ -31,6 +31,8 @@ export interface ALMIssue {
 export interface ALMTimeStats {
     estimateHours: number;
     spentHours: number;
+    accumulatedEstimateHours: number;
+    accumulatedSpentHours: number;
 }
 
   export enum ErrorType {
@@ -42,4 +44,5 @@ export interface ALMTimeStats {
     DeadlineError = 1,
     WorkhoursError = 2,
     DeadlineInconsistencyError = 3,
+    AccumulatedError = 4,
   }

@@ -25,7 +25,6 @@ export async function evaluateTree(req: Request, res: Response) {
     });
 
 
-  
     //ChildrenErrors
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
     
@@ -44,14 +43,11 @@ export async function evaluateTree(req: Request, res: Response) {
 function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, projectId: string, viewpointId: number) {
   tree.forEach(async (node, index, arr) => { //currently checked item
 
-    //children with later deadline
-    let problemNodes: IssueNode[] = childWithlaterDeadline(node);
+     //sum up nested timestats
+     sumUpValues(node);
 
-    problemNodes.forEach((problemNodes, index, arr) => {
-      addErrorToList(ErrorType.E, ErrorClass.DeadlineInconsistencyError,
-        `Nested Item '${problemNodes.issue.title}' has a later due date (${problemNodes.issue.dueDate}) than this item (${node.issue.dueDate}).`,
-        node, problemNodes)
-    });
+     //checkLaterDeadlines
+     checkLaterDeadlines(node)
 
     //End of checking for the current Node
     if (node.kpiErrors.length !== 0) {
@@ -61,9 +57,21 @@ function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, p
     if (node.children.length !== 0) checkForChildrenErrors(node.children, connection, projectId, viewpointId)
   });
 }
+ 
+function checkLaterDeadlines(node: IssueNode) {
+   //children with later deadline
+   let problemNodes: IssueNode[] = childrenWithlaterDeadline(node);
+
+   problemNodes.forEach((problemNodes, index, arr) => {
+     addErrorToList(ErrorType.E, ErrorClass.DeadlineInconsistencyError,
+       `Nested Item '${problemNodes.issue.title}' has a later due date (${problemNodes.issue.dueDate}) than this item (${node.issue.dueDate}).`,
+       node, problemNodes)
+   });
+
+}
 
 //check if there is a child with later deadline
-function childWithlaterDeadline(node: IssueNode): IssueNode[] {
+function childrenWithlaterDeadline(node: IssueNode): IssueNode[] {
   let problemNodes: IssueNode[] = [];
 
   let nodesToCheck: IssueNode[] = []
@@ -80,6 +88,57 @@ function childWithlaterDeadline(node: IssueNode): IssueNode[] {
   }
 
   return problemNodes;
+}
+
+//sum up values
+function sumUpValues(node: IssueNode): void {
+  let estimate: number = 0;
+  let spent: number = 0;
+
+  let nodesToSum: IssueNode[] = [];
+
+  nodesToSum.push(...node.children);
+
+  while(nodesToSum.length !== 0) {
+    let currNode: IssueNode = nodesToSum.pop()!
+    estimate += currNode.issue.timeStats.estimateHours;
+    spent += currNode.issue.timeStats.spentHours;
+
+    if (currNode.children.length !== 0) nodesToSum.push(...currNode.children);
+
+  } 
+
+node.issue.timeStats.accumulatedEstimateHours = estimate;
+node.issue.timeStats.accumulatedSpentHours = spent;
+
+if (estimate <= 0 && spent <= 0) {
+  addErrorToList(ErrorType.E, ErrorClass.AccumulatedError,
+    `Accumulated estimations and spent hours sum up to 0`,
+    node, node)
+} else {
+  if ( spent > estimate ) {
+    addErrorToList(ErrorType.E, ErrorClass.AccumulatedError,
+      `Accumulated spent hours have exceeded accumulated estimations`,
+      node, node)
+  }
+  else if (spent > estimate * 0.95) {
+    addErrorToList(ErrorType.W, ErrorClass.AccumulatedError,
+      `Accumulated spent hours have reached 95% of the accumulated estimations`,
+      node, node)
+  }
+
+  if (spent > node.issue.timeStats.spentHours) {
+    addErrorToList(ErrorType.W, ErrorClass.AccumulatedError,
+      `Accumulated spent hours exceed hours booked to this item. This is likely due to the fact, that time bookings are not propagated.`,
+      node, node)
+  }
+  if (estimate > node.issue.timeStats.estimateHours) {
+    addErrorToList(ErrorType.E, ErrorClass.AccumulatedError,
+      'Accumulated estimate hours exceed estimated hours for this item.',
+      node, node)
+  }
+}
+
 }
 
 //check for the deadlines - Depth first search
@@ -154,12 +213,7 @@ export async function detectHierarchies(req: Request, res: Response) {
 }
 
 
-
-
 //*** HELPER FUNCTIONS */
-
-//Also mark parent Nodes?
-const markNodeAndParents = (node: IssueNode, entryNode: IssueNode, errorType: ErrorType, errorDescr: string, errorClass: string): void => { };
 
 //Add errorobject to array
 function addErrorToList(errorType: ErrorType, errorClass: ErrorClass, descr: string, node: IssueNode, connectedErrorNode: IssueNode): void {

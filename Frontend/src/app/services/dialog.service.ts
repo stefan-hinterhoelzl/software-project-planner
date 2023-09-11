@@ -15,4 +15,5 @@ export class DialogService {
     if (errorObject !== undefined) return errorObject.type
     else return undefined
   }
+
 }

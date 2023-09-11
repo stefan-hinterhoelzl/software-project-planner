@@ -168,6 +168,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
 
       //state boolean
       this.treeLoading = false;
+
+      //evaluate Tree on first load
+      this.evaluateTree(this.treeData);
     }),
     share()
   );
@@ -322,7 +325,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.treeLoading = true;
     this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
       next: (evaluatedTree) => {
-        this.applyNewKPIErrors(evaluatedTree)
+        this.applyNewKPIsAndErrors(evaluatedTree)
         this.treeLoading = false;
         this.snackbar.openSnackBar("Tree evalutation successful!")
       },
@@ -332,11 +335,16 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     })
   }
 
-  applyNewKPIErrors(tree: IssueNode[]) {
+  applyNewKPIsAndErrors(tree: IssueNode[]) {
     tree.forEach(node => {
       let currNode: IssueNode | undefined = this.nodeLookup.get(node.id)
-      if (currNode !== undefined) currNode.kpiErrors = node.kpiErrors;
-      if (node.children.length !== 0) this.applyNewKPIErrors(node.children)
+      if (currNode !== undefined) {
+        currNode.kpiErrors = node.kpiErrors;
+        currNode.issue.timeStats.accumulatedEstimateHours = node.issue.timeStats.accumulatedEstimateHours;
+        currNode.issue.timeStats.accumulatedSpentHours = node.issue.timeStats.accumulatedSpentHours;
+
+      }
+      if (node.children.length !== 0) this.applyNewKPIsAndErrors(node.children)
     })
   }
 

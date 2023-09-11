@@ -45,4 +45,5 @@ export enum ErrorClass {
   DeadlineError = 1,
   WorkhoursError = 2,
   DeadlineInconsistencyError = 3,
+  AccumulatedError = 4,
 }

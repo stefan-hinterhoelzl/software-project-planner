@@ -27,6 +27,8 @@ export interface ALMIssue {
 export interface ALMTimeStats {
   estimateHours: number;
   spentHours: number;
+  accumulatedEstimateHours: number;
+  accumulatedSpentHours: number;
 }
 
 export interface ALMIssueResWrapper {
