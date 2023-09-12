@@ -17,7 +17,7 @@ export abstract class ALMDataAggregator {
 
   abstract getLabels(project: RemoteProject): Observable<string[]>;
 
-  abstract getRelations(tree: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>;
+  abstract getAutomaticRelations(tree: IssueNode[], backlog: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>;
 
 }
 
@@ -202,13 +202,12 @@ export class GitLabAggregator implements ALMDataAggregator {
   }
 
 
-  getRelations(tree: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]> {
+  getAutomaticRelations(treeNodes: IssueNode[], backlogNodes: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>{
     let relations: IssueRelation[] = []
+    let combinedNodes: IssueNode[] = [...treeNodes, ...backlogNodes];
 
 
     return of(relations);
-
-
   }
 
   private getLabelsForProject(project: RemoteProject, paginationString: string) {

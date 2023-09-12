@@ -30,7 +30,11 @@ export interface IssueRelationObjects {
 }
 
 export interface IssueRelation {
-
+  projectId: string, 
+  remoteprojectId: number,
+  remoteIssueId: number,
+  relatedRemoteProjectId: number, 
+  relatedRemoteIssueId: number,
 }
 
 export interface IssueRelationSettings {
