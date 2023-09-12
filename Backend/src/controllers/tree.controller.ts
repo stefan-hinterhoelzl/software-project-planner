@@ -197,7 +197,10 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
 };
 
 export async function detectHierarchies(req: Request, res: Response) {
-  //TODO
+  
+  
+
+
 }
 
 //*** HELPER FUNCTIONS */

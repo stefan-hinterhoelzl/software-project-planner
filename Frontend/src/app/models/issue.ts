@@ -29,6 +29,16 @@ export interface IssueRelationObjects {
   child: IssueNode,
 }
 
+export interface IssueRelation {
+
+}
+
+export interface IssueRelationSettings {
+  projectId: string,
+  viewpointId: number,
+  labelArray: string[],
+}
+
 export interface IssueErrorObject {
   class: ErrorClass,
   type: ErrorType,

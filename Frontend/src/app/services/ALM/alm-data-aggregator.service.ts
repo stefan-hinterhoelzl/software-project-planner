@@ -4,6 +4,8 @@ import { forkJoin, from, lastValueFrom, map, observable, Observable, of, tap } f
 import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject, ALMTimeStats } from '../../models/alm.models';
 import { RemoteProject } from '../../models/project';
 import { GitlabALMService } from './Adapater Services/gitLab.service';
+import { IssueNode } from 'src/app/models/node';
+import { IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
 
 @Injectable()
 export abstract class ALMDataAggregator {
@@ -14,6 +16,9 @@ export abstract class ALMDataAggregator {
   abstract getSingleIssue(remoteProject: RemoteProject, issueId: number): Observable<ALMIssue>;
 
   abstract getLabels(project: RemoteProject): Observable<string[]>;
+
+  abstract getRelations(tree: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>;
+
 }
 
 @Injectable({
@@ -196,9 +201,21 @@ export class GitLabAggregator implements ALMDataAggregator {
     );
   }
 
+
+  getRelations(tree: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]> {
+    let relations: IssueRelation[] = []
+
+
+    return of(relations);
+
+
+  }
+
   private getLabelsForProject(project: RemoteProject, paginationString: string) {
     const labels: Observable<HttpResponse<any[]>> = this.alm.getLabelsPerProject(project.remoteProjectId, project.accessToken, paginationString);
     return labels;
   }
+
+
 }
 
