@@ -61,7 +61,7 @@
               <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>
               <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="'below'"
                 matTooltip="Auto-detect hierarchies" [matTooltipShowDelay]="2000" mat-raised-button color="primary"
-                (click)="saveRelations()">
+                (click)="getAutomaticRelations()">
                 <mat-icon>device_hub</mat-icon> Detect Hierarchies
               </button>
               <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>

@@ -29,11 +29,10 @@ export interface IssueRelationObjects {
   child: IssueNode,
 }
 
-export interface IssueRelation {
-  projectId: string, 
+export interface IssueLink {
   remoteprojectId: number,
   remoteIssueId: number,
-  relatedRemoteProjectId: number, 
+  relatedRemoteProjectId: number,
   relatedRemoteIssueId: number,
 }
 

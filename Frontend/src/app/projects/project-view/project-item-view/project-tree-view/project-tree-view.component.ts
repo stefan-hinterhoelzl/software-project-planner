@@ -7,7 +7,7 @@ import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/a
 import { NodeBacklogDetailDialogComponent } from 'src/app/dialogs/node-backlog-detail-dialog/node-backlog-detail-dialog.component';
 import { NodeTreeDetailDialogComponent } from 'src/app/dialogs/node-tree-detail-dialog/node-tree-detail-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
-import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation } from 'src/app/models/issue';
+import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
 import { RemoteProject } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
@@ -245,6 +245,17 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     });
   }
 
+  getAutomaticRelations() {
+    let settings = <IssueRelationSettings> {
+      projectId: "",
+      viewpointId: 0,
+      labelArray: [],
+    }
+    this.aggregator.getAutomaticRelations(this.treeData, this.backlog, settings, this.data.staticRemoteProjects).subscribe(links => {
+      console.log(links)
+    })
+  }
+
   saveRelations() {
     this.treeLoading = true;
     this.relationsSave.length = 0;
@@ -351,6 +362,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   errorsContainErrorType(errors: IssueErrorObject[], type: ErrorType): boolean {
     return errors.find(element => element.type === type) !== undefined
   }
+
+
 
 
   drop(event: any) {

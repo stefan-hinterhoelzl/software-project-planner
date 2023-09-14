@@ -5,20 +5,28 @@ import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, A
 import { RemoteProject } from '../../models/project';
 import { GitlabALMService } from './Adapater Services/gitLab.service';
 import { IssueNode } from 'src/app/models/node';
-import { IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
+import { IssueLink, IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
 
 @Injectable()
 export abstract class ALMDataAggregator {
   abstract getProjects(remoteProjects: RemoteProject[]): Observable<ALMProject[]>;
 
-  abstract getIssues(project: RemoteProject, filteroptions?: ALMFilteroptions, paginationoptions?: ALMPaginationoptions): Observable<ALMIssueResWrapper>;
+  abstract getIssues(
+    project: RemoteProject,
+    filteroptions?: ALMFilteroptions,
+    paginationoptions?: ALMPaginationoptions
+  ): Observable<ALMIssueResWrapper>;
 
   abstract getSingleIssue(remoteProject: RemoteProject, issueId: number): Observable<ALMIssue>;
 
   abstract getLabels(project: RemoteProject): Observable<string[]>;
 
-  abstract getAutomaticRelations(tree: IssueNode[], backlog: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>;
-
+  abstract getAutomaticRelations(
+    tree: IssueNode[],
+    backlog: IssueNode[],
+    settings: IssueRelationSettings,
+    remoteProjects: RemoteProject[]
+  ): Observable<IssueLink[]>;
 }
 
 @Injectable({
@@ -61,7 +69,6 @@ export class GitLabAggregator implements ALMDataAggregator {
 
     let optionsString = filterString.concat(paginationString);
 
-
     return this.alm.getIssuesPerProject(project.remoteProjectId, project.accessToken, optionsString).pipe(
       map(res => {
         return <ALMIssueResWrapper>{
@@ -89,34 +96,33 @@ export class GitLabAggregator implements ALMDataAggregator {
           }),
         };
       })
-    )
+    );
   }
 
   getSingleIssue(project: RemoteProject, issueId: number) {
     return this.alm.getIssueById(project.remoteProjectId, project.accessToken, issueId).pipe(
       map(issue => {
-
-          return <ALMIssue> {
-            projectId: issue.project_id,
-            issueId: issue.iid,
-            title: issue.title,
-            description: issue.description,
-            labels: issue.labels,
-            createdAt: issue.created_at,
-            updatedAt: issue.updated_at,
-            dueDate: issue.due_date,
-            closedAt: issue.closed_at,
-            state: issue.state,
-            type: issue.type,
-            webURL: issue.web_url,
-            timeStats: <ALMTimeStats>{
-              estimateHours: issue.time_stats.time_estimate,
-              spentHours: issue.time_stats.total_time_spent,
-            },
-            selected: true,
-          };
+        return <ALMIssue>{
+          projectId: issue.project_id,
+          issueId: issue.iid,
+          title: issue.title,
+          description: issue.description,
+          labels: issue.labels,
+          createdAt: issue.created_at,
+          updatedAt: issue.updated_at,
+          dueDate: issue.due_date,
+          closedAt: issue.closed_at,
+          state: issue.state,
+          type: issue.type,
+          webURL: issue.web_url,
+          timeStats: <ALMTimeStats>{
+            estimateHours: issue.time_stats.time_estimate,
+            spentHours: issue.time_stats.total_time_spent,
+          },
+          selected: true,
+        };
       })
-    )
+    );
   }
 
   private createFilterString(filter: ALMFilteroptions): string {
@@ -201,13 +207,22 @@ export class GitLabAggregator implements ALMDataAggregator {
     );
   }
 
-
-  getAutomaticRelations(treeNodes: IssueNode[], backlogNodes: IssueNode[], settings: IssueRelationSettings): Observable<IssueRelation[]>{
-    let relations: IssueRelation[] = []
+  getAutomaticRelations(
+    treeNodes: IssueNode[],
+    backlogNodes: IssueNode[],
+    settings: IssueRelationSettings,
+    remoteProjects: RemoteProject[]
+  ): Observable<IssueLink[]> {
+    let relations: IssueRelation[] = [];
     let combinedNodes: IssueNode[] = [...treeNodes, ...backlogNodes];
 
+    const o_relations = combinedNodes.map((value, index, array) => {
+      let remoteProject = remoteProjects.find(project => project.remoteProjectId === value.issue.projectId);
+      if (remoteProject !== undefined) return this.getRelationsForIssues(value, remoteProject);
+      else return of([]);
+    });
 
-    return of(relations);
+    return forkJoin(o_relations).pipe(map(relations => relations.flat()));
   }
 
   private getLabelsForProject(project: RemoteProject, paginationString: string) {
@@ -215,6 +230,21 @@ export class GitLabAggregator implements ALMDataAggregator {
     return labels;
   }
 
-
+  private getRelationsForIssues(issue: IssueNode, remoteProject: RemoteProject) {
+    const relations: Observable<IssueLink[]> = this.alm
+      .getIssueRelations(remoteProject.remoteProjectId, remoteProject.accessToken, issue.issue.issueId)
+      .pipe(
+        map(relations => {
+          return relations.map(relation => {
+            return <IssueLink>{
+              remoteprojectId: issue.issue.projectId,
+              remoteIssueId: issue.issue.issueId,
+              relatedRemoteProjectId: relation.project_id,
+              relatedRemoteIssueId: relation.iid,
+            };
+          });
+        })
+      );
+    return relations;
+  }
 }
-
