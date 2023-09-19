@@ -25,6 +25,8 @@ import {
   updateViewpointById,
   deleteViewpointById,
   getViewpointById,
+  updateViewpointHierarchySettings,
+  getViewpointHierarchySettings,
 } from './controllers/projectviewpoint.controller';
 import * as cors from 'cors';
 import { auth } from 'firebase-admin';
@@ -90,6 +92,8 @@ express_app.get('/project/:projectId/Viewpoints', authenticateJWT, getViewpoints
 express_app.get('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, getViewpointById);
 express_app.put('/project/:projectId/Viewpoint/:viewpointId', authenticateJWT, updateViewpointById);
 express_app.delete('/project/:projectId/Viewpoints/:viewpointId', authenticateJWT, deleteViewpointById);
+express_app.get('/project/:projectId/Viewpoint/:viewpointId/hierarchysettings', authenticateJWT, getViewpointHierarchySettings);
+express_app.post('/project/:projectId/Viewpoint/:viewpointId/hierarchysettings', authenticateJWT, updateViewpointHierarchySettings);
 
 //Issues
 express_app.post('/project/:projectId/Viewpoint/:viewpointId/RemoteIssues', authenticateJWT, addRemoteIssuesToProjectViewpoint);

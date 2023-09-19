@@ -22,6 +22,12 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     nameCtrl: ['', Validators.required],
   });
 
+  hierachieDetection = this.fb.group({
+    first: [''],
+    second: [''],
+    third: ['']
+  })
+
   local_viewpoint!: Viewpoint;
 
   viewpoints$ = this.data.viewpoints$.pipe(share());
@@ -119,4 +125,11 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   onKeydownEvent(event: Event) {
     console.log(event)
   }
+
+  updateViewpointHierarchySettings(projectId: string, viewpointId: number) {
+
+
+  }
+
+
 }

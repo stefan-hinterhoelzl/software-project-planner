@@ -41,8 +41,7 @@ Create Table ViewpointHierarchieSettings (
 	projectId 			varchar(100) NOT NULL,
     viewpointId			int NOT NULL,
     level               int NOT NULL,
-    parent              varchar(100) NOT NULL,
-    child               varchar(100) NOT NULL,
+    label               varchar(255) NOT NULL,
     Primary Key (projectId, viewpointId, level),
     Foreign key (projectId, viewpointId) references Viewpoints (projectId, viewpointId) ON DELETE CASCADE
 );
