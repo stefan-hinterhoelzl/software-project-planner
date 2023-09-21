@@ -1,13 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap, filter, share, shareReplay } from 'rxjs';
+import { EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap, filter, share, shareReplay, Observable } from 'rxjs';
 import { User } from '@firebase/auth';
-import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint } from '../models/project';
+import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint, ViewpointHierarchieSettings, ViewpointLevelLabel } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
 import { BackendService } from './backend.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 import { Router } from '@angular/router';
+import { ViewEncapsulation } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -229,8 +230,25 @@ export class DataService {
 
   getSelectedIssuesForViewpoint(viewpointId: number) {
     let projectId: string = this._activeProjectId.value
-    console.log(projectId)
     return this.backend.getSelectedRemoteIssuesForViewpointAndRemoteProject(projectId, viewpointId)
+  }
+
+  getHierarchySettings(viewpointId: number, projectId: string): Observable<ViewpointLevelLabel[]> {
+    console.log(projectId, viewpointId)
+
+    return this.backend.getViewpointHierarchySettings(viewpointId, projectId)
+  }
+
+  setHierarchySettings(viewpointId: number, projectId: string, levelLabel: ViewpointLevelLabel[]) {
+    this.backend.updateViewpointHierarchySettings(viewpointId, projectId, levelLabel).subscribe({
+      next: value => {
+      this.snackbar.openSnackBar('Hierarchy settings successfully updated!', 'green-snackbar');
+      },
+      error: error => {
+        console.error(error);
+        this.snackbar.openSnackBar('Error updating hierarchy settings.', 'red-snackbar');
+      }
+    })
   }
 
   // Setters

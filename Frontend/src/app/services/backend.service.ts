@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, take, tap } from 'rxjs';
-import { Project, RemoteProject, Viewpoint } from '../models/project';
+import { Project, RemoteProject, Viewpoint, ViewpointHierarchieSettings, ViewpointLevelLabel } from '../models/project';
 import { DataService } from './data.service';
 import { getAuth, User } from '@firebase/auth';
 import { UserSettings } from '../models/user';
@@ -95,6 +95,14 @@ export class BackendService {
 
   deleteViewpointById(viewpoint: Viewpoint) {
     return this.http.delete(this.BASE_URL + 'project/' + viewpoint.projectId + '/Viewpoints/'+viewpoint.viewpointId)
+  }
+
+  updateViewpointHierarchySettings(viewpointId: number, projectId: string, labels: ViewpointLevelLabel[]) {
+    return this.http.post<ViewpointHierarchieSettings>(this.BASE_URL + 'project/' + projectId + '/viewpoint/' + viewpointId + '/hierarchysettings', labels)
+  }
+
+  getViewpointHierarchySettings(viewpointId: number, projectId: string) {
+    return this.http.get<ViewpointLevelLabel[]>(this.BASE_URL + 'project/' + projectId + '/viewpoint/'+viewpointId + '/hierarchysettings', {observe: 'body', responseType: 'json'});
   }
 
   //Selected Remote Issues

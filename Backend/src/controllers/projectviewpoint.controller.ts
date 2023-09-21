@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { connect } from '../database';
-import { Viewpoint, ViewpointLevelLabel } from '../models/projectViewpoint';
+import { ExtendedViewpointLevelLabel, Viewpoint, ViewpointLevelLabel } from '../models/projectViewpoint';
 import { handleError } from './controller.util';
-import { PoolConnection } from 'mysql2/promise';
+import { PoolConnection, Pool } from 'mysql2/promise';
+import { level } from 'winston';
 
 export async function createViewpoint(req: Request, res: Response) {
   var projectId: string = req.params.projectId;
@@ -116,24 +117,48 @@ export async function getViewpointHierarchySettings(req: Request, res: Response)
 }
 
 export async function updateViewpointHierarchySettings(req: Request, res: Response) {
-    var projectId: string = req.params.projectId;
-    var viewpointId: number = Number(req.params.viewpointId);
-  
-    try {
-      const conn = await connect();
-      const result: ViewpointLevelLabel[] = (
-        await conn.query<ViewpointLevelLabel[]>('SELECT level, label FROM ViewpointHierarchieSettings WHERE projectId = ? AND viewpointId = ?', [
-          projectId,
-          viewpointId,
-        ])
-      )[0];
-      return res.json(result);
-    } catch (err: any) {
-      handleError(res, err);
-    }
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
+  let levelLabel: ViewpointLevelLabel[] = req.body;
+
+  try {
+    const conn = await connect();
+
+    await Promise.all([levelLabel.map(value => insertOrUpdateHierarchySetting(projectId, viewpointId, value, conn))]);
+
+    return res.status(200);
+  } catch (err: any) {
+    handleError(res, err);
+  }
+}
+
+async function insertOrUpdateHierarchySetting(projectId: string, viewpointId: number, levelLabel: ViewpointLevelLabel, conn: Pool): Promise<void> {
+  let setting = <ExtendedViewpointLevelLabel>{
+    viewpointId: viewpointId,
+    projectId: projectId,
+    level: levelLabel.level,
+    label: levelLabel.label,
+  };
+
+  const result: ViewpointLevelLabel = (
+    await conn.query<ViewpointLevelLabel[]>(
+      'SELECT level, label FROM ViewpointHierarchieSettings WHERE projectId = ? AND viewpointId = ? AND level = ?',
+      [projectId, viewpointId, levelLabel.level]
+    )
+  )[0][0];
+
+  if (result !== undefined && result.label !== setting.label) {
+    await conn.query('UPDATE ViewpointHierarchieSettings SET label = ? WHERE projectId = ? AND viewpointId = ? AND level = ?', [
+      projectId,
+      viewpointId,
+      levelLabel.level,
+    ]);
+  } else {
+    await conn.query('INSERT INTO ViewpointHierarchieSettings SET ?', [setting]);
   }
 
-
+  return;
+}
 
 export const updateViewpointLastEdited = async (connection: PoolConnection, projectId: string, viewpointId: number) => {
   let lastModified: Date;

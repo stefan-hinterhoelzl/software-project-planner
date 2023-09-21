@@ -12,3 +12,10 @@ export interface ViewpointLevelLabel extends RowDataPacket {
   label: string;
   level: number;
 }
+
+export interface ExtendedViewpointLevelLabel extends RowDataPacket {
+  projectId: string;
+  viewpointId: number;
+  label: string;
+  level: number;
+}

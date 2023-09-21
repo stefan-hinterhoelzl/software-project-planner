@@ -2,7 +2,7 @@
   <div class="viewpoint-selection">
     <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>
 
-    <div *ngIf="viewpoint$ | async as viewpoint">
+    <div *ngIf="subview$ | async as subview">
       <mat-card style="margin-top: 0">
         <h1 matCardTitle>Viewpoint Details</h1>
         <mat-divider></mat-divider>
@@ -22,7 +22,7 @@
             class="margin-top"
             mat-raised-button
             color="primary"
-            (click)="updateViewpoint(view[0]!.projectId, viewpoint, view[1])">
+            (click)="updateViewpoint(view[0]!.projectId, subview[0]!, view[1])">
             Save
           </button>
         </div>
@@ -56,7 +56,7 @@
             class="margin-top"
             mat-raised-button
             color="primary"
-            (click)="updateViewpoint(view[0]!.projectId, viewpoint, view[1])">
+            (click)="updateHierarchySettings(subview[0]!.viewpointId!, view[0]!.projectId)">
             Save
           </button>
         </div>
@@ -66,7 +66,7 @@
         <h1 matCardTitle>Danger Zone</h1>
         <mat-divider></mat-divider>
         <div>
-          <button class="margin-top" mat-raised-button color="warn" (click)="deleteViewpoint(viewpoint, view[1])">Delete Viewpoint</button>
+          <button class="margin-top" mat-raised-button color="warn" (click)="deleteViewpoint(subview[0]!, view[1])">Delete Viewpoint</button>
         </div>
       </mat-card>
     </div>

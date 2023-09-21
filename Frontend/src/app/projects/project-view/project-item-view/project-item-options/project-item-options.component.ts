@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable, combineLatest, of, share, shareReplay, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
-import { Viewpoint } from 'src/app/models/project';
+import { Viewpoint, ViewpointLevelLabel } from 'src/app/models/project';
+import { BackendService } from 'src/app/services/backend.service';
 import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { DataService } from 'src/app/services/data.service';
 
@@ -25,8 +26,8 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   hierachieDetection = this.fb.group({
     first: [''],
     second: [''],
-    third: ['']
-  })
+    third: [''],
+  });
 
   local_viewpoint!: Viewpoint;
 
@@ -35,18 +36,46 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     tap(viewpoint => {
       if (viewpoint !== undefined) {
         this.viewpointDetails.get('nameCtrl')?.setValue(viewpoint?.title);
-        this.local_viewpoint = viewpoint
+        this.local_viewpoint = viewpoint;
       }
     })
   );
+
+  hierarchySettings$ = this.viewpoint$.pipe(
+    switchMap(viewpoint => {
+      return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
+    }),
+    tap(settings => {
+      if (settings !== undefined) {
+        console.log(settings);
+        settings.forEach(label => {
+          switch (label.level) {
+            case 1: {
+              this.hierachieDetection.get('first')?.setValue(label.label);
+              break;
+            }
+            case 2: {
+              this.hierachieDetection.get('second')?.setValue(label.label);
+              break;
+            }
+            case 3: {
+              this.hierachieDetection.get('third')?.setValue(label.label);
+              break;
+            }
+          }
+        });
+      }
+    })
+  );
+
   project$ = this.data.activeProject$;
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(shareReplay(1));
+  subview$ = combineLatest([this.viewpoint$, this.hierarchySettings$]).pipe(shareReplay(1))
 
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     return this.view$.pipe(
       switchMap(value => {
         if (this.viewpointDetails.dirty) {
-
           const dialogConfigKeep = new MatDialogConfig();
 
           dialogConfigKeep.data = {
@@ -59,19 +88,17 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
           dialogConfigKeep.disableClose = true;
 
           const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
-          return dialogRef.afterClosed().pipe(switchMap(result => {
-
-            if (!result) {
-              this.updateViewpoint(value[0]!.projectId, this.local_viewpoint, value[1]);
-            }
-            return of(true)
-          })
+          return dialogRef.afterClosed().pipe(
+            switchMap(result => {
+              if (!result) {
+                this.updateViewpoint(value[0]!.projectId, this.local_viewpoint, value[1]);
+              }
+              return of(true);
+            })
           );
-        }
-        else return of(true)
+        } else return of(true);
       })
-
-    )
+    );
   }
 
   createViewpoint(projectId: string, viewpoints: Viewpoint[]) {
@@ -99,7 +126,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
   updateViewpoint(projectId: string, viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
     viewpoint.title = this.viewpointDetails.get('nameCtrl')?.value as string;
     this.data.updateViewpoint(projectId, viewpoint, viewpoints);
-    this.viewpointDetails.markAsPristine()
+    this.viewpointDetails.markAsPristine();
   }
 
   deleteViewpoint(viewpoint: Viewpoint, viewpoints: Viewpoint[]) {
@@ -117,19 +144,23 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.data.deleteViewpoint(viewpoint, viewpoints)
+        this.data.deleteViewpoint(viewpoint, viewpoints);
       }
-    })
+    });
+  }
+
+  updateHierarchySettings(viewpointId: number, projectId: string) {
+    let levelLabels: ViewpointLevelLabel[] = [];
+
+    levelLabels.push(
+      <ViewpointLevelLabel>{ level: 1, label: this.hierachieDetection.get('first')!.value },
+      <ViewpointLevelLabel>{ level: 2, label: this.hierachieDetection.get('second')!.value },
+      <ViewpointLevelLabel>{ level: 3, label: this.hierachieDetection.get('third')!.value }
+    );
+    this.data.setHierarchySettings(viewpointId, projectId, levelLabels);
   }
 
   onKeydownEvent(event: Event) {
-    console.log(event)
+    console.log(event);
   }
-
-  updateViewpointHierarchySettings(projectId: string, viewpointId: number) {
-
-
-  }
-
-
 }
