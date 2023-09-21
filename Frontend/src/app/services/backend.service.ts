@@ -98,7 +98,7 @@ export class BackendService {
   }
 
   updateViewpointHierarchySettings(viewpointId: number, projectId: string, labels: ViewpointLevelLabel[]) {
-    return this.http.post<ViewpointHierarchieSettings>(this.BASE_URL + 'project/' + projectId + '/viewpoint/' + viewpointId + '/hierarchysettings', labels)
+    return this.http.post<any>(this.BASE_URL + 'project/' + projectId + '/viewpoint/' + viewpointId + '/hierarchysettings', labels, {observe: 'body', responseType: 'json'})
   }
 
   getViewpointHierarchySettings(viewpointId: number, projectId: string) {

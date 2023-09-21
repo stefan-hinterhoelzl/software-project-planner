@@ -124,40 +124,52 @@ export async function updateViewpointHierarchySettings(req: Request, res: Respon
   try {
     const conn = await connect();
 
-    await Promise.all([levelLabel.map(value => insertOrUpdateHierarchySetting(projectId, viewpointId, value, conn))]);
+    let promiseArray = [];
+    promiseArray.push(...levelLabel.map(value => insertOrUpdateHierarchySetting(projectId, viewpointId, value, conn)));
+    const result = await Promise.all(promiseArray);
 
-    return res.status(200);
+    let update_or_insert: number = result.findIndex(value => value !== 'no-action');
+
+    if (update_or_insert === -1) return res.json({ message: 'no changes' });
+    else return res.json({ message: 'changes' });
   } catch (err: any) {
     handleError(res, err);
   }
 }
 
-async function insertOrUpdateHierarchySetting(projectId: string, viewpointId: number, levelLabel: ViewpointLevelLabel, conn: Pool): Promise<void> {
-  let setting = <ExtendedViewpointLevelLabel>{
-    viewpointId: viewpointId,
-    projectId: projectId,
-    level: levelLabel.level,
-    label: levelLabel.label,
-  };
+async function insertOrUpdateHierarchySetting(projectId: string, viewpointId: number, levelLabel: ViewpointLevelLabel, conn: Pool): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    let setting = <ExtendedViewpointLevelLabel>{
+      viewpointId: viewpointId,
+      projectId: projectId,
+      level: levelLabel.level,
+      label: levelLabel.label,
+    };
 
-  const result: ViewpointLevelLabel = (
-    await conn.query<ViewpointLevelLabel[]>(
-      'SELECT level, label FROM ViewpointHierarchieSettings WHERE projectId = ? AND viewpointId = ? AND level = ?',
-      [projectId, viewpointId, levelLabel.level]
-    )
-  )[0][0];
+    const result: ViewpointLevelLabel = (
+      await conn.query<ViewpointLevelLabel[]>(
+        'SELECT level, label FROM ViewpointHierarchieSettings WHERE projectId = ? AND viewpointId = ? AND level = ?',
+        [projectId, viewpointId, levelLabel.level]
+      )
+    )[0][0];
 
-  if (result !== undefined && result.label !== setting.label) {
-    await conn.query('UPDATE ViewpointHierarchieSettings SET label = ? WHERE projectId = ? AND viewpointId = ? AND level = ?', [
-      projectId,
-      viewpointId,
-      levelLabel.level,
-    ]);
-  } else {
-    await conn.query('INSERT INTO ViewpointHierarchieSettings SET ?', [setting]);
-  }
+    if (result !== undefined && result.label !== setting.label) {
+      await conn.query('UPDATE ViewpointHierarchieSettings SET label = ? WHERE projectId = ? AND viewpointId = ? AND level = ?', [
+        setting.label,
+        projectId,
+        viewpointId,
+        levelLabel.level,
+      ]);
 
-  return;
+      resolve('updated');
+    } else if (result === undefined) {
+      await conn.query('INSERT INTO ViewpointHierarchieSettings SET ?', [setting]);
+
+      resolve('inserted');
+    }
+
+    resolve('no-action');
+  });
 }
 
 export const updateViewpointLastEdited = async (connection: PoolConnection, projectId: string, viewpointId: number) => {

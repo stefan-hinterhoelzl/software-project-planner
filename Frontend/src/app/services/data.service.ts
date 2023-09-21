@@ -242,7 +242,9 @@ export class DataService {
   setHierarchySettings(viewpointId: number, projectId: string, levelLabel: ViewpointLevelLabel[]) {
     this.backend.updateViewpointHierarchySettings(viewpointId, projectId, levelLabel).subscribe({
       next: value => {
+      if (value.message === 'changes')
       this.snackbar.openSnackBar('Hierarchy settings successfully updated!', 'green-snackbar');
+      else this.snackbar.openSnackBar('No changes made.');
       },
       error: error => {
         console.error(error);
