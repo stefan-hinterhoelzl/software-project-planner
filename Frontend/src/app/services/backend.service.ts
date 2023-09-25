@@ -7,7 +7,7 @@ import { getAuth, User } from '@firebase/auth';
 import { UserSettings } from '../models/user';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMIssue } from '../models/alm.models';
-import { Issue, IssueRelation } from '../models/issue';
+import { Issue, IssueRelation, IssueRelationSettings } from '../models/issue';
 import { IssueNode } from '../models/node';
 
 @Injectable({
@@ -151,5 +151,9 @@ export class BackendService {
     return this.http.put<IssueNode[]>(`${this.BASE_URL}project/${projectId}/viewpoint/${viewpointId}/EvaluateTree`, tree, {observe: 'body', responseType: 'json'})
   }
 
+  getAutomaticRelations(settings: IssueRelationSettings, tree: IssueNode[], backlog: IssueNode[]) {
+    let passingParemeters: any[] = [tree, backlog, settings]
+    return this.http.put<any[]>(`${this.BASE_URL}project/${settings.projectId}/viewpoint/${settings.viewpointId}/detecthierarchies`, passingParemeters, {observe: 'body', responseType: 'json'})
+  }
 
 }

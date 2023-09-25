@@ -1,5 +1,6 @@
 import { ALMIssue } from "./alm.models";
 import { IssueNode } from "./node";
+import { ViewpointLevelLabel } from "./project";
 
 export interface Issue {
   viewpointId: number,
@@ -39,7 +40,8 @@ export interface IssueLink {
 export interface IssueRelationSettings {
   projectId: string,
   viewpointId: number,
-  labelArray: string[],
+  labelSettings: ViewpointLevelLabel[],
+  links: IssueLink[],
 }
 
 export interface IssueErrorObject {

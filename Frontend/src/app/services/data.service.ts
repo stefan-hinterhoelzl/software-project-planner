@@ -9,6 +9,8 @@ import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 import { Router } from '@angular/router';
 import { ViewEncapsulation } from '@angular/compiler';
+import { IssueRelationSettings } from '../models/issue';
+import { IssueNode } from '../models/node';
 
 @Injectable({
   providedIn: 'root',
@@ -234,8 +236,6 @@ export class DataService {
   }
 
   getHierarchySettings(viewpointId: number, projectId: string): Observable<ViewpointLevelLabel[]> {
-    console.log(projectId, viewpointId)
-
     return this.backend.getViewpointHierarchySettings(viewpointId, projectId)
   }
 
@@ -251,6 +251,10 @@ export class DataService {
         this.snackbar.openSnackBar('Error updating hierarchy settings.', 'red-snackbar');
       }
     })
+  }
+
+  getAutomaticRelations(issueSettings: IssueRelationSettings, tree: IssueNode[], backlog: IssueNode[]) {
+    return this.backend.getAutomaticRelations(issueSettings, tree, backlog)
   }
 
   // Setters

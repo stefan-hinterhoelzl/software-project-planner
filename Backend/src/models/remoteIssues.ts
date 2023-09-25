@@ -44,6 +44,31 @@ export interface IssueRelation extends RowDataPacket {
     errorIssueRemoteProjectId: number,
     errorIssueRemoteIssueId: number,
   }
+
+  export interface IssueRelationSettings {
+    projectId: string,
+    viewpointId: number,
+    labelSettings: ViewpointLevelLabel[],
+    links: IssueLink[],
+  }
+
+  export interface ViewpointHierarchieSettings {
+    projectId: string;
+    viewpointId: number;
+    labels: ViewpointLevelLabel[];
+  }
+  
+  export interface ViewpointLevelLabel {
+    label: string;
+    level: number;
+  }
+
+  export interface IssueLink {
+    remoteprojectId: number,
+    remoteIssueId: number,
+    relatedRemoteProjectId: number,
+    relatedRemoteIssueId: number,
+  }
   
   export enum ErrorType {
     W = 1,

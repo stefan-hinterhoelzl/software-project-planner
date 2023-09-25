@@ -5,7 +5,7 @@ import { handleError } from './controller.util';
 import { connect, getConnection } from '../database';
 import { PoolConnection } from 'mysql2/promise';
 import { updateIssueKPIErrors } from './issue.controller';
-import { IssueErrorObject } from '../models/remoteIssues';
+import { IssueErrorObject, ViewpointHierarchieSettings } from '../models/remoteIssues';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
@@ -197,10 +197,15 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
 };
 
 export async function detectHierarchies(req: Request, res: Response) {
-  
-  
+  let tree: IssueNode[] = req.body[0];
+  let backlog: IssueNode[] = req.body[1];
+  let settings: ViewpointHierarchieSettings = req.body[2];
 
+  var projectId: string = req.params.projectId;
+  var viewpointId: number = Number(req.params.viewpointId);
 
+  res.json({message: 'hello'});
+  
 }
 
 //*** HELPER FUNCTIONS */

@@ -1,15 +1,15 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, switchMap, tap } from 'rxjs';
+import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, shareReplay, Subscription, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NodeBacklogDetailDialogComponent } from 'src/app/dialogs/node-backlog-detail-dialog/node-backlog-detail-dialog.component';
 import { NodeTreeDetailDialogComponent } from 'src/app/dialogs/node-tree-detail-dialog/node-tree-detail-dialog.component';
 import { ALMIssue } from 'src/app/models/alm.models';
 import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
-import { RemoteProject } from 'src/app/models/project';
+import { RemoteProject, ViewpointLevelLabel } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
 import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
@@ -21,7 +21,7 @@ import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
   templateUrl: './project-tree-view.component.html',
   styleUrls: ['./project-tree-view.component.scss'],
 })
-export class ProjectTreeViewComponent implements CanComponentDeactivate {
+export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestroy {
   data = inject(DataService);
   backend = inject(BackendService);
   dialog = inject(MatDialog);
@@ -46,20 +46,22 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     this.treeDataSaveState = '';
   }
 
+
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(
     delay(0), //help the change detection by moving the execution into the next cycle
     tap(() => {
-      console.log('i am here')
       this.nodeLookup.clear();
     }),
-    share()
+    shareReplay()
   );
 
   backlog: IssueNode[];
   filteredBacklog: IssueNode[];
   treeData: IssueNode[];
   treeDataSaveState: string;
+
+  settingsSubscription!: Subscription;
 
   relationsSave: IssueRelation[];
 
@@ -82,6 +84,12 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
     )
     .subscribe();
 
+  hierarchySettings$ = this.viewpoint$.pipe(
+    switchMap(viewpoint => {
+      return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
+    })
+  )
+
   issuesBacklog$ = this.viewpoint$.pipe(
     tap(() => {
       this.backlogLoading = true
@@ -102,11 +110,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
           this.filteredBacklog.push(node);
           if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
         }
-      });
-
-      console.log(this.nodeLookup)
-      this.nodeLookup.forEach((value, key) => {
-        console.log(key, value);
       });
 
       //state boolean
@@ -178,6 +181,11 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(share());
   loaded$ = combineLatest([this.issuesRelation$, this.issuesBacklog$]);
 
+  ngOnDestroy(): void {
+    console.log(this.settingsSubscription)
+    if (this.settingsSubscription !== undefined) this.settingsSubscription.unsubscribe();
+  }
+
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     if (this.itemMoved) {
       const dialogConfigKeep = new MatDialogConfig();
@@ -246,14 +254,54 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate {
   }
 
   getAutomaticRelations() {
-    let settings = <IssueRelationSettings> {
-      projectId: "",
-      viewpointId: 0,
-      labelArray: [],
-    }
-    this.aggregator.getAutomaticRelations(this.treeData, this.backlog, settings, this.data.staticRemoteProjects).subscribe(links => {
-      console.log(links)
+    let projectid: string = this.data.staticProject;
+    let viewpointId: number = this.data.staticActiveViewpoint;
+
+    console.log("hello")
+
+    this.settingsSubscription = combineLatest([this.hierarchySettings$, this.aggregator.getIssueLinks(this.treeData, this.backlog, this.data.staticRemoteProjects)]).subscribe({
+        next: (levellabel) => {
+
+          console.log(levellabel)
+
+          if (levellabel[0] === null || levellabel[0].length === 0) {
+            this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.')
+            return
+
+          } else {
+
+            let settings = <IssueRelationSettings> {
+              projectId: projectid,
+              viewpointId: viewpointId,
+              labelSettings: levellabel[0],
+              links: levellabel[1],
+            }
+
+            this.data.getAutomaticRelations(settings, this.treeData, this.backlog).subscribe({
+              next: (res) => {
+                console.log(res)
+              },
+              error: (error) => {
+
+              }
+            })
+
+
+
+          }
+
+        },
+        error: (error) => {
+          console.log(error);
+        }
+
     })
+
+
+
+
+
+
   }
 
   saveRelations() {
