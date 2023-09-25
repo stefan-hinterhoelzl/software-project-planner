@@ -211,10 +211,7 @@ export class GitLabAggregator implements ALMDataAggregator {
     backlogNodes: IssueNode[],
     remoteProjects: RemoteProject[]
   ): Observable<IssueLink[]> {
-    let relations: IssueRelation[] = [];
     let combinedNodes: IssueNode[] = [...treeNodes, ...backlogNodes];
-
-    console.log("i am here")
 
     const o_relations = combinedNodes.map((value, index, array) => {
       let remoteProject = remoteProjects.find(project => project.remoteProjectId === value.issue.projectId);
@@ -222,7 +219,6 @@ export class GitLabAggregator implements ALMDataAggregator {
       return of<IssueLink[]>([])
     });
 
-    console.log(o_relations)
 
     if (o_relations.length !== 0) return forkJoin(o_relations).pipe(map(relations => relations.flat()));
     else return of<IssueLink[]>([]);
