@@ -66,7 +66,7 @@ const options: cors.CorsOptions = {
 express_app.use(cors(options));
 
 express_app.use(morgan('dev'));
-express_app.use(express.json({limit: '50mb'}));
+express_app.use(express.json({limit: '1000mb'}));
 
 //Routes
 //Projects

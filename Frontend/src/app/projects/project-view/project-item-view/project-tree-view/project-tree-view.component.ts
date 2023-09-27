@@ -2,7 +2,22 @@ import { DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnDestroy, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { combineLatest, debounceTime, delay, distinctUntilChanged, filter, forkJoin, map, Observable, of, share, shareReplay, Subscription, switchMap, tap } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  share,
+  shareReplay,
+  Subscription,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NodeBacklogDetailDialogComponent } from 'src/app/dialogs/node-backlog-detail-dialog/node-backlog-detail-dialog.component';
 import { NodeTreeDetailDialogComponent } from 'src/app/dialogs/node-tree-detail-dialog/node-tree-detail-dialog.component';
@@ -46,7 +61,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
     this.treeDataSaveState = '';
   }
 
-
   viewpoints$ = this.data.viewpoints$.pipe(share());
   viewpoint$ = this.data.activeViewpoint$.pipe(
     delay(0), //help the change detection by moving the execution into the next cycle
@@ -88,12 +102,12 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
     switchMap(viewpoint => {
       return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
     })
-  )
+  );
 
   issuesBacklog$ = this.viewpoint$.pipe(
     tap(() => {
-      this.backlogLoading = true
-      this.backlog.length = 0
+      this.backlogLoading = true;
+      this.backlog.length = 0;
     }),
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
@@ -120,8 +134,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
   issuesRelation$ = this.viewpoint$.pipe(
     tap(() => {
-      this.treeLoading = true
-      this.treeData.length = 0
+      this.treeLoading = true;
+      this.treeData.length = 0;
     }),
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
@@ -182,7 +196,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
   loaded$ = combineLatest([this.issuesRelation$, this.issuesBacklog$]);
 
   ngOnDestroy(): void {
-    console.log(this.settingsSubscription)
+    console.log(this.settingsSubscription);
     if (this.settingsSubscription !== undefined) this.settingsSubscription.unsubscribe();
   }
 
@@ -223,8 +237,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
       if (node.id === searchID) {
         node.children.push(child);
         node.parent = parent;
-      }
-      else this.placeChildreninTree(searchID, child, node, node.children);
+      } else this.placeChildreninTree(searchID, child, node, node.children);
     });
   }
 
@@ -254,51 +267,68 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
   }
 
   getAutomaticRelations() {
+    this.treeLoading = true;
+    this.backlogLoading = true;
     let projectid: string = this.data.staticProject;
     let viewpointId: number = this.data.staticActiveViewpoint;
 
-    let flattenedTree: IssueNode[] = this.flattenTree()
+    let flattenedTree: IssueNode[] = this.flattenTree();
 
-    this.settingsSubscription = combineLatest([this.hierarchySettings$, this.aggregator.getIssueLinks(flattenedTree, this.backlog, this.data.staticRemoteProjects)]).subscribe({
-        next: (levellabel) => {
+    this.settingsSubscription = combineLatest([
+      this.hierarchySettings$,
+      this.aggregator.getIssueLinks(flattenedTree, this.backlog, this.data.staticRemoteProjects),
+    ]).subscribe({
+      next: levellabel => {
+        console.log(levellabel);
 
-          console.log(levellabel)
+        if (levellabel[0] === null || levellabel[0].length === 0) {
+          this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.');
+          return;
+        } else {
+          let settings = <IssueRelationSettings>{
+            projectId: projectid,
+            viewpointId: viewpointId,
+            labelSettings: levellabel[0],
+            links: levellabel[1],
+          };
 
-          if (levellabel[0] === null || levellabel[0].length === 0) {
-            this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.')
-            return
+          console.log(flattenedTree);
 
-          } else {
-
-            let settings = <IssueRelationSettings> {
-              projectId: projectid,
-              viewpointId: viewpointId,
-              labelSettings: levellabel[0],
-              links: levellabel[1],
-            }
-
-            console.log(flattenedTree)
-
-            this.data.getAutomaticRelations(settings, flattenedTree, this.backlog).subscribe({
-              next: (res) => {
-                console.log(res)
-              },
-              error: (error) => {
-
-              }
-            })
-
-
-
-          }
-
-        },
-        error: (error) => {
-          console.log(error);
+          this.data.getAutomaticRelations(settings, flattenedTree, this.backlog).subscribe({
+            next: res => {
+              this.applyAutomaticTreeAndBacklog(res[1], res[0]);
+            },
+            error: error => {
+              console.error(error);
+              this.treeLoading = false;
+              this.backlogLoading = false;
+            },
+          });
         }
+      },
+      error: error => {
+        console.error(error);
+        this.treeLoading = false;
+        this.backlogLoading = false;
+      },
+    });
+  }
 
-    })
+  applyAutomaticTreeAndBacklog(newBacklog: IssueNode[], newTree: IssueNode[]) {
+    this.nodeLookup.clear();
+    this.prepareDragAndDrop([...newBacklog, ...newTree])
 
+    this.treeData.length = 0;
+    this.backlog.length = 0;
+    this.filteredBacklog.length = 0;
+    this.treeData.push(...newTree);
+    this.filteredBacklog.push(...newBacklog);
+    this.backlog.push(...newBacklog);
+
+    this.itemMoved = this.compareTreeToSavestate(this.treeData);
+    this.treeLoading = false;
+    this.backlogLoading = false;
+    this.evaluateTree(this.treeData)
   }
 
   saveRelations() {
@@ -380,44 +410,39 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
   evaluateTree(tree: IssueNode[]) {
     this.treeLoading = true;
     this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
-      next: (evaluatedTree) => {
-        this.applyNewKPIsAndErrors(evaluatedTree)
+      next: evaluatedTree => {
+        this.applyNewKPIsAndErrors(evaluatedTree);
         this.treeLoading = false;
-        this.snackbar.openSnackBar("Tree evalutation successful!")
+        this.snackbar.openSnackBar('Tree evalutation successful!');
       },
-      error: (err) => {
-        this.snackbar.openSnackBar("Error evaluating the hierarchy. Try again later", 'red-snackbar')
-      }
-    })
+      error: err => {
+        this.snackbar.openSnackBar('Error evaluating the hierarchy. Try again later', 'red-snackbar');
+      },
+    });
   }
 
   applyNewKPIsAndErrors(tree: IssueNode[]) {
     tree.forEach(node => {
-      let currNode: IssueNode | undefined = this.nodeLookup.get(node.id)
+      let currNode: IssueNode | undefined = this.nodeLookup.get(node.id);
       if (currNode !== undefined) {
         currNode.kpiErrors = node.kpiErrors;
         currNode.issue.timeStats.accumulatedEstimateHours = node.issue.timeStats.accumulatedEstimateHours;
         currNode.issue.timeStats.accumulatedSpentHours = node.issue.timeStats.accumulatedSpentHours;
-
       }
-      if (node.children.length !== 0) this.applyNewKPIsAndErrors(node.children)
-    })
+      if (node.children.length !== 0) this.applyNewKPIsAndErrors(node.children);
+    });
   }
 
   errorsContainErrorType(errors: IssueErrorObject[], type: ErrorType): boolean {
-    return errors.find(element => element.type === type) !== undefined
+    return errors.find(element => element.type === type) !== undefined;
   }
 
-
-
-
   drop(event: any) {
-
-    console.log(event)
+    console.log(event);
     const draggedItemId: string = event.item.data;
 
-    console.log(draggedItemId)
-    console.log(this.nodeLookup)
+    console.log(draggedItemId);
+    console.log(this.nodeLookup);
 
     this.nodeLookup.forEach((value, key) => {
       console.log(key, value);
@@ -425,7 +450,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
-    console.log(draggedItem)
+    console.log(draggedItem);
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);
@@ -445,10 +470,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
     let targetListId;
 
-    if (this.dropActionTodo.targetId === "backlog" || this.dropActionTodo.targetId === "main") {
-      targetListId = this.dropActionTodo.targetId
+    if (this.dropActionTodo.targetId === 'backlog' || this.dropActionTodo.targetId === 'main') {
+      targetListId = this.dropActionTodo.targetId;
     } else {
-
       targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.filteredBacklog, 'backlog');
       if (!targetListId) targetListId = this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, 'main');
     }
@@ -494,8 +518,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
         break;
 
       case 'top':
-        newContainer.push(draggedItem)
-
+        newContainer.push(draggedItem);
     }
 
     this.clearDragInfo(true);
@@ -562,7 +585,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
   showDragInfo() {
     this.clearDragInfo();
-    if (this.dropActionTodo && this.dropActionTodo.targetId !== "backlog" && this.dropActionTodo.targetId !== "main") {
+    if (this.dropActionTodo && this.dropActionTodo.targetId !== 'backlog' && this.dropActionTodo.targetId !== 'main') {
       this.document.getElementById('node-' + this.dropActionTodo.targetId)!.classList.add('drop-' + this.dropActionTodo.action);
     }
   }
@@ -645,12 +668,10 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
     if (tree) this.dialog.open(NodeTreeDetailDialogComponent, dialogConfig);
     else this.dialog.open(NodeBacklogDetailDialogComponent, dialogConfig);
-
   }
 
-
   flattenTree(): IssueNode[] {
-    let tree: IssueNode[] = JSON.parse(JSON.stringify(this.treeData))
+    let tree: IssueNode[] = JSON.parse(JSON.stringify(this.treeData));
     let nodes: IssueNode[] = [];
 
     tree.forEach(node => {

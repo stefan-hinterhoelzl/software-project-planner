@@ -201,16 +201,11 @@ export async function detectHierarchies(req: Request, res: Response) {
   let backlog: IssueNode[] = req.body[1];
   let settings: IssueRelationSettings = req.body[2];
   let labels: ViewpointLevelLabel[] = settings.labelSettings;
-  var projectId: string = req.params.projectId;
-  var viewpointId: number = Number(req.params.viewpointId);
 
   let firstLevelLabel: ViewpointLevelLabel | undefined = labels.find(label => label.level === 1);
-
   let newTree: IssueNode[] = [];
   let newBacklog: IssueNode[] = [];
-
   let nodes: IssueNode[] = [...tree, ...backlog];
-
   let traversedNodes: string[] = [];
 
   if (firstLevelLabel !== undefined) {
