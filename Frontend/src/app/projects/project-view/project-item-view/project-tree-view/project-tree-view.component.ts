@@ -279,7 +279,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
       this.aggregator.getIssueLinks(flattenedTree, this.backlog, this.data.staticRemoteProjects),
     ]).subscribe({
       next: levellabel => {
-        console.log(levellabel);
 
         if (levellabel[0] === null || levellabel[0].length === 0) {
           this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.');
@@ -292,7 +291,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
             links: levellabel[1],
           };
 
-          console.log(flattenedTree);
 
           this.data.getAutomaticRelations(settings, flattenedTree, this.backlog).subscribe({
             next: res => {
