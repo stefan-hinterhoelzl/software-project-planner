@@ -5,7 +5,7 @@ import { handleError } from './controller.util';
 import { connect, getConnection } from '../database';
 import { PoolConnection } from 'mysql2/promise';
 import { updateIssueKPIErrors } from './issue.controller';
-import { IssueErrorObject, ViewpointHierarchieSettings } from '../models/remoteIssues';
+import { IssueErrorObject, IssueLink, IssueRelationSettings, ViewpointHierarchieSettings, ViewpointLevelLabel } from '../models/remoteIssues';
 
 //*** Tree Evaluation ***/
 export async function evaluateTree(req: Request, res: Response) {
@@ -199,13 +199,79 @@ const checkForInternalErrors = async (node: IssueNode, connection: PoolConnectio
 export async function detectHierarchies(req: Request, res: Response) {
   let tree: IssueNode[] = req.body[0];
   let backlog: IssueNode[] = req.body[1];
-  let settings: ViewpointHierarchieSettings = req.body[2];
-
+  let settings: IssueRelationSettings = req.body[2];
+  let labels: ViewpointLevelLabel[] = settings.labelSettings;
   var projectId: string = req.params.projectId;
   var viewpointId: number = Number(req.params.viewpointId);
 
-  res.json({message: 'hello'});
-  
+  let firstLevelLabel: ViewpointLevelLabel | undefined = labels.find(label => label.level === 1);
+
+  let newTree: IssueNode[] = [];
+  let newBacklog: IssueNode[] = [];
+
+  let nodes: IssueNode[] = [...tree, ...backlog];
+
+  let traversedNodes: string[] = [];
+
+  if (firstLevelLabel !== undefined) {
+    let topLevelNodes: IssueNode[] = nodes.filter(node => node.issue.labels.includes(firstLevelLabel!.label));
+
+    topLevelNodes.forEach((node, index, array) => {
+      node.children.length = 0; //reset children
+      node.kpiErrors.length = 0; //reset errors
+
+      newTree.push(node);
+      traversedNodes.push(node.id);
+
+      checkForChildrenBasedOnRelation(settings, 2, node, traversedNodes, nodes, settings.links);
+    });
+
+    let remainingNodes: IssueNode[] = nodes.filter(node => !traversedNodes.includes(node.id));
+
+    remainingNodes.forEach(node => {
+      node.children.length = 0;
+      node.kpiErrors.length = 0;
+      node.nodeOrder = -1;
+      newBacklog.push(node);
+    });
+  }
+  res.json([newTree, newBacklog]);
+}
+
+function checkForChildrenBasedOnRelation(
+  settings: IssueRelationSettings,
+  targetLevel: number,
+  node: IssueNode,
+  traversedNodes: string[],
+  nodes: IssueNode[],
+  links: IssueLink[]
+) {
+  let curr: IssueLink[] = links.filter(link => link.remoteIssueId === node.issue.issueId && link.remoteprojectId === node.issue.projectId);
+
+  let label: ViewpointLevelLabel | undefined;
+
+  if (targetLevel === 2) label = settings.labelSettings.find(label => label.level === 2);
+  else label = settings.labelSettings.find(label => label.level === 3);
+
+  curr.forEach(link => {
+    0;
+    let index: number = nodes.findIndex(
+      node => node.issue.issueId === link.relatedRemoteIssueId && node.issue.projectId === link.relatedRemoteProjectId
+    );
+
+    if (index !== -1 && label !== undefined) {
+      let nested: IssueNode = JSON.parse(JSON.stringify(nodes[index]));
+
+      if (nested.issue.labels.includes(label.label)) {
+        node.kpiErrors.length = 0;
+        node.children.length = 0;
+        node.children.push(nested);
+        traversedNodes.push(nested.id);
+
+        if (targetLevel === 2) checkForChildrenBasedOnRelation(settings, 3, nested, traversedNodes, nodes, links);
+      }
+    }
+  });
 }
 
 //*** HELPER FUNCTIONS */

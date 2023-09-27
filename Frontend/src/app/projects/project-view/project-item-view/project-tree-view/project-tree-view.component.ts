@@ -257,9 +257,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
     let projectid: string = this.data.staticProject;
     let viewpointId: number = this.data.staticActiveViewpoint;
 
-    console.log("hello")
+    let flattenedTree: IssueNode[] = this.flattenTree()
 
-    this.settingsSubscription = combineLatest([this.hierarchySettings$, this.aggregator.getIssueLinks(this.treeData, this.backlog, this.data.staticRemoteProjects)]).subscribe({
+    this.settingsSubscription = combineLatest([this.hierarchySettings$, this.aggregator.getIssueLinks(flattenedTree, this.backlog, this.data.staticRemoteProjects)]).subscribe({
         next: (levellabel) => {
 
           console.log(levellabel)
@@ -277,7 +277,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
               links: levellabel[1],
             }
 
-            this.data.getAutomaticRelations(settings, this.treeData, this.backlog).subscribe({
+            console.log(flattenedTree)
+
+            this.data.getAutomaticRelations(settings, flattenedTree, this.backlog).subscribe({
               next: (res) => {
                 console.log(res)
               },
@@ -296,11 +298,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
         }
 
     })
-
-
-
-
-
 
   }
 
@@ -649,5 +646,26 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
     if (tree) this.dialog.open(NodeTreeDetailDialogComponent, dialogConfig);
     else this.dialog.open(NodeBacklogDetailDialogComponent, dialogConfig);
 
+  }
+
+
+  flattenTree(): IssueNode[] {
+    let tree: IssueNode[] = JSON.parse(JSON.stringify(this.treeData))
+    let nodes: IssueNode[] = [];
+
+    tree.forEach(node => {
+      nodes.push(node);
+      this.handleChildren(nodes, node);
+    });
+    return nodes;
+  }
+
+  handleChildren(nodes: IssueNode[], node: IssueNode) {
+    if (node.children.length !== 0) {
+      nodes.push(...node.children);
+      node.children.forEach(child => {
+        this.handleChildren(nodes, child);
+      });
+    }
   }
 }

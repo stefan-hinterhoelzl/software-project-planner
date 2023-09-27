@@ -153,7 +153,7 @@ export class BackendService {
 
   getAutomaticRelations(settings: IssueRelationSettings, tree: IssueNode[], backlog: IssueNode[]) {
     let passingParemeters: any[] = [tree, backlog, settings]
-    return this.http.put<any[]>(`${this.BASE_URL}project/${settings.projectId}/viewpoint/${settings.viewpointId}/detecthierarchies`, passingParemeters, {observe: 'body', responseType: 'json'})
+    return this.http.put<any>(`${this.BASE_URL}project/${settings.projectId}/viewpoint/${settings.viewpointId}/detecthierarchies`, passingParemeters, {observe: 'body', responseType: 'json'})
   }
 
 }
