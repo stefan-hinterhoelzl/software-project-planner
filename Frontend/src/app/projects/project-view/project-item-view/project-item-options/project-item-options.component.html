@@ -2,7 +2,7 @@
   <div class="viewpoint-selection">
     <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>
 
-    <div *ngIf="subview$ | async as subview">
+    <div style = "width: 100%;" *ngIf="subview$ | async as subview">
       <mat-card style="margin-top: 0">
         <h1 matCardTitle>Viewpoint Details</h1>
         <mat-divider></mat-divider>

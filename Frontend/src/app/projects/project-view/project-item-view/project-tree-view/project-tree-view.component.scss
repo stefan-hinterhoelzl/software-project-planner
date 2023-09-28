@@ -18,7 +18,7 @@
 .card-wrapper {
   display: flex;
   flex-direction: column;
-  max-width: 1900px;
+  //max-width: 1900px;
   min-width: 1000px;
   align-self: stretch;
   flex: 1;
@@ -29,9 +29,9 @@
 }
 
 .card-header {
-  display: flex; 
-  flex-direction: row; 
-  width: 100%; 
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   justify-content: space-between;
   align-items: flex-start;
   min-height: 56px;
@@ -229,7 +229,7 @@ p {
   align-items: center;
   width: 100%;
   gap: 10px;
-  
+
 }
 
 .tree-issue-title-nesting {

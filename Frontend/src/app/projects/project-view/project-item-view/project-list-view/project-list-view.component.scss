@@ -50,14 +50,14 @@ mat-select {
 .filter-group {
   display: flex;
   gap: 20px;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
 }
 
 .card-wrapper {
   display: flex;
   flex-direction: column;
-  max-width: 1900px;
+  //max-width: 1900px;
   min-width: 1000px;
   align-self: stretch;
   flex: 1;
