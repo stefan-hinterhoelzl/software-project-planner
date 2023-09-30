@@ -9,6 +9,10 @@ import { Issue, IssueLink, IssueRelation, IssueRelationSettings } from 'src/app/
 
 @Injectable()
 export abstract class ALMDataAggregator {
+
+
+  abstract checkForAccessToProject(remoteProjectId: number, accessToken: string): Observable<any>;
+
   abstract getProjects(remoteProjects: RemoteProject[]): Observable<ALMProject[]>;
 
   abstract getIssues(
@@ -35,6 +39,10 @@ export class GitLabAggregator implements ALMDataAggregator {
   constructor() {}
 
   alm = inject(GitlabALMService);
+
+  checkForAccessToProject(remoteProjectId: number, accessToken: string): Observable<any> {
+      return this.alm.checkForAccessToProject(remoteProjectId, accessToken)
+  }
 
   getProjects(remoteProjects: RemoteProject[]): Observable<ALMProject[]> {
     const o_projects: Observable<ALMProject>[] = remoteProjects.map(project =>

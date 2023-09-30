@@ -1,14 +1,14 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, OnInit, ViewChild, NgZone } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
-import { map, Subscription, switchMap, take } from 'rxjs';
+import { take } from 'rxjs';
 import { Project, RemoteProject } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { User, getAuth } from '@firebase/auth';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GitlabALMService } from 'src/app/services/ALM/Adapater Services/gitLab.service';
-import { BackendService } from 'src/app/services/backend.service';
+
+import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 
 @Component({
   selector: 'app-create-project',
@@ -18,11 +18,11 @@ import { BackendService } from 'src/app/services/backend.service';
 export class CreateProjectComponent implements OnInit {
   fb = inject(FormBuilder);
   data = inject(DataService);
-  alm = inject(GitlabALMService);
   _ngZone = inject(NgZone);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  aggregator: ALMDataAggregator;
 
   @ViewChild('autosize', { static: false }) autosize!: CdkTextareaAutosize;
   @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
@@ -48,7 +48,9 @@ export class CreateProjectComponent implements OnInit {
   accessToken?: string;
   remoteIDHasError: boolean = false;
 
-  constructor() {}
+  constructor() {
+    this.aggregator = new GitLabAggregator;
+  }
 
   ngOnInit(): void {
     this.data.loggedInUser$.pipe(take(1)).subscribe(value => {
@@ -90,7 +92,7 @@ export class CreateProjectComponent implements OnInit {
 
       if (this.accessToken !== undefined) token = this.accessToken;
 
-      this.alm
+      this.aggregator
         .checkForAccessToProject(this.remoteID!, token)
         .pipe(take(1))
         .subscribe({
