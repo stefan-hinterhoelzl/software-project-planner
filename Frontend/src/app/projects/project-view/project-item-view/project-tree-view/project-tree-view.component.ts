@@ -108,6 +108,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
     tap(() => {
       this.backlogLoading = true;
       this.backlog.length = 0;
+      this.filteredBacklog.length = 0;
     }),
     switchMap(viewpoint => {
       return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
