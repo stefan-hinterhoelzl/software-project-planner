@@ -36,6 +36,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     tap(viewpoint => {
       if (viewpoint !== undefined) {
         this.viewpointDetails.get('nameCtrl')?.setValue(viewpoint?.title);
+
         this.local_viewpoint = viewpoint;
       }
     })
@@ -46,7 +47,7 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
       return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
     }),
     tap(settings => {
-      if (settings !== undefined) {
+      if (settings !== undefined && settings.length !== 0) {
         console.log(settings);
         settings.forEach(label => {
           switch (label.level) {
@@ -64,13 +65,17 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
             }
           }
         });
+      } else if (settings !== undefined && settings.length === 0) {
+        this.hierachieDetection.get('first')?.setValue("");
+        this.hierachieDetection.get('second')?.setValue("");
+        this.hierachieDetection.get('third')?.setValue("");
       }
     })
   );
 
   project$ = this.data.activeProject$;
   view$ = combineLatest([this.project$, this.viewpoints$]).pipe(shareReplay(1));
-  subview$ = combineLatest([this.viewpoint$, this.hierarchySettings$]).pipe(shareReplay(1))
+  subview$ = combineLatest([this.viewpoint$, this.hierarchySettings$]).pipe(shareReplay(1));;
 
   canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     return this.view$.pipe(
