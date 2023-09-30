@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, forkJoin, lastValueFrom, map, Observable, of, share, Subscription, switchMap, tap } from 'rxjs';
+import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { IssueDetailDialogComponent } from 'src/app/dialogs/issue-detail-dialog/issue-detail-dialog.component';
 import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject } from 'src/app/models/alm.models';
 import { Issue } from 'src/app/models/issue';
@@ -166,6 +167,32 @@ export class ProjectListViewComponent implements OnInit {
           this.filterGroup.get('endDateControl')?.enable();
         },
       });
+  }
+
+  canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+    if ((this.selectedDeltaMinus !== undefined && this.selectedDeltaMinus.length !== 0) ||
+    (this.selectedDeltaPlus !== undefined && this.selectedDeltaPlus.length !== 0)) {
+      const dialogConfigKeep = new MatDialogConfig();
+
+      dialogConfigKeep.data = {
+        title: 'Unsaved Changes!',
+        content: 'You have unsaved changes in the selection. They are lost when you leave the page!.',
+        button1: 'Discard Changes',
+        button2: 'Save Changes',
+      };
+
+      dialogConfigKeep.disableClose = true;
+
+      const dialogRef = this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+      return dialogRef.afterClosed().pipe(
+        switchMap(result => {
+          if (!result) {
+            this.saveSelection();
+          }
+          return of(true);
+        })
+      );
+    } else return of(true);
   }
 
   getIssues() {
@@ -333,7 +360,7 @@ export class ProjectListViewComponent implements OnInit {
     const dialogRef = this.dialog.open(IssueDetailDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        issue.selected = true;
+        this.setSelected(true, issue)
       }
     });
   }

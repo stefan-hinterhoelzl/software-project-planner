@@ -7,8 +7,9 @@
 
 
   <p>Issue last modified at: {{ issue.updatedAt | date : "short" }}</p>
+  <!-- rethink this again in terms of security .... -->
+  <markdown [data]="description"></markdown>
 
-  <p [innerHTML]="issue.description | markdown"></p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button color="primary" mat-raised-button (keydown)="onKeydownEvent($event)" (click) = "close(true)">Select & Close</button>

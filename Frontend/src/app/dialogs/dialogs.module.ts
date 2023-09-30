@@ -11,6 +11,7 @@ import { NewViewpointDialogComponent } from './new-viewpoint-dialog/new-viewpoin
 import { NodeBacklogDetailDialogComponent } from './node-backlog-detail-dialog/node-backlog-detail-dialog.component';
 import { NodeTreeDetailDialogComponent } from './node-tree-detail-dialog/node-tree-detail-dialog.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { MarkdownModule } from 'ngx-markdown';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonToggleModule,
     MatChipsModule,
     MatDividerModule,
+    MarkdownModule.forRoot(),
   ]
 })
 export class DialogsModule { }

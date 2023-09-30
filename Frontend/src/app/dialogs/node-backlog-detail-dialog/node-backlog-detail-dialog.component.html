@@ -10,7 +10,7 @@
 
   <p>Issue last modified at: {{ node.issue.updatedAt | date : "short" }}</p>
 
-  <p [innerHTML]="node.issue.description | markdown"></p>
+  <markdown [data]="description"></markdown>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button color="primary" mat-raised-button (keydown)="onKeydownEvent($event)" mat-dialog-close (click) = "close()">Close</button>
