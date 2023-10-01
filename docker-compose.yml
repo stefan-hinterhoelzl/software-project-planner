@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'spp_db'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - "./SQLInitScript.sql:/docker-entrypoint-initdb.d/init.sql"
+    
+
+  client:
+    stdin_open: true
+    container_name: Planner_Frontend
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./Frontend:/app
+    
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"
+    
+  api:
+    container_name: Planner_Backend
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./Backend:/app
+    
+
+    
+
+
+
+  

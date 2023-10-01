@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { filter } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   standalone: true,

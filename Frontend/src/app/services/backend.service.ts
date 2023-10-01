@@ -1,12 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, take, tap } from 'rxjs';
-import { Project, RemoteProject, Viewpoint, ViewpointHierarchieSettings, ViewpointLevelLabel } from '../models/project';
-import { DataService } from './data.service';
-import { getAuth, User } from '@firebase/auth';
+import { map, Observable } from 'rxjs';
+import { Project, RemoteProject, Viewpoint, ViewpointLevelLabel } from '../models/project';
+import { getAuth } from '@firebase/auth';
 import { UserSettings } from '../models/user';
-import { SnackbarComponent } from '../snackbar/snackbar.component';
-import { ALMIssue } from '../models/alm.models';
 import { Issue, IssueRelation, IssueRelationSettings } from '../models/issue';
 import { IssueNode } from '../models/node';
 
@@ -14,10 +11,8 @@ import { IssueNode } from '../models/node';
   providedIn: 'root',
 })
 export class BackendService {
-  BASE_URL = 'http://localhost:3000/';
-  //private data = inject(DataService);
+  BASE_URL = '/api';
   private http = inject(HttpClient);
-  private snackbar = inject(SnackbarComponent);
 
   constructor() {}
 

@@ -24,7 +24,7 @@ import { NodeTreeDetailDialogComponent } from 'src/app/dialogs/node-tree-detail-
 import { ALMIssue } from 'src/app/models/alm.models';
 import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
 import { DropInfo, IssueNode } from 'src/app/models/node';
-import { RemoteProject, ViewpointLevelLabel } from 'src/app/models/project';
+import { RemoteProject } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
 import { BackendService } from 'src/app/services/backend.service';
 import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';

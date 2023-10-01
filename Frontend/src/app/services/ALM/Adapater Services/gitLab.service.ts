@@ -1,6 +1,5 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpParamsOptions } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ALMProject } from 'src/app/models/alm.models';
 
 @Injectable({
   providedIn: 'root'

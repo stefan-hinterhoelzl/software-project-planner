@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { verifyHostBindings } from '@angular/compiler';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';

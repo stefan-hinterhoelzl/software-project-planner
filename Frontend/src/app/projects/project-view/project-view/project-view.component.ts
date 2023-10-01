@@ -10,7 +10,6 @@ import {
 } from 'rxjs';
 import { Project, Viewpoint } from 'src/app/models/project';
 import { ALMDataAggregator, GitLabAggregator } from 'src/app/services/ALM/alm-data-aggregator.service';
-import { BackendService } from 'src/app/services/backend.service';
 import { DataService } from 'src/app/services/data.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 

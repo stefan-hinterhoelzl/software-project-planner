@@ -1,14 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap, filter, share, shareReplay, Observable } from 'rxjs';
+import { EMPTY, forkJoin, map, of, ReplaySubject, BehaviorSubject, switchMap, tap, filter, Observable } from 'rxjs';
 import { User } from '@firebase/auth';
-import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint, ViewpointHierarchieSettings, ViewpointLevelLabel } from '../models/project';
+import { Project, RemoteProject, RemoteProjectDeleteObject, Viewpoint, ViewpointLevelLabel } from '../models/project';
 import { UserSettings } from '../models/user';
 import { ALMProject } from '../models/alm.models';
 import { BackendService } from './backend.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 import { Router } from '@angular/router';
-import { ViewEncapsulation } from '@angular/compiler';
 import { IssueRelationSettings } from '../models/issue';
 import { IssueNode } from '../models/node';
 

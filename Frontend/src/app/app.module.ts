@@ -24,8 +24,6 @@ import { ProjectSearchComponent } from './projects/project-search/project-search
 import { MatListModule } from '@angular/material/list';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { NotFoundComponent } from './error/not-found/not-found.component';
-import { ServerErrorComponent } from './error/server-error/server-error.component';
 import { ErrorInterceptor } from './interceptors/error-interceptor';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { CanDeactivateGuard } from './services/can-deactivate-guard.service';

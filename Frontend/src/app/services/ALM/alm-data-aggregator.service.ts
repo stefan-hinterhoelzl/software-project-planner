@@ -1,11 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { forkJoin, from, lastValueFrom, map, observable, Observable, of, tap } from 'rxjs';
+import { forkJoin, from, lastValueFrom, map,  Observable, of } from 'rxjs';
 import { ALMFilteroptions, ALMIssue, ALMIssueResWrapper, ALMPaginationoptions, ALMProject, ALMTimeStats } from '../../models/alm.models';
 import { RemoteProject } from '../../models/project';
 import { GitlabALMService } from './Adapater Services/gitLab.service';
 import { IssueNode } from 'src/app/models/node';
-import { Issue, IssueLink, IssueRelation, IssueRelationSettings } from 'src/app/models/issue';
+import { IssueLink } from 'src/app/models/issue';
 
 @Injectable()
 export abstract class ALMDataAggregator {

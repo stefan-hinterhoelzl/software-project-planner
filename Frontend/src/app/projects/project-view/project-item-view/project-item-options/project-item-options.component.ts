@@ -1,11 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable, combineLatest, of, share, shareReplay, switchMap, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { NewViewpointDialogComponent } from 'src/app/dialogs/new-viewpoint-dialog/new-viewpoint-dialog.component';
 import { Viewpoint, ViewpointLevelLabel } from 'src/app/models/project';
-import { BackendService } from 'src/app/services/backend.service';
 import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
 import { DataService } from 'src/app/services/data.service';
 

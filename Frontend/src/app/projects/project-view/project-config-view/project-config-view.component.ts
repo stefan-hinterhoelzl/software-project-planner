@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable, combineLatest, of, share, shareReplay, startWith, switchMap, take, tap } from 'rxjs';
+import { Observable, combineLatest, of, shareReplay, switchMap, take, tap } from 'rxjs';
 import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
 import { Project, RemoteProject, RemoteProjectDeleteObject } from 'src/app/models/project';
 import { GitlabALMService } from 'src/app/services/ALM/Adapater Services/gitLab.service';

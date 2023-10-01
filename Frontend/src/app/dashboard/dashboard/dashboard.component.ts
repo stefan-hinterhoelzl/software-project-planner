@@ -2,10 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Project } from 'src/app/models/project';
 import { DataService } from 'src/app/services/data.service';
 import { getAuth } from 'firebase/auth';
-import { CanComponentDeactivate } from 'src/app/services/can-deactivate-guard.service';
-import { Observable } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { AreYouSureDialogComponent } from 'src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',

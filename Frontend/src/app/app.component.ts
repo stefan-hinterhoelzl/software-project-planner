@@ -1,7 +1,5 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { getAuth, User, onAuthStateChanged } from '@firebase/auth';
 import { AuthService } from './services/auth.service';
