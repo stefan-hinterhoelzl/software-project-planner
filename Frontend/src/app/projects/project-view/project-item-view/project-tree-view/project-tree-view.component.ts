@@ -197,7 +197,6 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
   loaded$ = combineLatest([this.issuesRelation$, this.issuesBacklog$]);
 
   ngOnDestroy(): void {
-    console.log(this.settingsSubscription);
     if (this.settingsSubscription !== undefined) this.settingsSubscription.unsubscribe();
   }
 
@@ -437,19 +436,9 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
   }
 
   drop(event: any) {
-    console.log(event);
     const draggedItemId: string = event.item.data;
-
-    console.log(draggedItemId);
-    console.log(this.nodeLookup);
-
-    this.nodeLookup.forEach((value, key) => {
-      console.log(key, value);
-    });
-
     const draggedItem = this.nodeLookup.get(draggedItemId);
 
-    console.log(draggedItem);
 
     if (!this.dropActionTodo || !draggedItem) {
       this.clearDragInfo(true);

@@ -30,7 +30,6 @@ export class DataService {
 
   //User
   private _loggedInUser = new ReplaySubject<User>(1);
-  private _userSettings = new ReplaySubject<UserSettings>(1);
 
   //Viewpoints
   private _viewpoints = new BehaviorSubject<Viewpoint[]>([]);
@@ -52,7 +51,6 @@ export class DataService {
 
   readonly almProjects$ = this._almprojects.asObservable();
   readonly loggedInUser$ = this._loggedInUser.asObservable();
-  readonly userSettings$ = this._userSettings.asObservable();
   readonly viewpoints$ = this._viewpoints.asObservable();
   readonly activeViewpoint$ = this._activeViewpointId
     .asObservable()
@@ -260,6 +258,20 @@ export class DataService {
   // Setters
   setUser(value: User) {
     this._loggedInUser.next(value);
+
+    let settings: UserSettings = {
+      userId: value.uid,
+      email: value.email !== null?value.email:'',
+    }
+
+    this.backend.handleLogin(settings).subscribe({
+      next: value => {
+        //DO nothing
+      },
+      error: error => {
+        this.snackbar.openSnackBar('Error handling the login on the Backend Side.', 'red-snackbar')
+      }
+    })
   }
 
   setActiveProject(value: string) {
@@ -268,10 +280,6 @@ export class DataService {
 
   setActiveRemoteproject(value: number) {
     this._activeRemoteProjectId.next(value);
-  }
-
-  setUserSettings(value: UserSettings) {
-    this._userSettings.next(value);
   }
 
   setProjects(value: Project[]) {
@@ -283,7 +291,6 @@ export class DataService {
   }
 
   setRemoteProjects(value: RemoteProject[]) {
-    console.log("New Remoteprojects: ",value)
     this._remoteProjects.next(value);
   }
 

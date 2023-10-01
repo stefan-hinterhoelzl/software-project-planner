@@ -48,7 +48,6 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     }),
     tap(settings => {
       if (settings !== undefined && settings.length !== 0) {
-        console.log(settings);
         settings.forEach(label => {
           switch (label.level) {
             case 1: {
@@ -165,7 +164,4 @@ export class ProjectItemOptionsComponent implements CanComponentDeactivate {
     this.data.setHierarchySettings(viewpointId, projectId, levelLabels);
   }
 
-  onKeydownEvent(event: Event) {
-    console.log(event);
-  }
 }

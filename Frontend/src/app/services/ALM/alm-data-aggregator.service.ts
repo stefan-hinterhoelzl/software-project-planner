@@ -242,7 +242,6 @@ export class GitLabAggregator implements ALMDataAggregator {
       .getIssueRelations(remoteProject.remoteProjectId, remoteProject.accessToken, issue.issue.issueId)
       .pipe(
         map(relations => {
-          console.log(relations)
           return relations.map(relation => {
             return <IssueLink>{
               remoteprojectId: issue.issue.projectId,

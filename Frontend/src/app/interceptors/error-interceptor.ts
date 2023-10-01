@@ -25,7 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   private handleError(err: HttpErrorResponse): Observable<any> {
     if (err.status === 0 || err.status === 500) {
       this.router.navigate(['/500']);
-      console.log(err);
+      console.error(err);
       return of(EMPTY);
     }
     if (err.status === 401 && err.url?.includes(this.URL)) { //only for backend functions
@@ -36,7 +36,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     if (err.status === 404 && err.url?.includes(this.URL)) { //only for backend functions
         this.router.navigate(['/404'], {queryParams: {e:"server"}})
-        console.log(err)
+        console.error(err)
         return of(EMPTY);
     }
 

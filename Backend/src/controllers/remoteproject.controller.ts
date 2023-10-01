@@ -12,7 +12,6 @@ export async function addRemoteProjects(req: Request, res: Response) {
       value.projectid = id;
       value.dateAdded = new Date(Date.now());
     });
-    console.log(newProjects);
     const conn = await connect();
     await Promise.all([newProjects.map(value => conn.query('INSERT INTO RemoteProjects SET ?', [value]))]);
     res.json(newProjects);

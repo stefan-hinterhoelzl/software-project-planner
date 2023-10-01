@@ -22,26 +22,13 @@ export class BackendService {
   constructor() {}
 
   //Users
-
-  // getUserData() {
-  //   const auth = getAuth();
-  //   this.http.get<UserSettings>(this.BASE_URL + 'user/' + auth.currentUser?.uid).subscribe({
-  //     next: userSettings => {
-  //       this.data.setUserSettings(userSettings);
-  //     },
-  //     error: error => {
-  //       this.snackbar.openSnackBar('Error loading user settings! Try again later.', 'red-snackbar');
-  //       console.log(error.error);
-  //     },
-  //   });
-  // }
-
-  updateUserData(value: UserSettings) {
-    //TODO
+  handleLogin(user: UserSettings) {
+    //Settings are used for now
+    //Only important to store the user in the database for the foreign key.
+    return this.http.post<UserSettings>(this.BASE_URL + 'users', user);
   }
 
   //Projects
-
   addProject(project: Project): Observable<Project> {
     return this.http.post<Project>(this.BASE_URL + 'projects', project);
   }

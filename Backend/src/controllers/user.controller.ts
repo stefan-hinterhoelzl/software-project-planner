@@ -4,25 +4,12 @@ import { User } from '../models/user';
 import { handleError } from './controller.util';
 
 export async function createUser(req: Request, res: Response) {
-  try {
-    const newUser: User = req.body;
-    await insertUser(newUser);
-    res.json(newUser);
-  } catch (err: any) {
-    handleError(res, err);
-  }
-}
-
-export async function getUserById(req: Request, res: Response) {
-  var id: string = req.params.userId;
+  const newUser: User = req.body;
 
   try {
     const conn = await connect();
-    const result: User = (await conn.query<User[]>('SELECT * FROM Users Where userId = ?', [id]))[0][0];
+    const result: User = (await conn.query<User[]>('SELECT * FROM Users Where userId = ?', [newUser.userId]))[0][0];
     if (result === undefined) {
-      const newUser = <User>{
-        userId: id,
-      };
       await insertUser(newUser);
       res.json(newUser);
     } else res.json(result);
@@ -36,7 +23,3 @@ async function insertUser(newUser: User): Promise<void> {
   await conn.query('INSERT INTO users SET ?', [newUser]);
   return;
 }
-
-//Delete
-
-//Put

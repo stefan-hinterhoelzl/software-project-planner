@@ -27,6 +27,5 @@ export class DashboardComponent implements OnInit {
   async getToken() {
     const auth = getAuth();
     let token: string = await auth.currentUser?.getIdToken(true)!;
-    console.log(token);
   }
 }

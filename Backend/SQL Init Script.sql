@@ -10,8 +10,6 @@ Drop Table Users;
 Create Table Users (
     userId varchar(100) NOT NULL,
     email varchar(100),
-    firstname varchar(100),
-    lastname varchar(100),
     Primary Key (userId)
 );
 

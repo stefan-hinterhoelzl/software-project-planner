@@ -393,7 +393,6 @@ export class ProjectListViewComponent implements OnInit {
       map(issues => issues.flat())
     ).subscribe({
       next: issues => {
-        console.log(issues)
         issues.forEach(issue => {
           if (this.SelectedIssues?.find(value => issue.issueId === value.remoteIssueId) === undefined) {
             this.setSelected(true, issue)
