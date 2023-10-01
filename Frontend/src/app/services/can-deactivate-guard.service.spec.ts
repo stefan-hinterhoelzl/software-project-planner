@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CanDeactivateGuardService } from './can-deactivate-guard.service';
+import { CanDeactivateGuard } from './can-deactivate-guard.service';
 
 describe('CanDeactivateGuardService', () => {
-  let service: CanDeactivateGuardService;
+  let service: CanDeactivateGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CanDeactivateGuardService);
+    service = TestBed.inject(CanDeactivateGuard);
   });
 
   it('should be created', () => {

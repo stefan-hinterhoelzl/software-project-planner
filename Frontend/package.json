@@ -1,6 +1,7 @@
 {
   "name": "software-project-planner",
   "version": "0.0.0",
+   "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check --host 0.0.0.0 --port 3000",

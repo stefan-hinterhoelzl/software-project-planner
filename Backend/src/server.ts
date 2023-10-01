@@ -57,7 +57,7 @@ export const logger = createLogger({
 });
 
 //CORS
-const allowedOrigins = ['http://localhost:4200'];
+const allowedOrigins = ['http://localhost:3050'];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,

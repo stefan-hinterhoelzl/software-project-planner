@@ -36,7 +36,7 @@ export class AppComponent {
         this.isLoggedIn = true;
         this.user = user;
         this.data.setUser(user);
-        this.data.getProjects()
+
       } else {
         this.isLoggedIn = false;
       }

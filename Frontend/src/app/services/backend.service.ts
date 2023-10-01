@@ -11,7 +11,7 @@ import { IssueNode } from '../models/node';
   providedIn: 'root',
 })
 export class BackendService {
-  BASE_URL = '/api';
+  BASE_URL = '/planner_backend/'; //Used for the Nginx Routing
   private http = inject(HttpClient);
 
   constructor() {}

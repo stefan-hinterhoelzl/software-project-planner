@@ -20,6 +20,6 @@ export async function createUser(req: Request, res: Response) {
 
 async function insertUser(newUser: User): Promise<void> {
   const conn = await connect();
-  await conn.query('INSERT INTO users SET ?', [newUser]);
+  await conn.query('INSERT INTO Users SET ?', [newUser]);
   return;
 }

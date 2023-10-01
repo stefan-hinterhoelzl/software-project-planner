@@ -14,7 +14,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   snackbar = inject(SnackbarComponent);
 
 
-  URL: string = 'api'
+  URL: string = 'localhost'
 
   constructor() {}
 

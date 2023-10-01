@@ -9,7 +9,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     //Attach the Token, when the call is to the backend
-    if (request.url.startsWith("http://localhost:3000"))
+    console.log(request)
+
+    if (request.url.includes("/planner_backend"))
       return from(this.handle(request, next))
     else return next.handle(request)
   }

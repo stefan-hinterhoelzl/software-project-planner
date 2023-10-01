@@ -10,6 +10,7 @@ import { ALMDataAggregator } from './ALM/alm-data-aggregator.service';
 import { Router } from '@angular/router';
 import { IssueRelationSettings } from '../models/issue';
 import { IssueNode } from '../models/node';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class DataService {
   backend = inject(BackendService);
   snackbar = inject(SnackbarComponent);
   router = inject(Router);
+  auth = inject(AuthService);
 
   //**Subjects**
   //Projects
@@ -265,10 +267,11 @@ export class DataService {
 
     this.backend.handleLogin(settings).subscribe({
       next: value => {
-        //DO nothing
+        this.getProjects()
       },
       error: error => {
-        this.snackbar.openSnackBar('Error handling the login on the Backend Side.', 'red-snackbar')
+        this.snackbar.openSnackBar('Error during the login!.', 'red-snackbar')
+        this.auth.logout()
       }
     })
   }
