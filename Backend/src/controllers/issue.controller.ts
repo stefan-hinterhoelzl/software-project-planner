@@ -115,7 +115,7 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
     const result = (
       await conn.query<RemoteIssues[]>(
         `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId
-      FROM remoteissues ri LEFT JOIN remoteissuesrelation rir 
+      FROM Remoteissues ri LEFT JOIN Remoteissuesrelation rir 
       ON ri.viewpointId = rir.viewpointId AND ri.projectId = rir.projectId
       AND ((ri.remoteIssueId = rir.parentIssueId AND ri.remoteProjectId = rir.parentRemoteProjectId) 
            OR (ri.remoteIssueId = rir.childIssueId AND ri.remoteProjectId = rir.childRemoteProjectId))
@@ -220,7 +220,7 @@ export async function updateIssueKPIErrors(
     };
   });
 
-  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO remoteissueskpierrors SET ?', [value]))]);
+  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO Remoteissueskpierrors SET ?', [value]))]);
 }
 
 async function getKPIErrorsForIssue(remoteIssues: RemoteIssues[], conn: Pool): Promise<RemoteIssuesWithErrors[]> {
