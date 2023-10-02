@@ -8,9 +8,6 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor() {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    //Attach the Token, when the call is to the backend
-    console.log(request)
-
     if (request.url.includes("/planner_backend"))
       return from(this.handle(request, next))
     else return next.handle(request)
