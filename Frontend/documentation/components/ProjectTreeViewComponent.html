@@ -1,0 +1,4525 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>software-project-planner documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+            <a href="../" class="navbar-brand">software-project-planner documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  ProjectTreeViewComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="../interfaces/CanComponentDeactivate.html" target="_self" >CanComponentDeactivate</a></code>
+                <code>OnDestroy</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-project-tree-view</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./project-tree-view.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./project-tree-view.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#aggregator" >aggregator</a>
+                            </li>
+                            <li>
+                                <a href="#backend" >backend</a>
+                            </li>
+                            <li>
+                                <a href="#backlog" >backlog</a>
+                            </li>
+                            <li>
+                                <a href="#backlogLoading" >backlogLoading</a>
+                            </li>
+                            <li>
+                                <a href="#cd" >cd</a>
+                            </li>
+                            <li>
+                                <a href="#data" >data</a>
+                            </li>
+                            <li>
+                                <a href="#dialog" >dialog</a>
+                            </li>
+                            <li>
+                                <a href="#dropActionTodo" >dropActionTodo</a>
+                            </li>
+                            <li>
+                                <a href="#filter" >filter</a>
+                            </li>
+                            <li>
+                                <a href="#filterControl" >filterControl</a>
+                            </li>
+                            <li>
+                                <a href="#filteredBacklog" >filteredBacklog</a>
+                            </li>
+                            <li>
+                                <a href="#filterGroup" >filterGroup</a>
+                            </li>
+                            <li>
+                                <a href="#hierarchySettings$" >hierarchySettings$</a>
+                            </li>
+                            <li>
+                                <a href="#issuesBacklog$" >issuesBacklog$</a>
+                            </li>
+                            <li>
+                                <a href="#issuesRelation$" >issuesRelation$</a>
+                            </li>
+                            <li>
+                                <a href="#itemMoved" >itemMoved</a>
+                            </li>
+                            <li>
+                                <a href="#loaded$" >loaded$</a>
+                            </li>
+                            <li>
+                                <a href="#nodeLookup" >nodeLookup</a>
+                            </li>
+                            <li>
+                                <a href="#project$" >project$</a>
+                            </li>
+                            <li>
+                                <a href="#relationsSave" >relationsSave</a>
+                            </li>
+                            <li>
+                                <a href="#settingsSubscription" >settingsSubscription</a>
+                            </li>
+                            <li>
+                                <a href="#snackbar" >snackbar</a>
+                            </li>
+                            <li>
+                                <a href="#treeData" >treeData</a>
+                            </li>
+                            <li>
+                                <a href="#treeDataSaveState" >treeDataSaveState</a>
+                            </li>
+                            <li>
+                                <a href="#treeLoading" >treeLoading</a>
+                            </li>
+                            <li>
+                                <a href="#view$" >view$</a>
+                            </li>
+                            <li>
+                                <a href="#viewpoint$" >viewpoint$</a>
+                            </li>
+                            <li>
+                                <a href="#viewpoints$" >viewpoints$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#applyAutomaticTreeAndBacklog" >applyAutomaticTreeAndBacklog</a>
+                            </li>
+                            <li>
+                                <a href="#applyNewKPIsAndErrors" >applyNewKPIsAndErrors</a>
+                            </li>
+                            <li>
+                                <a href="#buildHierarchy" >buildHierarchy</a>
+                            </li>
+                            <li>
+                                <a href="#buildRelationObjects" >buildRelationObjects</a>
+                            </li>
+                            <li>
+                                <a href="#canDeactivate" >canDeactivate</a>
+                            </li>
+                            <li>
+                                <a href="#clearDragInfo" >clearDragInfo</a>
+                            </li>
+                            <li>
+                                <a href="#compareTreeToSavestate" >compareTreeToSavestate</a>
+                            </li>
+                            <li>
+                                <a href="#convertALMIssueToNode" >convertALMIssueToNode</a>
+                            </li>
+                            <li>
+                                <a href="#convertChildren" >convertChildren</a>
+                            </li>
+                            <li>
+                                <a href="#convertNodeToIssueJSONCheckObject" >convertNodeToIssueJSONCheckObject</a>
+                            </li>
+                            <li>
+                                <a href="#convertTopNodes" >convertTopNodes</a>
+                            </li>
+                            <li>
+                                <a href="#createJSONTree" >createJSONTree</a>
+                            </li>
+                            <li>
+                                <a href="#dragMoved" >dragMoved</a>
+                            </li>
+                            <li>
+                                <a href="#drop" >drop</a>
+                            </li>
+                            <li>
+                                <a href="#errorsContainErrorType" >errorsContainErrorType</a>
+                            </li>
+                            <li>
+                                <a href="#evaluateTree" >evaluateTree</a>
+                            </li>
+                            <li>
+                                <a href="#flattenTree" >flattenTree</a>
+                            </li>
+                            <li>
+                                <a href="#getALMIssues" >getALMIssues</a>
+                            </li>
+                            <li>
+                                <a href="#getAutomaticRelations" >getAutomaticRelations</a>
+                            </li>
+                            <li>
+                                <a href="#getParentNodeId" >getParentNodeId</a>
+                            </li>
+                            <li>
+                                <a href="#handleChildren" >handleChildren</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#openIssueDetailDialog" >openIssueDetailDialog</a>
+                            </li>
+                            <li>
+                                <a href="#placeChildreninTree" >placeChildreninTree</a>
+                            </li>
+                            <li>
+                                <a href="#placeNodeinTree" >placeNodeinTree</a>
+                            </li>
+                            <li>
+                                <a href="#prepareDragAndDrop" >prepareDragAndDrop</a>
+                            </li>
+                            <li>
+                                <a href="#saveRelations" >saveRelations</a>
+                            </li>
+                            <li>
+                                <a href="#showDragInfo" >showDragInfo</a>
+                            </li>
+                            <li>
+                                <a href="#sortArray" >sortArray</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(document: Document)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:53</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>document</td>
+                                                  
+                                                        <td>
+                                                                    <code>Document</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyAutomaticTreeAndBacklog"></a>
+                    <span class="name">
+                        <span ><b>applyAutomaticTreeAndBacklog</b></span>
+                        <a href="#applyAutomaticTreeAndBacklog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyAutomaticTreeAndBacklog(newBacklog: IssueNode[], newTree: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="315"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:315</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>newBacklog</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>newTree</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyNewKPIsAndErrors"></a>
+                    <span class="name">
+                        <span ><b>applyNewKPIsAndErrors</b></span>
+                        <a href="#applyNewKPIsAndErrors"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyNewKPIsAndErrors(tree: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="422"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:422</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>tree</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="buildHierarchy"></a>
+                    <span class="name">
+                        <span ><b>buildHierarchy</b></span>
+                        <a href="#buildHierarchy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="251"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:251</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>startRelations</td>
+                                    <td>
+                                            <code>IssueRelation[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>allRelations</td>
+                                    <td>
+                                            <code>IssueRelation[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="buildRelationObjects"></a>
+                    <span class="name">
+                        <span ><b>buildRelationObjects</b></span>
+                        <a href="#buildRelationObjects"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>buildRelationObjects(nodes: IssueNode[], viewpoint: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, projectId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, outerorder: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, level_zero: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="354"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:354</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>viewpoint</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>projectId</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>outerorder</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>level_zero</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="canDeactivate"></a>
+                    <span class="name">
+                        <span ><b>canDeactivate</b></span>
+                        <a href="#canDeactivate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>canDeactivate()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="203"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:203</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>boolean | Observable | Promise</code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="clearDragInfo"></a>
+                    <span class="name">
+                        <span ><b>clearDragInfo</b></span>
+                        <a href="#clearDragInfo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>clearDragInfo(dropped)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="581"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:581</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                    <td>Default value</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>dropped</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                        <code>false</code>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="compareTreeToSavestate"></a>
+                    <span class="name">
+                        <span ><b>compareTreeToSavestate</b></span>
+                        <a href="#compareTreeToSavestate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>compareTreeToSavestate(nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="608"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:608</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convertALMIssueToNode"></a>
+                    <span class="name">
+                        <span ><b>convertALMIssueToNode</b></span>
+                        <a href="#convertALMIssueToNode"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>convertALMIssueToNode(ALMIssue: <a href="../interfaces/ALMIssue.html" target="_self">ALMIssue</a>, issue: <a href="../interfaces/Issue.html" target="_self">Issue</a>, order: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="590"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:590</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Default value</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ALMIssue</td>
+                                    <td>
+                                                <code><a href="../interfaces/ALMIssue.html" target="_self" >ALMIssue</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>issue</td>
+                                    <td>
+                                                <code><a href="../interfaces/Issue.html" target="_self" >Issue</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>order</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                        <code>-1</code>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convertChildren"></a>
+                    <span class="name">
+                        <span ><b>convertChildren</b></span>
+                        <a href="#convertChildren"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>convertChildren(nodes: IssueNode[], res: IssueJSONCheckObject[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="621"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:621</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>res</td>
+                                    <td>
+                                            <code>IssueJSONCheckObject[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>IssueJSONCheckObject[]</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convertNodeToIssueJSONCheckObject"></a>
+                    <span class="name">
+                        <span ><b>convertNodeToIssueJSONCheckObject</b></span>
+                        <a href="#convertNodeToIssueJSONCheckObject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>convertNodeToIssueJSONCheckObject(node: <a href="../interfaces/IssueNode.html" target="_self">IssueNode</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="601"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:601</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>node</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/IssueJSONCheckObject.html" target="_self" >IssueJSONCheckObject</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convertTopNodes"></a>
+                    <span class="name">
+                        <span ><b>convertTopNodes</b></span>
+                        <a href="#convertTopNodes"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>convertTopNodes(nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="613"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:613</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>IssueJSONCheckObject[]</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createJSONTree"></a>
+                    <span class="name">
+                        <span ><b>createJSONTree</b></span>
+                        <a href="#createJSONTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>createJSONTree(nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="640"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:640</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dragMoved"></a>
+                    <span class="name">
+                        <span ><b>dragMoved</b></span>
+                        <a href="#dragMoved"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>dragMoved(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="516"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:516</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="drop"></a>
+                    <span class="name">
+                        <span ><b>drop</b></span>
+                        <a href="#drop"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>drop(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="438"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:438</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="errorsContainErrorType"></a>
+                    <span class="name">
+                        <span ><b>errorsContainErrorType</b></span>
+                        <a href="#errorsContainErrorType"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>errorsContainErrorType(errors: IssueErrorObject[], type: <a href="../undefineds/ErrorType.html" target="_self">ErrorType</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="434"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:434</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>errors</td>
+                                    <td>
+                                            <code>IssueErrorObject[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>type</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#ErrorType" target="_self" >ErrorType</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="evaluateTree"></a>
+                    <span class="name">
+                        <span ><b>evaluateTree</b></span>
+                        <a href="#evaluateTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>evaluateTree(tree: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="408"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:408</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>tree</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="flattenTree"></a>
+                    <span class="name">
+                        <span ><b>flattenTree</b></span>
+                        <a href="#flattenTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>flattenTree()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="661"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:661</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>IssueNode[]</code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getALMIssues"></a>
+                    <span class="name">
+                        <span ><b>getALMIssues</b></span>
+                        <a href="#getALMIssues"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getALMIssues(issues: <a href="../interfaces/Issue.html" target="_self">Issue[]</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="388"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:388</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>issues</td>
+                                    <td>
+                                                <code><a href="../interfaces/Issue.html" target="_self" >Issue[]</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Observable&lt;ALMIssue[]&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getAutomaticRelations"></a>
+                    <span class="name">
+                        <span ><b>getAutomaticRelations</b></span>
+                        <a href="#getAutomaticRelations"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getAutomaticRelations()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="269"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:269</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getParentNodeId"></a>
+                    <span class="name">
+                        <span ><b>getParentNodeId</b></span>
+                        <a href="#getParentNodeId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getParentNodeId(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, nodesToSearch: IssueNode[], parentId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="565"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:565</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>nodesToSearch</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>parentId</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleChildren"></a>
+                    <span class="name">
+                        <span ><b>handleChildren</b></span>
+                        <a href="#handleChildren"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>handleChildren(nodes: IssueNode[], node: <a href="../interfaces/IssueNode.html" target="_self">IssueNode</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="672"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:672</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>node</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="199"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:199</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openIssueDetailDialog"></a>
+                    <span class="name">
+                        <span ><b>openIssueDetailDialog</b></span>
+                        <a href="#openIssueDetailDialog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openIssueDetailDialog(node: <a href="../interfaces/IssueNode.html" target="_self">IssueNode</a>, tree: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="648"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:648</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>node</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>tree</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="placeChildreninTree"></a>
+                    <span class="name">
+                        <span ><b>placeChildreninTree</b></span>
+                        <a href="#placeChildreninTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>placeChildreninTree(searchID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, child: <a href="../interfaces/IssueNode.html" target="_self">IssueNode</a>, parent: <a href="../interfaces/IssueNode.html" target="_self">IssueNode</a>, nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="235"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:235</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>searchID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>child</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>parent</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueNode.html" target="_self" >IssueNode</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="placeNodeinTree"></a>
+                    <span class="name">
+                        <span ><b>placeNodeinTree</b></span>
+                        <a href="#placeNodeinTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>placeNodeinTree(parentID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, nodes: IssueJSONCheckObject[], node: <a href="../interfaces/IssueJSONCheckObject.html" target="_self">IssueJSONCheckObject</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="633"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:633</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>parentID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueJSONCheckObject[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>node</td>
+                                    <td>
+                                                <code><a href="../interfaces/IssueJSONCheckObject.html" target="_self" >IssueJSONCheckObject</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="prepareDragAndDrop"></a>
+                    <span class="name">
+                        <span ><b>prepareDragAndDrop</b></span>
+                        <a href="#prepareDragAndDrop"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>prepareDragAndDrop(nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="228"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:228</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="saveRelations"></a>
+                    <span class="name">
+                        <span ><b>saveRelations</b></span>
+                        <a href="#saveRelations"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>saveRelations()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="332"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:332</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showDragInfo"></a>
+                    <span class="name">
+                        <span ><b>showDragInfo</b></span>
+                        <a href="#showDragInfo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>showDragInfo()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="574"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:574</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sortArray"></a>
+                    <span class="name">
+                        <span ><b>sortArray</b></span>
+                        <a href="#sortArray"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>sortArray(nodes: IssueNode[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="244"
+                            class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:244</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nodes</td>
+                                    <td>
+                                            <code>IssueNode[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="aggregator"></a>
+                    <span class="name">
+                        <span ><b>aggregator</b></span>
+                        <a href="#aggregator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/ALMDataAggregator.html" target="_self" >ALMDataAggregator</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="backend"></a>
+                    <span class="name">
+                        <span ><b>backend</b></span>
+                        <a href="#backend"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(BackendService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="backlog"></a>
+                    <span class="name">
+                        <span ><b>backlog</b></span>
+                        <a href="#backlog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>IssueNode[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="73" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:73</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="backlogLoading"></a>
+                    <span class="name">
+                        <span ><b>backlogLoading</b></span>
+                        <a href="#backlogLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cd"></a>
+                    <span class="name">
+                        <span ><b>cd</b></span>
+                        <a href="#cd"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(ChangeDetectorRef)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="data"></a>
+                    <span class="name">
+                        <span ><b>data</b></span>
+                        <a href="#data"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(DataService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dialog"></a>
+                    <span class="name">
+                        <span ><b>dialog</b></span>
+                        <a href="#dialog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(MatDialog)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dropActionTodo"></a>
+                    <span class="name">
+                        <span ><b>dropActionTodo</b></span>
+                        <a href="#dropActionTodo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/DropInfo.html" target="_self" >DropInfo</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filter"></a>
+                    <span class="name">
+                        <span ><b>filter</b></span>
+                        <a href="#filter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.filterControl.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(value &#x3D;&gt; {
+        this.filteredBacklog.length &#x3D; 0;
+        this.filteredBacklog.push(...this.backlog.filter(val &#x3D;&gt; val.issue.title.toLowerCase().includes(value.toLowerCase())));
+      })
+    )
+    .subscribe()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="90" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:90</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filterControl"></a>
+                    <span class="name">
+                        <span ><b>filterControl</b></span>
+                        <a href="#filterControl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new FormControl()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="84" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredBacklog"></a>
+                    <span class="name">
+                        <span ><b>filteredBacklog</b></span>
+                        <a href="#filteredBacklog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>IssueNode[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="74" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filterGroup"></a>
+                    <span class="name">
+                        <span ><b>filterGroup</b></span>
+                        <a href="#filterGroup"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new FormGroup({
+    filterControl: this.filterControl,
+  })</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="86" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:86</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hierarchySettings$"></a>
+                    <span class="name">
+                        <span ><b>hierarchySettings$</b></span>
+                        <a href="#hierarchySettings$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.viewpoint$.pipe(
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
+    })
+  )</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="101" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:101</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="issuesBacklog$"></a>
+                    <span class="name">
+                        <span ><b>issuesBacklog$</b></span>
+                        <a href="#issuesBacklog$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.viewpoint$.pipe(
+    tap(() &#x3D;&gt; {
+      this.backlogLoading &#x3D; true;
+      this.backlog.length &#x3D; 0;
+      this.filteredBacklog.length &#x3D; 0;
+    }),
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+    }),
+    switchMap(issues &#x3D;&gt; {
+      return this.getALMIssues(issues).pipe(map(ALMIssues &#x3D;&gt; ({ issues, ALMIssues })));
+    }),
+    tap(issues &#x3D;&gt; {
+      issues.ALMIssues.forEach(ALMIssue &#x3D;&gt; {
+        let issue: Issue &#x3D; issues.issues.find(val &#x3D;&gt; val.remoteIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; val.remoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId)!;
+        if (issue !&#x3D;&#x3D; undefined) {
+          let node: IssueNode &#x3D; this.convertALMIssueToNode(ALMIssue, issue);
+          this.backlog.push(node);
+          this.filteredBacklog.push(node);
+          if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
+        }
+      });
+
+      //state boolean
+      this.backlogLoading &#x3D; false;
+    }),
+    share()
+  )</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="107" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:107</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="issuesRelation$"></a>
+                    <span class="name">
+                        <span ><b>issuesRelation$</b></span>
+                        <a href="#issuesRelation$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.viewpoint$.pipe(
+    tap(() &#x3D;&gt; {
+      this.treeLoading &#x3D; true;
+      this.treeData.length &#x3D; 0;
+    }),
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+    }),
+    filter(relations &#x3D;&gt; relations !&#x3D;&#x3D; undefined),
+    switchMap(relations &#x3D;&gt; {
+      const ids: number[] &#x3D; [];
+
+      relations.forEach(value &#x3D;&gt; {
+        if (ids.find(id &#x3D;&gt; id &#x3D;&#x3D;&#x3D; value.parentIssueId) &#x3D;&#x3D;&#x3D; undefined) ids.push(value.parentIssueId);
+        if (ids.find(id &#x3D;&gt; id &#x3D;&#x3D;&#x3D; value.childIssueId) &#x3D;&#x3D;&#x3D; undefined) ids.push(value.childIssueId);
+      });
+
+      let viewpoint &#x3D; this.data.staticActiveViewpoint;
+      let project &#x3D; this.data.staticProject;
+
+      return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res &#x3D;&gt; ({ res, relations })));
+    }),
+    switchMap(data &#x3D;&gt; {
+      return this.getALMIssues(data.res).pipe(map(values &#x3D;&gt; ({ values, data })));
+    }),
+    tap(data &#x3D;&gt; {
+      let arr: IssueNode[] &#x3D; [];
+      data.values.forEach(ALMIssue &#x3D;&gt; {
+        let currIndex: number &#x3D; data.data.relations.findIndex(
+          val &#x3D;&gt; val.childIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; val.childRemoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId
+        );
+        let order: number &#x3D; data.data.relations[currIndex].nodeOrder;
+        let issue: Issue &#x3D; data.data.res.find(iss &#x3D;&gt; iss.remoteIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; iss.remoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId)!;
+        let node: IssueNode &#x3D; this.convertALMIssueToNode(ALMIssue, issue, order);
+        if (arr.findIndex(currNode &#x3D;&gt; currNode.id &#x3D;&#x3D;&#x3D; node.id) &#x3D;&#x3D;&#x3D; -1) arr.push(node);
+      });
+
+      //prepare the nodes before
+      this.prepareDragAndDrop(arr);
+
+      this.buildHierarchy(
+        data.data.relations.filter(value &#x3D;&gt; value.parentIssueId &#x3D;&#x3D;&#x3D; value.childIssueId &amp;&amp; value.parentRemoteProjectId &#x3D;&#x3D;&#x3D; value.childRemoteProjectId),
+        data.data.relations
+      );
+
+      //sort all the items accordingly
+      this.sortArray(this.treeData);
+
+      //create Savestate
+      this.treeDataSaveState &#x3D; this.createJSONTree(this.treeData);
+
+      //state boolean
+      this.treeLoading &#x3D; false;
+
+      //evaluate Tree on first load
+      this.evaluateTree(this.treeData);
+    }),
+    share()
+  )</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="136" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:136</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="itemMoved"></a>
+                    <span class="name">
+                        <span ><b>itemMoved</b></span>
+                        <a href="#itemMoved"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loaded$"></a>
+                    <span class="name">
+                        <span ><b>loaded$</b></span>
+                        <a href="#loaded$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>combineLatest([this.issuesRelation$, this.issuesBacklog$])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="197" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:197</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="nodeLookup"></a>
+                    <span class="name">
+                        <span ><b>nodeLookup</b></span>
+                        <a href="#nodeLookup"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;string, IssueNode&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="project$"></a>
+                    <span class="name">
+                        <span ><b>project$</b></span>
+                        <a href="#project$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.data.activeProject$</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="82" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:82</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="relationsSave"></a>
+                    <span class="name">
+                        <span ><b>relationsSave</b></span>
+                        <a href="#relationsSave"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>IssueRelation[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="80" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:80</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="settingsSubscription"></a>
+                    <span class="name">
+                        <span ><b>settingsSubscription</b></span>
+                        <a href="#settingsSubscription"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Subscription</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="78" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="snackbar"></a>
+                    <span class="name">
+                        <span ><b>snackbar</b></span>
+                        <a href="#snackbar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(SnackbarComponent)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="treeData"></a>
+                    <span class="name">
+                        <span ><b>treeData</b></span>
+                        <a href="#treeData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>IssueNode[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="75" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="treeDataSaveState"></a>
+                    <span class="name">
+                        <span ><b>treeDataSaveState</b></span>
+                        <a href="#treeDataSaveState"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="76" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="treeLoading"></a>
+                    <span class="name">
+                        <span ><b>treeLoading</b></span>
+                        <a href="#treeLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="view$"></a>
+                    <span class="name">
+                        <span ><b>view$</b></span>
+                        <a href="#view$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>combineLatest([this.project$, this.viewpoints$]).pipe(share())</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="196" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:196</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="viewpoint$"></a>
+                    <span class="name">
+                        <span ><b>viewpoint$</b></span>
+                        <a href="#viewpoint$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.data.activeViewpoint$.pipe(
+    delay(0), //help the change detection by moving the execution into the next cycle
+    tap(() &#x3D;&gt; {
+      this.nodeLookup.clear();
+    }),
+    shareReplay()
+  )</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="viewpoints$"></a>
+                    <span class="name">
+                        <span ><b>viewpoints$</b></span>
+                        <a href="#viewpoints$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.data.viewpoints$.pipe(share())</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/projects/project-view/project-item-view/project-tree-view/project-tree-view.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { DOCUMENT } from &#x27;@angular/common&#x27;;
+import { ChangeDetectorRef, Component, Inject, OnDestroy, inject } from &#x27;@angular/core&#x27;;
+import { FormControl, FormGroup } from &#x27;@angular/forms&#x27;;
+import { MatDialog, MatDialogConfig } from &#x27;@angular/material/dialog&#x27;;
+import {
+  combineLatest,
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  share,
+  shareReplay,
+  Subscription,
+  switchMap,
+  tap,
+} from &#x27;rxjs&#x27;;
+import { AreYouSureDialogComponent } from &#x27;src/app/dialogs/are-you-sure-dialog/are-you-sure-dialog.component&#x27;;
+import { NodeBacklogDetailDialogComponent } from &#x27;src/app/dialogs/node-backlog-detail-dialog/node-backlog-detail-dialog.component&#x27;;
+import { NodeTreeDetailDialogComponent } from &#x27;src/app/dialogs/node-tree-detail-dialog/node-tree-detail-dialog.component&#x27;;
+import { ALMIssue } from &#x27;src/app/models/alm.models&#x27;;
+import { ErrorType, Issue, IssueErrorObject, IssueJSONCheckObject, IssueRelation, IssueRelationSettings } from &#x27;src/app/models/issue&#x27;;
+import { DropInfo, IssueNode } from &#x27;src/app/models/node&#x27;;
+import { RemoteProject } from &#x27;src/app/models/project&#x27;;
+import { ALMDataAggregator, GitLabAggregator } from &#x27;src/app/services/ALM/alm-data-aggregator.service&#x27;;
+import { BackendService } from &#x27;src/app/services/backend.service&#x27;;
+import { CanComponentDeactivate } from &#x27;src/app/services/can-deactivate-guard.service&#x27;;
+import { DataService } from &#x27;src/app/services/data.service&#x27;;
+import { SnackbarComponent } from &#x27;src/app/snackbar/snackbar.component&#x27;;
+
+@Component({
+  selector: &#x27;app-project-tree-view&#x27;,
+  templateUrl: &#x27;./project-tree-view.component.html&#x27;,
+  styleUrls: [&#x27;./project-tree-view.component.scss&#x27;],
+})
+export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestroy {
+  data &#x3D; inject(DataService);
+  backend &#x3D; inject(BackendService);
+  dialog &#x3D; inject(MatDialog);
+  snackbar &#x3D; inject(SnackbarComponent);
+  cd &#x3D; inject(ChangeDetectorRef);
+  aggregator: ALMDataAggregator;
+
+  //State Booleans
+  backlogLoading: boolean &#x3D; false;
+  treeLoading: boolean &#x3D; false;
+  itemMoved: boolean &#x3D; false;
+
+  nodeLookup &#x3D; new Map&lt;string, IssueNode&gt;();
+  dropActionTodo!: DropInfo;
+
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    this.aggregator &#x3D; new GitLabAggregator();
+    this.backlog &#x3D; [];
+    this.treeData &#x3D; [];
+    this.filteredBacklog &#x3D; [];
+    this.relationsSave &#x3D; [];
+    this.treeDataSaveState &#x3D; &#x27;&#x27;;
+  }
+
+  viewpoints$ &#x3D; this.data.viewpoints$.pipe(share());
+  viewpoint$ &#x3D; this.data.activeViewpoint$.pipe(
+    delay(0), //help the change detection by moving the execution into the next cycle
+    tap(() &#x3D;&gt; {
+      this.nodeLookup.clear();
+    }),
+    shareReplay()
+  );
+
+  backlog: IssueNode[];
+  filteredBacklog: IssueNode[];
+  treeData: IssueNode[];
+  treeDataSaveState: string;
+
+  settingsSubscription!: Subscription;
+
+  relationsSave: IssueRelation[];
+
+  project$ &#x3D; this.data.activeProject$;
+
+  filterControl &#x3D; new FormControl();
+
+  filterGroup &#x3D; new FormGroup({
+    filterControl: this.filterControl,
+  });
+
+  filter &#x3D; this.filterControl.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(value &#x3D;&gt; {
+        this.filteredBacklog.length &#x3D; 0;
+        this.filteredBacklog.push(...this.backlog.filter(val &#x3D;&gt; val.issue.title.toLowerCase().includes(value.toLowerCase())));
+      })
+    )
+    .subscribe();
+
+  hierarchySettings$ &#x3D; this.viewpoint$.pipe(
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.data.getHierarchySettings(viewpoint?.viewpointId!, viewpoint?.projectId!);
+    })
+  );
+
+  issuesBacklog$ &#x3D; this.viewpoint$.pipe(
+    tap(() &#x3D;&gt; {
+      this.backlogLoading &#x3D; true;
+      this.backlog.length &#x3D; 0;
+      this.filteredBacklog.length &#x3D; 0;
+    }),
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.backend.getSelectedRemoteIssuesWithoutRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+    }),
+    switchMap(issues &#x3D;&gt; {
+      return this.getALMIssues(issues).pipe(map(ALMIssues &#x3D;&gt; ({ issues, ALMIssues })));
+    }),
+    tap(issues &#x3D;&gt; {
+      issues.ALMIssues.forEach(ALMIssue &#x3D;&gt; {
+        let issue: Issue &#x3D; issues.issues.find(val &#x3D;&gt; val.remoteIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; val.remoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId)!;
+        if (issue !&#x3D;&#x3D; undefined) {
+          let node: IssueNode &#x3D; this.convertALMIssueToNode(ALMIssue, issue);
+          this.backlog.push(node);
+          this.filteredBacklog.push(node);
+          if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node);
+        }
+      });
+
+      //state boolean
+      this.backlogLoading &#x3D; false;
+    }),
+    share()
+  );
+
+  issuesRelation$ &#x3D; this.viewpoint$.pipe(
+    tap(() &#x3D;&gt; {
+      this.treeLoading &#x3D; true;
+      this.treeData.length &#x3D; 0;
+    }),
+    switchMap(viewpoint &#x3D;&gt; {
+      return this.backend.getSelectedRemoteIssueRelations(viewpoint?.projectId!, viewpoint?.viewpointId!);
+    }),
+    filter(relations &#x3D;&gt; relations !&#x3D;&#x3D; undefined),
+    switchMap(relations &#x3D;&gt; {
+      const ids: number[] &#x3D; [];
+
+      relations.forEach(value &#x3D;&gt; {
+        if (ids.find(id &#x3D;&gt; id &#x3D;&#x3D;&#x3D; value.parentIssueId) &#x3D;&#x3D;&#x3D; undefined) ids.push(value.parentIssueId);
+        if (ids.find(id &#x3D;&gt; id &#x3D;&#x3D;&#x3D; value.childIssueId) &#x3D;&#x3D;&#x3D; undefined) ids.push(value.childIssueId);
+      });
+
+      let viewpoint &#x3D; this.data.staticActiveViewpoint;
+      let project &#x3D; this.data.staticProject;
+
+      return this.backend.getRemoteIssuesByIDs(project, viewpoint, ids).pipe(map(res &#x3D;&gt; ({ res, relations })));
+    }),
+    switchMap(data &#x3D;&gt; {
+      return this.getALMIssues(data.res).pipe(map(values &#x3D;&gt; ({ values, data })));
+    }),
+    tap(data &#x3D;&gt; {
+      let arr: IssueNode[] &#x3D; [];
+      data.values.forEach(ALMIssue &#x3D;&gt; {
+        let currIndex: number &#x3D; data.data.relations.findIndex(
+          val &#x3D;&gt; val.childIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; val.childRemoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId
+        );
+        let order: number &#x3D; data.data.relations[currIndex].nodeOrder;
+        let issue: Issue &#x3D; data.data.res.find(iss &#x3D;&gt; iss.remoteIssueId &#x3D;&#x3D;&#x3D; ALMIssue.issueId &amp;&amp; iss.remoteProjectId &#x3D;&#x3D;&#x3D; ALMIssue.projectId)!;
+        let node: IssueNode &#x3D; this.convertALMIssueToNode(ALMIssue, issue, order);
+        if (arr.findIndex(currNode &#x3D;&gt; currNode.id &#x3D;&#x3D;&#x3D; node.id) &#x3D;&#x3D;&#x3D; -1) arr.push(node);
+      });
+
+      //prepare the nodes before
+      this.prepareDragAndDrop(arr);
+
+      this.buildHierarchy(
+        data.data.relations.filter(value &#x3D;&gt; value.parentIssueId &#x3D;&#x3D;&#x3D; value.childIssueId &amp;&amp; value.parentRemoteProjectId &#x3D;&#x3D;&#x3D; value.childRemoteProjectId),
+        data.data.relations
+      );
+
+      //sort all the items accordingly
+      this.sortArray(this.treeData);
+
+      //create Savestate
+      this.treeDataSaveState &#x3D; this.createJSONTree(this.treeData);
+
+      //state boolean
+      this.treeLoading &#x3D; false;
+
+      //evaluate Tree on first load
+      this.evaluateTree(this.treeData);
+    }),
+    share()
+  );
+
+  view$ &#x3D; combineLatest([this.project$, this.viewpoints$]).pipe(share());
+  loaded$ &#x3D; combineLatest([this.issuesRelation$, this.issuesBacklog$]);
+
+  ngOnDestroy(): void {
+    if (this.settingsSubscription !&#x3D;&#x3D; undefined) this.settingsSubscription.unsubscribe();
+  }
+
+  canDeactivate(): boolean | Observable&lt;boolean&gt; | Promise&lt;boolean&gt; {
+    if (this.itemMoved) {
+      const dialogConfigKeep &#x3D; new MatDialogConfig();
+
+      dialogConfigKeep.data &#x3D; {
+        title: &#x27;Unsaved Changes!&#x27;,
+        content: &#x27;You have unsaved changes in the hierarchy. They are lost when you leave the page!.&#x27;,
+        button1: &#x27;Discard Changes&#x27;,
+        button2: &#x27;Save Changes&#x27;,
+      };
+
+      dialogConfigKeep.disableClose &#x3D; true;
+
+      const dialogRef &#x3D; this.dialog.open(AreYouSureDialogComponent, dialogConfigKeep);
+      return dialogRef.afterClosed().pipe(
+        switchMap(result &#x3D;&gt; {
+          if (!result) {
+            this.saveRelations();
+          }
+          return of(true);
+        })
+      );
+    } else return of(true);
+  }
+
+  prepareDragAndDrop(nodes: IssueNode[]) {
+    nodes.forEach(node &#x3D;&gt; {
+      if (!this.nodeLookup.get(node.id)) this.nodeLookup.set(node.id, node); //avoid duplicate entries
+      this.prepareDragAndDrop(node.children);
+    });
+  }
+
+  placeChildreninTree(searchID: string, child: IssueNode, parent: IssueNode, nodes: IssueNode[]) {
+    nodes.forEach(node &#x3D;&gt; {
+      if (node.id &#x3D;&#x3D;&#x3D; searchID) {
+        node.children.push(child);
+        node.parent &#x3D; parent;
+      } else this.placeChildreninTree(searchID, child, node, node.children);
+    });
+  }
+
+  sortArray(nodes: IssueNode[]) {
+    nodes.sort((a, b) &#x3D;&gt; a.nodeOrder! - b.nodeOrder!);
+    nodes.forEach(value &#x3D;&gt; {
+      if (value.children.length !&#x3D;&#x3D; 0) this.sortArray(value.children);
+    });
+  }
+
+  buildHierarchy(startRelations: IssueRelation[], allRelations: IssueRelation[]) {
+    startRelations.forEach(value &#x3D;&gt; {
+      let parentID: string &#x3D; &#x60;${value.parentRemoteProjectId}${value.parentIssueId}&#x60;;
+      let childID: string &#x3D; &#x60;${value.childRemoteProjectId}${value.childIssueId}&#x60;;
+      if (value.parentIssueId &#x3D;&#x3D;&#x3D; value.childIssueId &amp;&amp; value.parentRemoteProjectId &#x3D;&#x3D;&#x3D; value.childRemoteProjectId) {
+        this.treeData.push(this.nodeLookup.get(childID)!);
+      } else {
+        this.placeChildreninTree(childID, this.nodeLookup.get(childID)!, this.nodeLookup.get(parentID)!, this.treeData);
+        this.nodeLookup.get(parentID)?.children.push(this.nodeLookup.get(childID)!);
+      }
+      let newRelations: IssueRelation[] &#x3D; allRelations.filter(
+        newvalue &#x3D;&gt;
+          newvalue.parentIssueId &#x3D;&#x3D;&#x3D; value.childIssueId &amp;&amp; newvalue.parentRemoteProjectId &#x3D;&#x3D;&#x3D; value.childRemoteProjectId &amp;&amp; newvalue !&#x3D;&#x3D; value
+      );
+      if (newRelations.length &gt; 0) this.buildHierarchy(newRelations, allRelations);
+    });
+  }
+
+  getAutomaticRelations() {
+    this.treeLoading &#x3D; true;
+    this.backlogLoading &#x3D; true;
+    let projectid: string &#x3D; this.data.staticProject;
+    let viewpointId: number &#x3D; this.data.staticActiveViewpoint;
+
+    let flattenedTree: IssueNode[] &#x3D; this.flattenTree();
+
+    this.settingsSubscription &#x3D; combineLatest([
+      this.hierarchySettings$,
+      this.aggregator.getIssueLinks(flattenedTree, this.backlog, this.data.staticRemoteProjects),
+    ]).subscribe({
+      next: levellabel &#x3D;&gt; {
+
+        if (levellabel[0] &#x3D;&#x3D;&#x3D; null || levellabel[0].length &#x3D;&#x3D;&#x3D; 0) {
+          this.snackbar.openSnackBar(&#x27;There are no hierarchy labels maintained for this viewpoint.&#x27;);
+          return;
+        } else {
+          let settings &#x3D; &lt;IssueRelationSettings&gt;{
+            projectId: projectid,
+            viewpointId: viewpointId,
+            labelSettings: levellabel[0],
+            links: levellabel[1],
+          };
+
+
+          this.data.getAutomaticRelations(settings, flattenedTree, this.backlog).subscribe({
+            next: res &#x3D;&gt; {
+              this.applyAutomaticTreeAndBacklog(res[1], res[0]);
+            },
+            error: error &#x3D;&gt; {
+              console.error(error);
+              this.treeLoading &#x3D; false;
+              this.backlogLoading &#x3D; false;
+            },
+          });
+        }
+      },
+      error: error &#x3D;&gt; {
+        console.error(error);
+        this.treeLoading &#x3D; false;
+        this.backlogLoading &#x3D; false;
+      },
+    });
+  }
+
+  applyAutomaticTreeAndBacklog(newBacklog: IssueNode[], newTree: IssueNode[]) {
+    this.nodeLookup.clear();
+    this.prepareDragAndDrop([...newBacklog, ...newTree])
+
+    this.treeData.length &#x3D; 0;
+    this.backlog.length &#x3D; 0;
+    this.filteredBacklog.length &#x3D; 0;
+    this.treeData.push(...newTree);
+    this.filteredBacklog.push(...newBacklog);
+    this.backlog.push(...newBacklog);
+
+    this.itemMoved &#x3D; this.compareTreeToSavestate(this.treeData);
+    this.treeLoading &#x3D; false;
+    this.backlogLoading &#x3D; false;
+    this.evaluateTree(this.treeData)
+  }
+
+  saveRelations() {
+    this.treeLoading &#x3D; true;
+    this.relationsSave.length &#x3D; 0;
+    let viewpoint: number &#x3D; this.data.staticActiveViewpoint;
+    let projectId: string &#x3D; this.data.staticProject;
+    this.backend
+      .deleteSelectedRemoteIssueRelations(projectId, viewpoint)
+      .pipe(
+        switchMap(res &#x3D;&gt; {
+          this.buildRelationObjects(this.treeData, viewpoint, projectId, 0, true);
+          return this.backend.addSelectedRemoteIssueRelations(projectId, viewpoint, this.relationsSave);
+        })
+      )
+      .subscribe(() &#x3D;&gt; {
+        this.snackbar.openSnackBar(&#x27;Hierarchy saved to server!&#x27;, &#x27;green-snackbar&#x27;);
+        this.treeLoading &#x3D; false;
+        this.itemMoved &#x3D; false;
+        this.treeDataSaveState &#x3D; this.createJSONTree(this.treeData);
+        this.relationsSave.length &#x3D; 0; //Reset after saving
+      });
+  }
+
+  buildRelationObjects(nodes: IssueNode[], viewpoint: number, projectId: string, outerorder: number, level_zero: boolean): void {
+    nodes.forEach(node &#x3D;&gt; {
+      let innerorder: number &#x3D; 0;
+      node.children.forEach(child &#x3D;&gt; {
+        let relation &#x3D; &lt;IssueRelation&gt;{
+          projectId: projectId,
+          viewpointId: viewpoint,
+          parentIssueId: node.issue.issueId,
+          parentRemoteProjectId: node.issue.projectId,
+          childIssueId: child.issue.issueId,
+          childRemoteProjectId: child.issue.projectId,
+          nodeOrder: innerorder,
+        };
+        this.relationsSave.push(relation);
+        innerorder++;
+        this.buildRelationObjects([child], viewpoint, projectId, outerorder, false);
+      });
+
+      if (level_zero) {
+        let relation &#x3D; &lt;IssueRelation&gt;{
+          projectId: projectId,
+          viewpointId: viewpoint,
+          parentIssueId: node.issue.issueId,
+          parentRemoteProjectId: node.issue.projectId,
+          childIssueId: node.issue.issueId,
+          childRemoteProjectId: node.issue.projectId,
+          nodeOrder: outerorder,
+        };
+        outerorder++;
+        this.relationsSave.push(relation);
+      }
+    });
+  }
+
+  getALMIssues(issues: Issue[]): Observable&lt;ALMIssue[]&gt; {
+    let remoteProjects: RemoteProject[] &#x3D; this.data.staticRemoteProjects;
+    let projectsCopy: RemoteProject[] &#x3D; JSON.parse(JSON.stringify(remoteProjects)); //Copy to avoid mutable manipulation
+    const o_issues &#x3D; issues.map(issue &#x3D;&gt; {
+      let project &#x3D; projectsCopy.find(value &#x3D;&gt; value.remoteProjectId &#x3D;&#x3D;&#x3D; issue.remoteProjectId);
+
+      return this.aggregator.getSingleIssue(project!, issue.remoteIssueId);
+    });
+
+    if (o_issues.length &#x3D;&#x3D;&#x3D; 0) {
+      return of([]);
+    } else {
+      return forkJoin(o_issues).pipe(
+        map(ALMIssues &#x3D;&gt; {
+          return ALMIssues.sort((a, b) &#x3D;&gt; (a.updatedAt &gt; b.updatedAt ? -1 : 1));
+        })
+      );
+    }
+  }
+
+  evaluateTree(tree: IssueNode[]) {
+    this.treeLoading &#x3D; true;
+    this.backend.evaluateTree(this.data.staticProject, this.data.staticActiveViewpoint, tree).subscribe({
+      next: evaluatedTree &#x3D;&gt; {
+        this.applyNewKPIsAndErrors(evaluatedTree);
+        this.treeLoading &#x3D; false;
+        this.snackbar.openSnackBar(&#x27;Tree evalutation successful!&#x27;);
+      },
+      error: err &#x3D;&gt; {
+        this.snackbar.openSnackBar(&#x27;Error evaluating the hierarchy. Try again later&#x27;, &#x27;red-snackbar&#x27;);
+      },
+    });
+  }
+
+  applyNewKPIsAndErrors(tree: IssueNode[]) {
+    tree.forEach(node &#x3D;&gt; {
+      let currNode: IssueNode | undefined &#x3D; this.nodeLookup.get(node.id);
+      if (currNode !&#x3D;&#x3D; undefined) {
+        currNode.kpiErrors &#x3D; node.kpiErrors;
+        currNode.issue.timeStats.accumulatedEstimateHours &#x3D; node.issue.timeStats.accumulatedEstimateHours;
+        currNode.issue.timeStats.accumulatedSpentHours &#x3D; node.issue.timeStats.accumulatedSpentHours;
+      }
+      if (node.children.length !&#x3D;&#x3D; 0) this.applyNewKPIsAndErrors(node.children);
+    });
+  }
+
+  errorsContainErrorType(errors: IssueErrorObject[], type: ErrorType): boolean {
+    return errors.find(element &#x3D;&gt; element.type &#x3D;&#x3D;&#x3D; type) !&#x3D;&#x3D; undefined;
+  }
+
+  drop(event: any) {
+    const draggedItemId: string &#x3D; event.item.data;
+    const draggedItem &#x3D; this.nodeLookup.get(draggedItemId);
+
+
+    if (!this.dropActionTodo || !draggedItem) {
+      this.clearDragInfo(true);
+      return;
+    }
+
+    //don&#x27;t drag items with children back to the backlog
+    if (event.container.id &#x3D;&#x3D;&#x3D; &#x27;backlog&#x27; &amp;&amp; draggedItem.children.length !&#x3D;&#x3D; 0) {
+      this.snackbar.openSnackBar(&#x27;Items containing nested items cannot be moved back to the backlog!&#x27;);
+      this.clearDragInfo(true);
+      return;
+    }
+
+    this.itemMoved &#x3D; true;
+
+    const parentItemId &#x3D; event.previousContainer.id;
+
+    let targetListId;
+
+    if (this.dropActionTodo.targetId &#x3D;&#x3D;&#x3D; &#x27;backlog&#x27; || this.dropActionTodo.targetId &#x3D;&#x3D;&#x3D; &#x27;main&#x27;) {
+      targetListId &#x3D; this.dropActionTodo.targetId;
+    } else {
+      targetListId &#x3D; this.getParentNodeId(this.dropActionTodo.targetId, this.filteredBacklog, &#x27;backlog&#x27;);
+      if (!targetListId) targetListId &#x3D; this.getParentNodeId(this.dropActionTodo.targetId, this.treeData, &#x27;main&#x27;);
+    }
+
+    // console.log(
+    //   &#x27;\nmoving\n&#x27;,
+    //   &#x27;[&#x27; + draggedItemId + &#x27;] from list [&#x27; + parentItemId + &#x27;]&#x27;,
+    //   &#x27;\n[&#x27; + this.dropActionTodo.action + &#x27;]\n[&#x27; + this.dropActionTodo.targetId + &#x27;] from list [&#x27; + targetListId + &#x27;]&#x27;
+    // );
+
+    const oldItemContainer &#x3D;
+      parentItemId !&#x3D;&#x3D; &#x27;main&#x27; ? (parentItemId !&#x3D;&#x3D; &#x27;backlog&#x27; ? this.nodeLookup.get(parentItemId)!.children : this.filteredBacklog) : this.treeData;
+    const newContainer &#x3D;
+      targetListId !&#x3D;&#x3D; &#x27;main&#x27; ? (targetListId !&#x3D;&#x3D; &#x27;backlog&#x27; ? this.nodeLookup.get(targetListId)!.children : this.filteredBacklog) : this.treeData;
+
+    let i &#x3D; oldItemContainer.findIndex((c: IssueNode) &#x3D;&gt; c.id &#x3D;&#x3D;&#x3D; draggedItemId);
+    oldItemContainer.splice(i, 1);
+
+    if (parentItemId &#x3D;&#x3D;&#x3D; &#x27;backlog&#x27;) {
+      //handle backlog filtering
+      let i &#x3D; this.backlog.findIndex((c: IssueNode) &#x3D;&gt; c.id &#x3D;&#x3D;&#x3D; draggedItemId);
+      this.backlog.splice(i, 1);
+    }
+
+    switch (this.dropActionTodo.action) {
+      case &#x27;before&#x27;:
+      case &#x27;after&#x27;:
+        const targetIndex &#x3D; newContainer.findIndex((c: IssueNode) &#x3D;&gt; c.id &#x3D;&#x3D;&#x3D; this.dropActionTodo.targetId);
+        if (this.dropActionTodo.action &#x3D;&#x3D; &#x27;before&#x27;) {
+          newContainer.splice(targetIndex, 0, draggedItem!);
+        } else {
+          newContainer.splice(targetIndex + 1, 0, draggedItem!);
+        }
+        if (targetListId &#x3D;&#x3D;&#x3D; &#x27;backlog&#x27;) {
+          //handle backlog filering
+          this.backlog.push(draggedItem!);
+        }
+        break;
+
+      case &#x27;inside&#x27;:
+        this.nodeLookup.get(this.dropActionTodo.targetId)!.children.push(draggedItem!);
+        this.nodeLookup.get(this.dropActionTodo.targetId)!.isExpanded &#x3D; true;
+        break;
+
+      case &#x27;top&#x27;:
+        newContainer.push(draggedItem);
+    }
+
+    this.clearDragInfo(true);
+    this.itemMoved &#x3D; this.compareTreeToSavestate(this.treeData);
+  }
+
+  dragMoved(event: any) {
+    let e &#x3D; this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
+    if (!e) {
+      this.clearDragInfo();
+      return;
+    }
+    let container &#x3D; e.classList.contains(&#x27;node-item&#x27;) || e.classList.contains(&#x27;adding-box&#x27;) ? e : e.closest(&#x27;.node-item&#x27;);
+    if (!container) {
+      this.clearDragInfo();
+      return;
+    }
+
+    this.dropActionTodo &#x3D; {
+      targetId: container.getAttribute(&#x27;data-id&#x27;)!,
+    };
+
+    const targetRect &#x3D; container.getBoundingClientRect();
+    const oneThird &#x3D; targetRect.height / 3;
+    const half &#x3D; targetRect.height / 2;
+
+    if (this.dropActionTodo.targetId &#x3D;&#x3D;&#x3D; &#x27;backlog&#x27; || this.dropActionTodo.targetId &#x3D;&#x3D;&#x3D; &#x27;main&#x27;) {
+      this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;top&#x27;;
+    } else {
+      //target is in the backlog
+      if (this.backlog.findIndex(value &#x3D;&gt; this.dropActionTodo.targetId &#x3D;&#x3D;&#x3D; value.id) !&#x3D;&#x3D; -1) {
+        if (event.pointerPosition.y - targetRect.top &lt; half) {
+          // before
+          this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;before&#x27;;
+        } else {
+          // after
+          this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;after&#x27;;
+        }
+      } else {
+        if (event.pointerPosition.y - targetRect.top &lt; oneThird) {
+          // before
+          this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;before&#x27;;
+        } else if (event.pointerPosition.y - targetRect.top &gt; 2 * oneThird) {
+          // after
+          this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;after&#x27;;
+        } else {
+          // inside
+          this.dropActionTodo[&#x27;action&#x27;] &#x3D; &#x27;inside&#x27;;
+        }
+      }
+    }
+
+    this.showDragInfo();
+  }
+
+  getParentNodeId(id: string, nodesToSearch: IssueNode[], parentId: string): string {
+    for (let node of nodesToSearch) {
+      if (node.id &#x3D;&#x3D;&#x3D; id) return parentId;
+      let ret &#x3D; this.getParentNodeId(id, node.children, node.id);
+      if (ret) return ret;
+    }
+    return &#x27;&#x27;;
+  }
+
+  showDragInfo() {
+    this.clearDragInfo();
+    if (this.dropActionTodo &amp;&amp; this.dropActionTodo.targetId !&#x3D;&#x3D; &#x27;backlog&#x27; &amp;&amp; this.dropActionTodo.targetId !&#x3D;&#x3D; &#x27;main&#x27;) {
+      this.document.getElementById(&#x27;node-&#x27; + this.dropActionTodo.targetId)!.classList.add(&#x27;drop-&#x27; + this.dropActionTodo.action);
+    }
+  }
+
+  clearDragInfo(dropped &#x3D; false) {
+    if (dropped) {
+      this.dropActionTodo &#x3D; null!;
+    }
+    this.document.querySelectorAll(&#x27;.drop-before&#x27;).forEach(element &#x3D;&gt; element.classList.remove(&#x27;drop-before&#x27;));
+    this.document.querySelectorAll(&#x27;.drop-after&#x27;).forEach(element &#x3D;&gt; element.classList.remove(&#x27;drop-after&#x27;));
+    this.document.querySelectorAll(&#x27;.drop-inside&#x27;).forEach(element &#x3D;&gt; element.classList.remove(&#x27;drop-inside&#x27;));
+  }
+
+  convertALMIssueToNode(ALMIssue: ALMIssue, issue: Issue, order: number &#x3D; -1): IssueNode {
+    return &lt;IssueNode&gt;{
+      issue: ALMIssue,
+      children: [],
+      id: &#x60;${ALMIssue.projectId}${ALMIssue.issueId}&#x60;,
+      isExpanded: false,
+      nodeOrder: order,
+      kpiErrors: issue.kpiErrors,
+    };
+  }
+
+  convertNodeToIssueJSONCheckObject(node: IssueNode): IssueJSONCheckObject {
+    return &lt;IssueJSONCheckObject&gt;{
+      id: node.id,
+      children: [],
+    };
+  }
+
+  compareTreeToSavestate(nodes: IssueNode[]): boolean {
+    let tree: string &#x3D; this.createJSONTree(nodes);
+    return tree !&#x3D;&#x3D; this.treeDataSaveState;
+  }
+
+  convertTopNodes(nodes: IssueNode[]): IssueJSONCheckObject[] {
+    let res: IssueJSONCheckObject[] &#x3D; [];
+    nodes.forEach(value &#x3D;&gt; {
+      res.push(this.convertNodeToIssueJSONCheckObject(value));
+    });
+    return res;
+  }
+
+  convertChildren(nodes: IssueNode[], res: IssueJSONCheckObject[]): IssueJSONCheckObject[] {
+    nodes.forEach(node &#x3D;&gt; {
+      if (node.children.length !&#x3D;&#x3D; 0) {
+        node.children.forEach(child &#x3D;&gt; {
+          this.placeNodeinTree(node.id, res, this.convertNodeToIssueJSONCheckObject(child));
+          this.convertChildren([child], res);
+        });
+      }
+    });
+    return res;
+  }
+
+  placeNodeinTree(parentID: string, nodes: IssueJSONCheckObject[], node: IssueJSONCheckObject) {
+    nodes.forEach(value &#x3D;&gt; {
+      if (value.id &#x3D;&#x3D;&#x3D; parentID) value.children.push(node);
+      else this.placeNodeinTree(parentID, value.children, node);
+    });
+  }
+
+  createJSONTree(nodes: IssueNode[]): string {
+    let arr: IssueJSONCheckObject[] &#x3D; [];
+    arr.push(...this.convertTopNodes(nodes));
+    this.convertChildren(nodes, arr);
+    let tree: string &#x3D; JSON.stringify(arr);
+    return tree;
+  }
+
+  openIssueDetailDialog(node: IssueNode, tree: boolean) {
+    const dialogConfig &#x3D; new MatDialogConfig();
+
+    dialogConfig.minWidth &#x3D; &#x27;1000px&#x27;;
+
+    dialogConfig.data &#x3D; {
+      node: node,
+    };
+
+    if (tree) this.dialog.open(NodeTreeDetailDialogComponent, dialogConfig);
+    else this.dialog.open(NodeBacklogDetailDialogComponent, dialogConfig);
+  }
+
+  flattenTree(): IssueNode[] {
+    let tree: IssueNode[] &#x3D; JSON.parse(JSON.stringify(this.treeData));
+    let nodes: IssueNode[] &#x3D; [];
+
+    tree.forEach(node &#x3D;&gt; {
+      nodes.push(node);
+      this.handleChildren(nodes, node);
+    });
+    return nodes;
+  }
+
+  handleChildren(nodes: IssueNode[], node: IssueNode) {
+    if (node.children.length !&#x3D;&#x3D; 0) {
+      nodes.push(...node.children);
+      node.children.forEach(child &#x3D;&gt; {
+        this.handleChildren(nodes, child);
+      });
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;main-wrapper&quot; *ngIf&#x3D;&quot;this.view$ | async as view&quot;&gt;
+  &lt;div class&#x3D;&quot;viewpoint-button&quot;&gt;
+    &lt;app-viewpoint-manager [viewpoints]&#x3D;&quot;view[1]&quot; [project]&#x3D;&quot;view[0]&quot;&gt;&lt;/app-viewpoint-manager&gt;
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;card-wrapper&quot;&gt;
+    &lt;div class&#x3D;&quot;row-wrapper&quot; cdkDropListGroup&gt;
+      &lt;div class&#x3D;&quot;backlog&quot;&gt;
+        &lt;div *ngIf&#x3D;&quot;backlogLoading&quot; class&#x3D;&quot;issue-wrapper&quot;&gt;
+          &lt;mat-spinner class&#x3D;&quot;no-items&quot;&gt;&lt;/mat-spinner&gt;
+        &lt;/div&gt;
+        &lt;div *ngIf&#x3D;&quot;(issuesBacklog$ | async) &amp;&amp; !backlogLoading&quot; class&#x3D;&quot;issue-wrapper&quot;&gt;
+
+          &lt;mat-card class&#x3D;&quot;issue-list&quot;&gt;
+            &lt;div class&#x3D;&quot;card-header&quot;&gt;
+              &lt;mat-card-title&gt;Backlog&lt;/mat-card-title&gt;
+              &lt;div [formGroup]&#x3D;&quot;filterGroup&quot; style&#x3D;&quot;width: 50%&quot;&gt;
+                &lt;mat-form-field style&#x3D;&quot;width: 100%&quot; subscriptSizing&#x3D;&quot;dynamic&quot; color&#x3D;&quot;accent&quot; appearance&#x3D;&quot;fill&quot;&gt;
+                  &lt;mat-label&gt;&lt;mat-icon class&#x3D;&quot;icon&quot;&gt;filter_list&lt;/mat-icon&gt;Filter&lt;/mat-label&gt;
+                  &lt;input #filter matInput placeholder&#x3D;&quot;Filter Backlog Items...&quot; formControlName&#x3D;&quot;filterControl&quot; /&gt;
+                &lt;/mat-form-field&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;mat-divider class&#x3D;&quot;mat-divider-horicontal&quot;&gt;&lt;/mat-divider&gt;
+            &lt;div class&#x3D;&quot;adding-box&quot; *ngIf&#x3D;&quot;filteredBacklog.length &#x3D;&#x3D;&#x3D; 0&quot; [attr.data-id]&#x3D;&quot;&#x27;backlog&#x27;&quot;&gt;
+              &lt;h3&gt;No Items in the Backlog&lt;/h3&gt;
+            &lt;/div&gt;
+            &lt;div class &#x3D; &quot;issue-drop-list&quot; cdkDropList [cdkDropListData]&#x3D;&quot;backlog&quot; [id]&#x3D;&quot;&#x27;backlog&#x27;&quot; (cdkDropListDropped)&#x3D;&quot;drop($event)&quot;
+              [cdkDropListSortingDisabled]&#x3D;&quot;true&quot;&gt;
+              &lt;div cdkDrag *ngFor&#x3D;&quot;let node of filteredBacklog&quot; cdkDrag [cdkDragData]&#x3D;&quot;node.id&quot; (click)&#x3D;&quot;openIssueDetailDialog(node, false)&quot;
+                (cdkDragMoved)&#x3D;&quot;dragMoved($event)&quot; class&#x3D;&quot;issue-list-item&quot;&gt;
+                &lt;div class&#x3D;&quot;node-item backlog-item&quot; [attr.data-id]&#x3D;&quot;node.id&quot; [attr.id]&#x3D;&quot;&#x27;node-&#x27; + node.id&quot;&gt;
+                  &lt;p&gt;{{ node.issue.title }}&lt;/p&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/mat-card&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class&#x3D;&quot;hierarchy&quot;&gt;
+        &lt;div *ngIf&#x3D;&quot;treeLoading&quot; class&#x3D;&quot;issue-wrapper&quot;&gt;
+          &lt;mat-spinner class&#x3D;&quot;no-items&quot;&gt;&lt;/mat-spinner&gt;
+        &lt;/div&gt;
+        &lt;div *ngIf&#x3D;&quot;(issuesRelation$ | async) &amp;&amp; !treeLoading&quot; class&#x3D;&quot;issue-wrapper&quot;&gt;
+          &lt;mat-card class&#x3D;&quot;issue-tree&quot;&gt;
+            &lt;div class&#x3D;&quot;card-header&quot;&gt;
+              &lt;mat-card-title&gt;Hierarchy&lt;/mat-card-title&gt;
+
+              &lt;span class&#x3D;&quot;spacer&quot;&gt;&lt;/span&gt;
+
+              &lt;mat-icon color&#x3D;&quot;accent&quot; *ngIf&#x3D;&quot;!treeLoading &amp;&amp; !backlogLoading &amp;&amp; !itemMoved&quot;
+                class&#x3D;&quot;icon&quot; style &#x3D; &quot;margin-right: 0;&quot;&gt;cloud_done&lt;/mat-icon&gt;
+              &lt;mat-icon color&#x3D;&quot;warn&quot; *ngIf&#x3D;&quot;!treeLoading &amp;&amp; !backlogLoading &amp;&amp; itemMoved&quot;
+                class&#x3D;&quot;icon&quot; style &#x3D; &quot;margin-right: 0;&quot;&gt;cloud_off&lt;/mat-icon&gt;
+              &lt;mat-divider class&#x3D;&quot;mat-divider-vertical&quot; [vertical]&#x3D;&quot;true&quot;&gt;&lt;/mat-divider&gt;
+              &lt;button *ngIf&#x3D;&quot;!treeLoading &amp;&amp; !backlogLoading&quot; [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot;
+                matTooltip&#x3D;&quot;Save the current hierachy and order to the server&quot; [matTooltipShowDelay]&#x3D;&quot;2000&quot;
+                mat-raised-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;saveRelations()&quot; [disabled]&#x3D;&quot;!itemMoved&quot;&gt;
+                &lt;mat-icon&gt;save&lt;/mat-icon&gt; Save Hierarchy
+              &lt;/button&gt;
+              &lt;mat-divider class&#x3D;&quot;mat-divider-vertical&quot; [vertical]&#x3D;&quot;true&quot;&gt;&lt;/mat-divider&gt;
+              &lt;button *ngIf&#x3D;&quot;!treeLoading &amp;&amp; !backlogLoading&quot; [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot;
+                matTooltip&#x3D;&quot;Auto-detect hierarchies&quot; [matTooltipShowDelay]&#x3D;&quot;2000&quot; mat-raised-button color&#x3D;&quot;primary&quot;
+                (click)&#x3D;&quot;getAutomaticRelations()&quot;&gt;
+                &lt;mat-icon&gt;device_hub&lt;/mat-icon&gt; Detect Hierarchies
+              &lt;/button&gt;
+              &lt;mat-divider class&#x3D;&quot;mat-divider-vertical&quot; [vertical]&#x3D;&quot;true&quot;&gt;&lt;/mat-divider&gt;
+              &lt;button *ngIf&#x3D;&quot;!treeLoading &amp;&amp; !backlogLoading&quot; [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot;
+                matTooltip&#x3D;&quot;Evaluate the tree for any planning inconsistencies. Last evaluation: {{(this.viewpoint$ | async)?.lastEvaluated | date:&#x27;short&#x27;}}&quot; [matTooltipShowDelay]&#x3D;&quot;2000&quot;
+                mat-raised-button color&#x3D;&quot;primary&quot; (click)&#x3D;&quot;evaluateTree(treeData)&quot;&gt;
+                &lt;mat-icon&gt;loop&lt;/mat-icon&gt; Evaluate Tree
+              &lt;/button&gt;
+
+            &lt;/div&gt;
+            &lt;mat-divider class&#x3D;&quot;mat-divider-horicontal&quot;&gt;&lt;/mat-divider&gt;
+            &lt;div *ngIf&#x3D;&quot;treeData.length &#x3D;&#x3D;&#x3D; 0&quot; class&#x3D;&quot;adding-box&quot; [attr.data-id]&#x3D;&quot;&#x27;main&#x27;&quot;&gt;
+              &lt;h3&gt;Drop First Item&lt;/h3&gt;
+            &lt;/div&gt;
+            &lt;!-- Rendering for the tree --&gt;
+            &lt;div class&#x3D;&quot;tree-drop-list&quot; cdkDropList [cdkDropListData]&#x3D;&quot;treeData&quot; [id]&#x3D;&quot;&#x27;main&#x27;&quot; (cdkDropListDropped)&#x3D;&quot;drop($event)&quot;
+              [cdkDropListSortingDisabled]&#x3D;&quot;true&quot;&gt;
+              &lt;div *ngFor&#x3D;&quot;let node of treeData&quot; cdkDrag [cdkDragData]&#x3D;&quot;node.id&quot; (cdkDragMoved)&#x3D;&quot;dragMoved($event)&quot;&gt;
+                &lt;ng-container *ngTemplateOutlet&#x3D;&quot;tmplNode; context: { node: node }&quot;&gt;&lt;/ng-container&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/mat-card&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Repeating template for the tree --&gt;
+&lt;ng-template #tmplNode let-node&#x3D;&quot;node&quot;&gt;
+  &lt;div class&#x3D;&quot;node-item&quot; [attr.data-id]&#x3D;&quot;node.id&quot; [attr.id]&#x3D;&quot;&#x27;node-&#x27; + node.id&quot;&gt;
+    &lt;div class&#x3D;&quot;node-title&quot;&gt;
+      &lt;span *ngIf&#x3D;&quot;node.children.length &amp;&amp; !node.isExpanded&quot; (click)&#x3D;&quot;node.isExpanded &#x3D; !node.isExpanded&quot;&gt;
+        &lt;button mat-icon-button&gt;
+          &lt;mat-icon&gt;chevron_right&lt;/mat-icon&gt;
+        &lt;/button&gt;
+      &lt;/span&gt;
+      &lt;span *ngIf&#x3D;&quot;node.children.length &amp;&amp; node.isExpanded&quot; (click)&#x3D;&quot;node.isExpanded &#x3D; !node.isExpanded&quot;&gt;
+        &lt;button mat-icon-button&gt;
+          &lt;mat-icon&gt;chevron_left&lt;/mat-icon&gt;
+        &lt;/button&gt;
+      &lt;/span&gt;
+      &lt;span *ngIf&#x3D;&quot;!node.children.length&quot; style&#x3D;&quot;margin-left: 24px&quot;&gt; &lt;/span&gt;
+      &lt;div class&#x3D;&quot;tree-issue-title&quot;&gt;
+        &lt;div class&#x3D;&quot;tree-issue-title-nesting&quot; (click)&#x3D;&quot;openIssueDetailDialog(node, true)&quot;&gt;
+          {{ node.issue.title }}
+          &lt;span class&#x3D;&quot;item-notes&quot;&gt; {{ node.children.length }} {{ node.children.length &#x3D;&#x3D;&#x3D; 1 ? &#x27;Nested Item&#x27; : &#x27;Nested
+            Items&#x27; }} | {{node.issue.state}} &lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;indicator-bar&quot;&gt;
+          &lt;p&gt;Progress:&lt;/p&gt;
+          &lt;mat-icon  [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot; matTooltip&#x3D;&quot;Work is in progress on this item&quot;
+          [matTooltipShowDelay]&#x3D;&quot;2000&quot; *ngIf&#x3D;&quot;node.issue.state&#x3D;&#x3D;&#x3D;&#x27;opened&#x27; &amp;&amp; node.issue.timeStats.spentHours !&#x3D;&#x3D; 0&quot; color&#x3D;&quot;accent&quot; class&#x3D;&quot;icon-row&quot;&gt;timeline&lt;/mat-icon&gt;
+          &lt;mat-icon [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot; matTooltip&#x3D;&quot;Work has not started yet on this item&quot;
+          [matTooltipShowDelay]&#x3D;&quot;2000&quot; *ngIf&#x3D;&quot;node.issue.state&#x3D;&#x3D;&#x3D;&#x27;opened&#x27; &amp;&amp; node.issue.timeStats.spentHours &#x3D;&#x3D;&#x3D; 0&quot; color&#x3D;&quot;accent&quot;  class &#x3D; &quot;icon-row&quot;&gt;highlight_off&lt;/mat-icon&gt;
+          &lt;mat-icon [matTooltipPosition]&#x3D;&quot;&#x27;below&#x27;&quot; matTooltip&#x3D;&quot;Item is finished&quot;
+          [matTooltipShowDelay]&#x3D;&quot;2000&quot; *ngIf&#x3D;&quot;node.issue.state&#x3D;&#x3D;&#x3D;&#x27;closed&#x27;&quot; color&#x3D;&quot;accent&quot; class &#x3D; &quot;icon-row&quot;&gt;check_circle_outline&lt;/mat-icon&gt;
+          &lt;p&gt;Overall:&lt;/p&gt;
+          &lt;div *ngIf&#x3D;&quot;node.kpiErrors.length &gt; 0 &amp;&amp; errorsContainErrorType(node.kpiErrors, 2)&quot; class&#x3D;&quot;traffic-light-red&quot;&gt;&lt;/div&gt;
+          &lt;div *ngIf&#x3D;&quot;node.kpiErrors.length &gt; 0 &amp;&amp; errorsContainErrorType(node.kpiErrors, 1) &amp;&amp; !errorsContainErrorType(node.kpiErrors, 2)&quot; class&#x3D;&quot;traffic-light-yellow&quot;&gt;&lt;/div&gt;
+          &lt;div *ngIf&#x3D;&quot;node.kpiErrors.length&#x3D;&#x3D;&#x3D;0&quot; class&#x3D;&quot;traffic-light-green&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;div *ngIf&#x3D;&quot;node.isExpanded &amp;&amp; node.children.length&quot; class&#x3D;&quot;node-children&quot; cdkDropList
+      [cdkDropListData]&#x3D;&quot;node.children&quot; [id]&#x3D;&quot;node.id&quot; (cdkDropListDropped)&#x3D;&quot;drop($event)&quot;
+      [cdkDropListSortingDisabled]&#x3D;&quot;true&quot;&gt;
+      &lt;div *ngFor&#x3D;&quot;let child of node.children&quot; cdkDrag [cdkDragData]&#x3D;&quot;child.id&quot; (cdkDragMoved)&#x3D;&quot;dragMoved($event)&quot;&gt;
+        &lt;ng-container *ngTemplateOutlet&#x3D;&quot;tmplNode; context: { node: child }&quot;&gt;&lt;/ng-container&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/ng-template&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./project-tree-view.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.mat-divider-horicontal {
+  margin: 10px 0px 10px 0px;
+}
+
+.mat-divider-vertical {
+  margin: 0px 10px 0px 10px;
+  height: 36px;
+}
+
+.main-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  //max-width: 1900px;
+  min-width: 1000px;
+  align-self: stretch;
+  flex: 1;
+  height: 0;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 56px;
+}
+
+.viewpoint-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.issue-list {
+  padding: 10px 10px 10px 10px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  overflow: auto;
+}
+
+.issue-drop-list {
+  overflow: auto;
+}
+
+.issue-tree {
+  padding: 10px 10px 10px 10px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.tree-drop-list {
+  overflow: auto;
+}
+
+.tree-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  overflow: auto;
+}
+
+.issue-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+h3 {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+
+.row-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex: 1;
+  height: 0;
+  width: 100%;
+}
+
+.backlog {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.hierarchy {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+p {
+  font-size: small;
+}
+
+.no-items {
+  margin: auto auto;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.issue-list-item {
+  padding-left: 3px;
+  padding-right: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.adding-box {
+  display: flex;
+  flex-direction: column;
+  border: dashed #b0bec5;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.adding-box h3 {
+  color: #b0bec5;
+  margin: auto auto;
+}
+
+.adding-box-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 70px;
+  margin-bottom: 10px;
+}
+
+.cdk-drag-placeholder {
+  display: none;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  opacity: 0.3;
+}
+
+.drop-inside {
+  border: 1px solid #b0bec5;
+}
+
+.drop-before {
+  border-top: 1px solid #b0bec5;
+}
+
+.drop-after {
+  border-bottom: 1px solid #b0bec5;
+}
+
+.node-title {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 48px;
+}
+
+.backlog-item {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.backlog-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.node-item {
+  cursor: pointer;
+}
+
+.node-children {
+  position: relative;
+  transition: height 0.2s;
+  margin-left: 40px;
+}
+.item-notes {
+  font-size: smaller;
+  margin-top: 5px;
+  color: #aaa;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.tree-issue-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+
+}
+
+.tree-issue-title-nesting {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 5px;
+}
+
+
+.issue-list-item:hover, .tree-issue-title-nesting:hover {
+  background: grey;
+  cursor: pointer;
+}
+
+
+.icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+  margin: 0;
+  margin-right: 15px;
+}
+
+.icon-row {
+  font-size: 27px;
+  width: 27px;
+  height: 27px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.indicator-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+  border: 0.5px solid white;
+  border-radius: 5px;
+
+}
+
+@mixin traffic-light {
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  border: solid 1px grey;
+  margin-left: 10px;
+}
+
+.traffic-light-green {
+  @include traffic-light;
+  background-color: green;
+}
+
+.traffic-light-yellow {
+  @include traffic-light;
+  background-color: yellow;
+}
+
+.traffic-light-red {
+  @include traffic-light;
+  background-color: red;
+}
+
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="main-wrapper" *ngIf="this.view$ | async as view">  <div class="viewpoint-button">    <app-viewpoint-manager [viewpoints]="view[1]" [project]="view[0]"></app-viewpoint-manager>  </div>  <div class="card-wrapper">    <div class="row-wrapper" cdkDropListGroup>      <div class="backlog">        <div *ngIf="backlogLoading" class="issue-wrapper">          <mat-spinner class="no-items"></mat-spinner>        </div>        <div *ngIf="(issuesBacklog$ | async) && !backlogLoading" class="issue-wrapper">          <mat-card class="issue-list">            <div class="card-header">              <mat-card-title>Backlog</mat-card-title>              <div [formGroup]="filterGroup" style="width: 50%">                <mat-form-field style="width: 100%" subscriptSizing="dynamic" color="accent" appearance="fill">                  <mat-label><mat-icon class="icon">filter_list</mat-icon>Filter</mat-label>                  <input #filter matInput placeholder="Filter Backlog Items..." formControlName="filterControl" />                </mat-form-field>              </div>            </div>            <mat-divider class="mat-divider-horicontal"></mat-divider>            <div class="adding-box" *ngIf="filteredBacklog.length === 0" [attr.data-id]="\'backlog\'">              <h3>No Items in the Backlog</h3>            </div>            <div class = "issue-drop-list" cdkDropList [cdkDropListData]="backlog" [id]="\'backlog\'" (cdkDropListDropped)="drop($event)"              [cdkDropListSortingDisabled]="true">              <div cdkDrag *ngFor="let node of filteredBacklog" cdkDrag [cdkDragData]="node.id" (click)="openIssueDetailDialog(node, false)"                (cdkDragMoved)="dragMoved($event)" class="issue-list-item">                <div class="node-item backlog-item" [attr.data-id]="node.id" [attr.id]="\'node-\' + node.id">                  <p>{{ node.issue.title }}</p>                </div>              </div>            </div>          </mat-card>        </div>      </div>      <div class="hierarchy">        <div *ngIf="treeLoading" class="issue-wrapper">          <mat-spinner class="no-items"></mat-spinner>        </div>        <div *ngIf="(issuesRelation$ | async) && !treeLoading" class="issue-wrapper">          <mat-card class="issue-tree">            <div class="card-header">              <mat-card-title>Hierarchy</mat-card-title>              <span class="spacer"></span>              <mat-icon color="accent" *ngIf="!treeLoading && !backlogLoading && !itemMoved"                class="icon" style = "margin-right: 0;">cloud_done</mat-icon>              <mat-icon color="warn" *ngIf="!treeLoading && !backlogLoading && itemMoved"                class="icon" style = "margin-right: 0;">cloud_off</mat-icon>              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>              <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="\'below\'"                matTooltip="Save the current hierachy and order to the server" [matTooltipShowDelay]="2000"                mat-raised-button color="primary" (click)="saveRelations()" [disabled]="!itemMoved">                <mat-icon>save</mat-icon> Save Hierarchy              </button>              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>              <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="\'below\'"                matTooltip="Auto-detect hierarchies" [matTooltipShowDelay]="2000" mat-raised-button color="primary"                (click)="getAutomaticRelations()">                <mat-icon>device_hub</mat-icon> Detect Hierarchies              </button>              <mat-divider class="mat-divider-vertical" [vertical]="true"></mat-divider>              <button *ngIf="!treeLoading && !backlogLoading" [matTooltipPosition]="\'below\'"                matTooltip="Evaluate the tree for any planning inconsistencies. Last evaluation: {{(this.viewpoint$ | async)?.lastEvaluated | date:\'short\'}}" [matTooltipShowDelay]="2000"                mat-raised-button color="primary" (click)="evaluateTree(treeData)">                <mat-icon>loop</mat-icon> Evaluate Tree              </button>            </div>            <mat-divider class="mat-divider-horicontal"></mat-divider>            <div *ngIf="treeData.length === 0" class="adding-box" [attr.data-id]="\'main\'">              <h3>Drop First Item</h3>            </div>            <!-- Rendering for the tree -->            <div class="tree-drop-list" cdkDropList [cdkDropListData]="treeData" [id]="\'main\'" (cdkDropListDropped)="drop($event)"              [cdkDropListSortingDisabled]="true">              <div *ngFor="let node of treeData" cdkDrag [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">                <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>              </div>            </div>          </mat-card>        </div>      </div>    </div>  </div></div><!-- Repeating template for the tree --><ng-template #tmplNode let-node="node">  <div class="node-item" [attr.data-id]="node.id" [attr.id]="\'node-\' + node.id">    <div class="node-title">      <span *ngIf="node.children.length && !node.isExpanded" (click)="node.isExpanded = !node.isExpanded">        <button mat-icon-button>          <mat-icon>chevron_right</mat-icon>        </button>      </span>      <span *ngIf="node.children.length && node.isExpanded" (click)="node.isExpanded = !node.isExpanded">        <button mat-icon-button>          <mat-icon>chevron_left</mat-icon>        </button>      </span>      <span *ngIf="!node.children.length" style="margin-left: 24px"> </span>      <div class="tree-issue-title">        <div class="tree-issue-title-nesting" (click)="openIssueDetailDialog(node, true)">          {{ node.issue.title }}          <span class="item-notes"> {{ node.children.length }} {{ node.children.length === 1 ? \'Nested Item\' : \'Nested            Items\' }} | {{node.issue.state}} </span>        </div>        <div class="indicator-bar">          <p>Progress:</p>          <mat-icon  [matTooltipPosition]="\'below\'" matTooltip="Work is in progress on this item"          [matTooltipShowDelay]="2000" *ngIf="node.issue.state===\'opened\' && node.issue.timeStats.spentHours !== 0" color="accent" class="icon-row">timeline</mat-icon>          <mat-icon [matTooltipPosition]="\'below\'" matTooltip="Work has not started yet on this item"          [matTooltipShowDelay]="2000" *ngIf="node.issue.state===\'opened\' && node.issue.timeStats.spentHours === 0" color="accent"  class = "icon-row">highlight_off</mat-icon>          <mat-icon [matTooltipPosition]="\'below\'" matTooltip="Item is finished"          [matTooltipShowDelay]="2000" *ngIf="node.issue.state===\'closed\'" color="accent" class = "icon-row">check_circle_outline</mat-icon>          <p>Overall:</p>          <div *ngIf="node.kpiErrors.length > 0 && errorsContainErrorType(node.kpiErrors, 2)" class="traffic-light-red"></div>          <div *ngIf="node.kpiErrors.length > 0 && errorsContainErrorType(node.kpiErrors, 1) && !errorsContainErrorType(node.kpiErrors, 2)" class="traffic-light-yellow"></div>          <div *ngIf="node.kpiErrors.length===0" class="traffic-light-green"></div>        </div>      </div>    </div>    <div *ngIf="node.isExpanded && node.children.length" class="node-children" cdkDropList      [cdkDropListData]="node.children" [id]="node.id" (cdkDropListDropped)="drop($event)"      [cdkDropListSortingDisabled]="true">      <div *ngFor="let child of node.children" cdkDrag [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)">        <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>      </div>    </div>  </div></ng-template></div>'
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AreYouSureDialogComponent', 'selector': 'app-are-you-sure-dialog'},{'name': 'CreateProjectComponent', 'selector': 'app-create-project'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'IssueDetailDialogComponent', 'selector': 'app-issue-detail-dialog'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'NewViewpointDialogComponent', 'selector': 'app-new-viewpoint-dialog'},{'name': 'NodeBacklogDetailDialogComponent', 'selector': 'app-node-backlog-detail-dialog'},{'name': 'NodeTreeDetailDialogComponent', 'selector': 'app-node-tree-detail-dialog'},{'name': 'NotFoundComponent', 'selector': 'app-not-found'},{'name': 'ProjectConfigViewComponent', 'selector': 'app-project-config-view'},{'name': 'ProjectDashboardComponent', 'selector': 'app-project-dashboard'},{'name': 'ProjectItemOptionsComponent', 'selector': 'app-project-item-options'},{'name': 'ProjectItemViewComponent', 'selector': 'app-project-item-view'},{'name': 'ProjectListViewComponent', 'selector': 'app-project-list-view'},{'name': 'ProjectSearchComponent', 'selector': 'app-project-search'},{'name': 'ProjectTreeViewComponent', 'selector': 'app-project-tree-view'},{'name': 'ProjectViewComponent', 'selector': 'app-project-view'},{'name': 'ServerErrorComponent', 'selector': 'app-server-error'},{'name': 'SnackbarComponent', 'selector': 'app-snackbar'},{'name': 'ViewpointManagerComponent', 'selector': 'app-viewpoint-manager'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ProjectTreeViewComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ProjectTreeViewComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

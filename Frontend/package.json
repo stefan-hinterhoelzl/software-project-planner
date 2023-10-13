@@ -1,7 +1,7 @@
 {
   "name": "software-project-planner",
   "version": "0.0.0",
-   "type": "module",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check --host 0.0.0.0 --port 3000",
@@ -9,7 +9,8 @@
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/software-project-planner/stats.json",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "compodoc": "npx compodoc -p tsconfig.doc.json"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +35,7 @@
     "@angular-devkit/build-angular": "^15.0.3",
     "@angular/cli": "~15.0.3",
     "@angular/compiler-cli": "^15.0.0",
+    "@compodoc/compodoc": "^1.1.21",
     "@types/jasmine": "~4.3.0",
     "@types/marked": "^4.0.8",
     "jasmine-core": "~4.5.0",
