@@ -277,7 +277,7 @@ function addErrorToList(errorType: ErrorType, errorClass: ErrorClass, descr: str
     type: errorType,
     class: errorClass,
     descr: descr,
-    connectedNode: node.id === connectedErrorNode.id ? null : connectedErrorNode,
+    connectedNode: node.id === connectedErrorNode.id ? node : connectedErrorNode,
   };
   node.kpiErrors.push(errorObject);
 }

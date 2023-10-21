@@ -215,8 +215,8 @@ export async function updateIssueKPIErrors(
       viewpointId: viewpointId,
       remoteProjectId: remoteProjectId,
       remoteIssueId: remoteIssueId,
-      errorIssueRemoteIssueId: value.connectedNode === null ? -1 : value.connectedNode.issue.issueId,
-      errorIssueRemoteProjectId: value.connectedNode === null ? -1 : value.connectedNode.issue.projectId
+      errorIssueRemoteIssueId: value.connectedNode.issue.issueId,
+      errorIssueRemoteProjectId: value.connectedNode.issue.projectId
     };
   });
 
