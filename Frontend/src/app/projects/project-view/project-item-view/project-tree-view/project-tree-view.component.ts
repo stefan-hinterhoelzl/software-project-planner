@@ -414,6 +414,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
         this.snackbar.openSnackBar('Tree evalutation successful!');
       },
       error: err => {
+        this.treeLoading = false;
         this.snackbar.openSnackBar('Error evaluating the hierarchy. Try again later', 'red-snackbar');
       },
     });

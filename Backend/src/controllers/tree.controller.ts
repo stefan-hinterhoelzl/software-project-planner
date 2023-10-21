@@ -27,10 +27,13 @@ export async function evaluateTree(req: Request, res: Response) {
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
+    
     await connection.commit();
 
     res.json(tree);
+
   } catch (err: any) {
+    console.log("Am i here?", err);
     await connection.rollback();
     handleError(res, err);
   } finally {
@@ -277,7 +280,7 @@ function addErrorToList(errorType: ErrorType, errorClass: ErrorClass, descr: str
     type: errorType,
     class: errorClass,
     descr: descr,
-    connectedNode: node.id === connectedErrorNode.id ? node : connectedErrorNode,
+    connectedNode: node.id === connectedErrorNode.id ? null : connectedErrorNode,
   };
   node.kpiErrors.push(errorObject);
 }
