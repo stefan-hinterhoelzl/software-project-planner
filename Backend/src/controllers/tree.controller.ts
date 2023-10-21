@@ -16,7 +16,7 @@ export async function evaluateTree(req: Request, res: Response) {
 
   try {
     const conn = await connect();
-    await conn.query('DELETE FROM Remoteissueskpierrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
+    await conn.query('DELETE FROM RemoteIssuesKPIErrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
     //Internal Errors
     tree.forEach(async (value, index, arr) => {
