@@ -220,7 +220,7 @@ export async function updateIssueKPIErrors(
     };
   });
 
-  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO Remoteissueskpierrors SET ?', [value]))]);
+  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO RemoteIssuesKPIErrors SET ?', [value]))]);
 }
 
 async function getKPIErrorsForIssue(remoteIssues: RemoteIssues[], conn: Pool): Promise<RemoteIssuesWithErrors[]> {
