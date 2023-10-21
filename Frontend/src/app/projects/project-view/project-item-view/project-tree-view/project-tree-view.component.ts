@@ -187,8 +187,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
       //state boolean
       this.treeLoading = false;
 
-      //evaluate Tree on first load
-      this.evaluateTree(this.treeData);
+      //evaluate Tree on first load if tree is not empty
+      if(this.treeData.length !== 0) this.evaluateTree(this.treeData);
     }),
     share()
   );
