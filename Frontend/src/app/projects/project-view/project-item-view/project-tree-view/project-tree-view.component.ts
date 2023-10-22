@@ -282,6 +282,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
         if (levellabel[0] === null || levellabel[0].length === 0) {
           this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.');
+          this.treeLoading = false;
+          this.backlogLoading = false;
           return;
         } else {
           let settings = <IssueRelationSettings>{
