@@ -20,8 +20,6 @@ RUN npm run build
 
 #Deploy Stage
 FROM node as deploy
-# Set node environment to production
-ENV NODE_ENV production
 # Update the system
 RUN apk --no-cache -U upgrade
 #create directory for the build
