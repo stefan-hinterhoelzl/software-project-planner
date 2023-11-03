@@ -6,7 +6,7 @@ FROM node:18.18.0-alpine as build
 WORKDIR /app
 #Copy package.json and package-lock.json
 COPY package*.json ./
-#Install dependencies
+#Install prod dependencies
 RUN npm install --omit=dev
 #Copy the rest
 COPY . .
@@ -15,8 +15,6 @@ RUN npm run build
 
 #Deploy Stage
 FROM nginx
-#Tell Docker to Expose the Port
-EXPOSE ${PORT}
 #Copy the Nginx config to the default location
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 #Copy the built application to the Nginx directory
