@@ -1,8 +1,8 @@
 ARG PORT=3000
 
+#Build Stage
 FROM node:18.18.0-alpine as build
 
-#Build Stage
 #Set Work Directory
 WORKDIR /app
 #Copy package.json and package-lock.json
@@ -14,7 +14,7 @@ COPY . .
 #Build the app
 RUN npm run build
 
-
+#Deploy Stage
 FROM nginx
 EXPOSE ${PORT}
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
