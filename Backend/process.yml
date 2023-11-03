@@ -1,0 +1,5 @@
+apps:
+    - name: planner-backend
+      script: ./build/server.js
+      exec_mode: cluster
+      instances: 4
