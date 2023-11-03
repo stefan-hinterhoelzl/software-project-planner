@@ -1,5 +1,3 @@
-ARG PORT=3000
-
 #Build Stage
 FROM node:18.18.0-alpine as build
 #Set Work Directory
