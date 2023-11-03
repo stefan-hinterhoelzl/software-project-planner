@@ -19,21 +19,17 @@ export async function evaluateTree(req: Request, res: Response) {
     await conn.query('DELETE FROM RemoteIssuesKPIErrors WHERE projectId = ? AND viewpointId = ?', [projectId, viewpointId]);
 
     //Internal Errors
-    tree.forEach(async (value, index, arr) => {
-      checkForInternalErrors(value, connection, projectId, viewpointId);
-    });
+    checkForInternalErrors(tree, connection, projectId, viewpointId);
 
     //ChildrenErrors
     checkForChildrenErrors(tree, connection, projectId, viewpointId);
 
     await updateViewpointLastEdited(connection, projectId, viewpointId);
-    
+
     await connection.commit();
 
     res.json(tree);
-
   } catch (err: any) {
-    console.log("Am i here?", err);
     await connection.rollback();
     handleError(res, err);
   } finally {
@@ -50,6 +46,8 @@ function checkForChildrenErrors(tree: IssueNode[], connection: PoolConnection, p
 
     //checkLaterDeadlines
     checkLaterDeadlines(node);
+
+    //Add more Checks
 
     //End of checking for the current Node
     if (node.kpiErrors.length !== 0) {
@@ -140,62 +138,62 @@ function sumUpValues(node: IssueNode): void {
 }
 
 //check for the deadlines - Depth first search
-const checkForInternalErrors = async (node: IssueNode, connection: PoolConnection, projectId: string, viewpointId: number): Promise<void> => {
-  node.kpiErrors = [];
+const checkForInternalErrors = async (tree: IssueNode[], connection: PoolConnection, projectId: string, viewpointId: number): Promise<void> => {
+  tree.forEach(async (node, index, array) => {
+    node.kpiErrors = [];
 
-  //Deadline
-  if (node.issue.dueDate === null) {
-    addErrorToList(ErrorType.E, ErrorClass.DeadlineError, `There is no due date for this item.`, node, node);
-  } else {
-    if (node.issue.state === 'opened') {
-      //only evaluate opened items / closed ones are automatically green
-
-      let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
-
-      if (timeDiff < 432000000 && timeDiff >= 86400000) {
-        addErrorToList(
-          ErrorType.W,
-          ErrorClass.DeadlineError,
-          `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`,
-          node,
-          node
-        );
-      } else if (timeDiff < 86400000 && timeDiff > -43200000) {
-        addErrorToList(ErrorType.W, ErrorClass.DeadlineError, `Item is due today.`, node, node);
-      } else if (timeDiff <= -43200000) {
-        addErrorToList(ErrorType.E, ErrorClass.DeadlineError, `This item is overdue (Due Date: ${node.issue.dueDate}).`, node, node);
-      }
+    //Deadline
+    if (node.issue.dueDate === null) {
+      addErrorToList(ErrorType.E, ErrorClass.DeadlineError, `There is no due date for this item.`, node, node);
     } else {
-      if (node.issue.closedAt > node.issue.dueDate) {
-        addErrorToList(ErrorType.W, ErrorClass.DeadlineError, `Item was finished overdue. (Due Date: ${node.issue.dueDate}).`, node, node);
+      if (node.issue.state === 'opened') {
+        //only evaluate opened items / closed ones are automatically green
+
+        let timeDiff: number = new Date(node.issue.dueDate).getTime() - Date.now();
+
+        if (timeDiff < 432000000 && timeDiff >= 86400000) {
+          addErrorToList(
+            ErrorType.W,
+            ErrorClass.DeadlineError,
+            `Due date of this item is less than 6 days from today (Due Date: ${node.issue.dueDate}).`,
+            node,
+            node
+          );
+        } else if (timeDiff < 86400000 && timeDiff > -43200000) {
+          addErrorToList(ErrorType.W, ErrorClass.DeadlineError, `Item is due today.`, node, node);
+        } else if (timeDiff <= -43200000) {
+          addErrorToList(ErrorType.E, ErrorClass.DeadlineError, `This item is overdue (Due Date: ${node.issue.dueDate}).`, node, node);
+        }
+      } else {
+        if (node.issue.closedAt > node.issue.dueDate) {
+          addErrorToList(ErrorType.W, ErrorClass.DeadlineError, `Item was finished overdue. (Due Date: ${node.issue.dueDate}).`, node, node);
+        }
       }
     }
-  }
-  //Timestats
-  if (node.issue.timeStats.estimateHours === null || node.issue.timeStats.estimateHours === 0) {
-    addErrorToList(ErrorType.E, ErrorClass.WorkhoursError, `There is no time estimate for this item.`, node, node);
-  } else {
-    if (node.issue.state === 'opened') {
-      if (node.issue.timeStats.estimateHours <= node.issue.timeStats.spentHours) {
-        addErrorToList(ErrorType.E, ErrorClass.WorkhoursError, `The work estimate for this item was overshot.`, node, node);
-      } else if (node.issue.timeStats.spentHours >= node.issue.timeStats.estimateHours * 0.95) {
-        addErrorToList(ErrorType.W, ErrorClass.WorkhoursError, `The work estimate for this item has reached 95% of the estimate.`, node, node);
-      }
+    //Timestats
+    if (node.issue.timeStats.estimateHours === null || node.issue.timeStats.estimateHours === 0) {
+      addErrorToList(ErrorType.E, ErrorClass.WorkhoursError, `There is no time estimate for this item.`, node, node);
     } else {
-      if (node.issue.timeStats.spentHours > node.issue.timeStats.estimateHours) {
-        addErrorToList(
-          ErrorType.W,
-          ErrorClass.WorkhoursError,
-          `The item was finished with overspending time. (Time Estimate: ${node.issue.timeStats.estimateHours}).`,
-          node,
-          node
-        );
+      if (node.issue.state === 'opened') {
+        if (node.issue.timeStats.estimateHours <= node.issue.timeStats.spentHours) {
+          addErrorToList(ErrorType.E, ErrorClass.WorkhoursError, `The work estimate for this item was overshot.`, node, node);
+        } else if (node.issue.timeStats.spentHours >= node.issue.timeStats.estimateHours * 0.95) {
+          addErrorToList(ErrorType.W, ErrorClass.WorkhoursError, `The work estimate for this item has reached 95% of the estimate.`, node, node);
+        }
+      } else {
+        if (node.issue.timeStats.spentHours > node.issue.timeStats.estimateHours) {
+          addErrorToList(
+            ErrorType.W,
+            ErrorClass.WorkhoursError,
+            `The item was finished with overspending time. (Time Estimate: ${node.issue.timeStats.estimateHours}).`,
+            node,
+            node
+          );
+        }
       }
     }
-  }
 
-  node.children.forEach((value, index, arr) => {
-    checkForInternalErrors(value, connection, projectId, viewpointId);
+    if (node.children.length !== 0) checkForInternalErrors(node.children, connection, projectId, viewpointId);
   });
 };
 

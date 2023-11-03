@@ -1,12 +1,24 @@
-FROM node:18.18.0-alpine as build
-WORKDIR /app
+ARG PORT=3000
 
+FROM node:18.18.0-alpine as build
+
+#Build Stage
+#Set Work Directory
+WORKDIR /app
+#Copy package.json and package-lock.json
+COPY package*.json ./
+#Install dependencies
+RUN npm install --omit=dev
+#Copy the rest
 COPY . .
-RUN npm install
+#Build the app
 RUN npm run build
 
 
 FROM nginx
-EXPOSE 3000
+EXPOSE ${PORT}
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/software-project-planner /usr/share/nginx/html
+
+
+
