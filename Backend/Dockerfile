@@ -5,8 +5,6 @@ FROM node:18.18.0-alpine AS node
 FROM node as build
 #Set Work Directory
 WORKDIR /app
-#Get required NPM version
-RUN npm install -g npm@10.2.3
 #Install Git
 RUN apk add --no-cache git
 #Copy package.json and package-lock.json
@@ -26,8 +24,6 @@ RUN apk --no-cache -U upgrade
 RUN mkdir -p /app/build
 #Set Work Directory
 WORKDIR /app
-#Get required NPM version
-RUN npm install -g npm@10.2.3
 #Install PM2
 RUN npm i -g pm2
 #Install Git
@@ -40,3 +36,4 @@ RUN npm i --omit=dev
 COPY --from=build /app/build ./build
 #RUN API with PM2
 ENTRYPOINT [ "pm2-runtime", "./process.yml" ]
+
