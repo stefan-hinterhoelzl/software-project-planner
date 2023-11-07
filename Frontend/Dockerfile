@@ -1,5 +1,7 @@
 #Build Stage
 FROM node:18.18.0-alpine as build
+#Update
+RUN apk --no-cache -U upgrade
 #Set Work Directory
 WORKDIR /app
 #Copy package.json and package-lock.json
