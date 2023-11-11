@@ -113,26 +113,34 @@ function sumUpValues(node: IssueNode): void {
   node.issue.timeStats.accumulatedEstimateHours = estimate;
   node.issue.timeStats.accumulatedSpentHours = spent;
 
-  if (estimate <= 0 && spent <= 0) {
-    addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, `Accumulated estimations and spent hours sum up to 0`, node, node);
-  } else {
-    if (spent > estimate) {
-      addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, `Accumulated spent hours have exceeded accumulated estimations`, node, node);
-    } else if (spent > estimate * 0.95) {
-      addErrorToList(ErrorType.W, ErrorClass.AccumulatedError, `Accumulated spent hours have reached 95% of the accumulated estimations`, node, node);
-    }
+  if (node.children.length !== 0) {
+    if (estimate <= 0 && spent <= 0) {
+      addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, `Accumulated estimations and spent hours sum up to 0`, node, node);
+    } else {
+      if (spent > estimate) {
+        addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, `Accumulated spent hours have exceeded accumulated estimations`, node, node);
+      } else if (spent > estimate * 0.95) {
+        addErrorToList(
+          ErrorType.W,
+          ErrorClass.AccumulatedError,
+          `Accumulated spent hours have reached 95% of the accumulated estimations`,
+          node,
+          node
+        );
+      }
 
-    if (spent > node.issue.timeStats.spentHours) {
-      addErrorToList(
-        ErrorType.W,
-        ErrorClass.AccumulatedError,
-        `Accumulated spent hours exceed hours booked to this item. This is likely due to the fact, that time bookings are not propagated.`,
-        node,
-        node
-      );
-    }
-    if (estimate > node.issue.timeStats.estimateHours) {
-      addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, 'Accumulated estimate hours exceed estimated hours for this item.', node, node);
+      if (spent > node.issue.timeStats.spentHours) {
+        addErrorToList(
+          ErrorType.W,
+          ErrorClass.AccumulatedError,
+          `Accumulated spent hours exceed hours booked to this item. This is likely due to the fact, that time bookings are not propagated.`,
+          node,
+          node
+        );
+      }
+      if (estimate > node.issue.timeStats.estimateHours) {
+        addErrorToList(ErrorType.E, ErrorClass.AccumulatedError, 'Accumulated estimate hours exceed estimated hours for this item.', node, node);
+      }
     }
   }
 }
