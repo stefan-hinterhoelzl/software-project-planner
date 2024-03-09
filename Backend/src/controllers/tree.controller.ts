@@ -217,8 +217,8 @@ export async function detectHierarchies(req: Request, res: Response) {
 
       newTree.push(node);
       traversedNodes.push(node.id);
-
       checkForChildrenBasedOnRelation(settings, 2, node, traversedNodes, nodes, settings.links);
+      
     });
 
     let remainingNodes: IssueNode[] = nodes.filter(node => !traversedNodes.includes(node.id));
@@ -241,25 +241,25 @@ function checkForChildrenBasedOnRelation(
   nodes: IssueNode[],
   links: IssueLink[]
 ) {
-  let curr: IssueLink[] = links.filter(link => link.remoteIssueId === node.issue.issueId && link.remoteprojectId === node.issue.projectId);
+  let curr: IssueLink[] = links.filter(link => (link.remoteIssueId === node.issue.issueId && link.remoteprojectId === node.issue.projectId));
 
+  console.log(curr);
   let label: ViewpointLevelLabel | undefined;
 
   if (targetLevel === 2) label = settings.labelSettings.find(label => label.level === 2);
   else label = settings.labelSettings.find(label => label.level === 3);
 
   curr.forEach(link => {
-    0;
     let index: number = nodes.findIndex(
       node => node.issue.issueId === link.relatedRemoteIssueId && node.issue.projectId === link.relatedRemoteProjectId
     );
 
     if (index !== -1 && label !== undefined) {
-      let nested: IssueNode = JSON.parse(JSON.stringify(nodes[index]));
+      let nested: IssueNode = nodes[index];
 
       if (nested.issue.labels.includes(label.label)) {
-        node.kpiErrors.length = 0;
-        node.children.length = 0;
+        nested.kpiErrors.length = 0;
+        nested.children.length = 0;
         node.children.push(nested);
         traversedNodes.push(nested.id);
 
