@@ -95,8 +95,10 @@ export class GitLabAggregator implements ALMDataAggregator {
               type: issue.type,
               webURL: issue.web_url,
               timeStats: <ALMTimeStats>{
-                estimateHours: issue.time_stats.time_estimate,
-                spentHours: issue.time_stats.total_time_spent,
+                estimateHours: Math.round((issue.time_stats.time_estimate / 3600) *100) / 100,
+                spentHours: Math.round((issue.time_stats.total_time_spent /3600) *100) /100,
+                accumulatedEstimateHours: 0,
+                accumulatedSpentHours: 0,
               },
               selected: false,
             };
@@ -123,8 +125,10 @@ export class GitLabAggregator implements ALMDataAggregator {
           type: issue.type,
           webURL: issue.web_url,
           timeStats: <ALMTimeStats>{
-            estimateHours: issue.time_stats.time_estimate,
-            spentHours: issue.time_stats.total_time_spent,
+            estimateHours: Math.round((issue.time_stats.time_estimate / 3600) *100) / 100,
+            spentHours: Math.round((issue.time_stats.total_time_spent / 3600) *100) / 100,
+            accumulatedEstimateHours: 0,
+            accumulatedSpentHours: 0,
           },
           selected: true,
         };

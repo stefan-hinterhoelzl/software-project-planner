@@ -187,8 +187,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
       //state boolean
       this.treeLoading = false;
 
-      //evaluate Tree on first load
-      this.evaluateTree(this.treeData);
+      //evaluate Tree on first load if tree is not empty
+      if(this.treeData.length !== 0) this.evaluateTree(this.treeData);
     }),
     share()
   );
@@ -282,6 +282,8 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
 
         if (levellabel[0] === null || levellabel[0].length === 0) {
           this.snackbar.openSnackBar('There are no hierarchy labels maintained for this viewpoint.');
+          this.treeLoading = false;
+          this.backlogLoading = false;
           return;
         } else {
           let settings = <IssueRelationSettings>{
@@ -414,6 +416,7 @@ export class ProjectTreeViewComponent implements CanComponentDeactivate, OnDestr
         this.snackbar.openSnackBar('Tree evalutation successful!');
       },
       error: err => {
+        this.treeLoading = false;
         this.snackbar.openSnackBar('Error evaluating the hierarchy. Try again later', 'red-snackbar');
       },
     });

@@ -115,7 +115,7 @@ export async function getSelectedIssuesFromViewpointWithoutRelation(req: Request
     const result = (
       await conn.query<RemoteIssues[]>(
         `SELECT ri.projectId, ri.viewpointId, ri.remoteIssueId, ri.remoteProjectId
-      FROM Remoteissues ri LEFT JOIN Remoteissuesrelation rir 
+      FROM RemoteIssues ri LEFT JOIN RemoteIssuesRelation rir 
       ON ri.viewpointId = rir.viewpointId AND ri.projectId = rir.projectId
       AND ((ri.remoteIssueId = rir.parentIssueId AND ri.remoteProjectId = rir.parentRemoteProjectId) 
            OR (ri.remoteIssueId = rir.childIssueId AND ri.remoteProjectId = rir.childRemoteProjectId))
@@ -215,12 +215,12 @@ export async function updateIssueKPIErrors(
       viewpointId: viewpointId,
       remoteProjectId: remoteProjectId,
       remoteIssueId: remoteIssueId,
-      errorIssueRemoteIssueId: value.connectedNode === null ? -1 : value.connectedNode.issue.issueId,
-      errorIssueRemoteProjectId: value.connectedNode === null ? -1 : value.connectedNode.issue.projectId
+      errorIssueRemoteIssueId: value.connectedNode === null ? null : value.connectedNode.issue.issueId,
+      errorIssueRemoteProjectId: value.connectedNode === null ? null : value.connectedNode.issue.projectId,
     };
   });
 
-  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO Remoteissueskpierrors SET ?', [value]))]);
+  await Promise.all([extendedErrors.map(value => connection.query('INSERT INTO RemoteIssuesKPIErrors SET ?', [value]))]);
 }
 
 async function getKPIErrorsForIssue(remoteIssues: RemoteIssues[], conn: Pool): Promise<RemoteIssuesWithErrors[]> {
